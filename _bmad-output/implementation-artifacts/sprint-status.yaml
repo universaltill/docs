@@ -1,0 +1,104 @@
+# generated: 2025-12-19
+# project: docs
+# project_key: UT
+# tracking_system: file-system
+# story_location: ~/repos/unitill/docs/_bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog -> in-progress: Automatically when first story is created (via create-story)
+#   - in-progress -> done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2025-12-19
+project: docs
+project_key: UT
+tracking_system: file-system
+story_location: ~/repos/unitill/docs/_bmad-output/implementation-artifacts
+
+development_status:
+  epic-1: in-progress
+  1-1-offline-sale-flow-cash-card: done
+  1-2-fast-scan-totals-update-low-end-hardware: done
+  1-3-offline-receipt-printing-with-plugin-legal-text: done
+  1-4-offline-online-status-sync-controls: backlog
+  1-5-cash-drawer-printer-triggers-in-checkout: backlog
+  epic-1-retrospective: optional
+
+  epic-2: backlog
+  2-1-product-crud-sku-barcode-price-tax: backlog
+  2-2-catalog-import-csv: backlog
+  2-3-catalog-export-csv: backlog
+  2-4-stock-tracking-with-offline-reconcile: backlog
+  epic-2-retrospective: optional
+
+  epic-3: backlog
+  3-1-language-selection: backlog
+  3-2-currency-configuration-with-locale-formatting: backlog
+  epic-3-retrospective: optional
+
+  epic-4: backlog
+  4-1-device-detection-configuration-scanner-printer-drawer: backlog
+  4-2-hardware-test-fallback-handling: backlog
+  epic-4-retrospective: optional
+
+  epic-5: backlog
+  5-1-connect-marketplace-endpoint-browse-catalog: backlog
+  5-2-install-plugin-with-signature-checksum-verification-caching: backlog
+  5-3-update-plugin: backlog
+  5-4-rollback-plugin: backlog
+  5-5-uninstall-plugin: backlog
+  5-6-offline-side-load-install-update: backlog
+  5-7-revocation-handling-warnings: backlog
+  epic-5-retrospective: optional
+
+  epic-6: backlog
+  6-1-plugin-ui-surfaces-within-pos-shell: backlog
+  6-2-plugin-permissions-consent-enforcement: backlog
+  6-3-audit-logging-of-plugin-version-per-transaction: backlog
+  6-4-signature-trust-status-surface: backlog
+  epic-6-retrospective: optional
+
+  epic-7: backlog
+  7-1-publish-plugin-to-marketplace-via-cli-backoffice: backlog
+  7-2-remote-trigger-install-update-from-backoffice: backlog
+  7-3-push-offline-bundle-to-till: backlog
+  epic-7-retrospective: optional
+
+  epic-8: backlog
+  8-1-plugin-install-update-health-status: backlog
+  8-2-buffered-telemetry-status-for-offline-periods: backlog
+  8-3-admin-settings-surface-marketplace-endpoint: backlog
+  8-4-admin-settings-surface-language-currency: backlog
+  8-5-admin-settings-surface-devices: backlog
+  8-6-system-status-panel-online-offline-sync-backlog-plugin-state: backlog
+  epic-8-retrospective: optional
+
+  epic-9: backlog
+  9-1-existing-system-compatibility-audit: backlog
+  9-2-brownfield-integration-smoke-tests: backlog
+  9-3-compatibility-data-migration-schema-notes: backlog
+  epic-9-retrospective: optional

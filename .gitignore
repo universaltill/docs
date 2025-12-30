@@ -1,0 +1,12 @@
+# BMAD (local only)
+.bmad-core/
+.bmad-*/
+_bmad
+.claude
+.codex
+.github/chatmodes
+.github/agents
+.agent
+.agentvibes/
+.kiro/
+.roo

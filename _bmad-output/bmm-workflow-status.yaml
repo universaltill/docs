@@ -1,0 +1,19 @@
+generated: "2025-12-24T17:31:21Z"
+project: "Universal Till"
+project_type: "platform"
+selected_track: "method"
+field_type: "brownfield"
+workflow_path: "~/repos/unitill/docs/_bmad/bmm/workflows/workflow-status/paths/method-brownfield.yaml"
+workflow_status:
+  document-project: skipped
+  brainstorm-project: skipped
+  research: "_bmad-output/analysis/research/domain-universal-till-tax-compliance-gtm-research-2025-12-17T10-42-42Z.md"
+  product-brief: "_bmad-output/analysis/product-brief-docs-2025-12-17T10-42-42Z.md"
+  prd: "_bmad-output/prd.md"
+  create-ux-design: "_bmad-output/ux-design-specification.md"
+  create-architecture: "_bmad-output/planning-artifacts/architecture.md"
+  create-epics-and-stories: "_bmad-output/epics.md"
+  test-design: "_bmad-output/test-design-epic-1.md"
+  validate-architecture: "_bmad-output/planning-artifacts/architecture.md"
+  implementation-readiness: "_bmad-output/implementation-readiness-report-2025-12-24.md"
+  sprint-planning: "_bmad-output/implementation-artifacts/sprint-status.yaml"

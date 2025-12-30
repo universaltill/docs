@@ -1,0 +1,58 @@
+{
+  "repository_type": "multi-part",
+  "scan_root": "~/repos/unitill",
+  "docs_home": "~/repos/unitill/docs",
+  "parts": [
+    {
+      "part_id": "docs",
+      "root_path": "~/repos/unitill/docs",
+      "role": "documentation-hub",
+      "language": null
+    },
+    {
+      "part_id": "pos",
+      "root_path": "~/repos/unitill/universal-till",
+      "role": "pos-host",
+      "language": "go",
+      "entry_points": ["main.go"]
+    },
+    {
+      "part_id": "marketplace",
+      "root_path": "~/repos/unitill/ut-market-place",
+      "role": "plugin-marketplace",
+      "language": "go",
+      "entry_points": ["cmd/marketplace/main.go", "cmd/marketplace-sync/main.go"]
+    },
+    {
+      "part_id": "plugin-faq",
+      "root_path": "~/repos/unitill/ut-plugin-faq",
+      "role": "plugin-sample",
+      "language": "go",
+      "entry_points": ["src/main.go"]
+    }
+  ],
+  "integration_points": [
+    {
+      "from": "pos",
+      "to": "marketplace",
+      "type": "http",
+      "purpose": "catalog browsing, downloads, revocations, telemetry",
+      "notes": "POS uses UT_MARKETPLACE_ENDPOINT_URL and OAuth bearer token to call /v1/catalog/plugins and /v1/downloads/{plugin}/url; snapshots exist in marketplace for offline consumption."
+    },
+    {
+      "from": "marketplace",
+      "to": "pos",
+      "type": "offline-snapshot",
+      "purpose": "disconnected store catalog snapshot",
+      "notes": "Marketplace serves /v1/catalog/snapshots/{locale}/{arch}; POS caches snapshot under data/plugins/cache."
+    },
+    {
+      "from": "plugin-faq",
+      "to": "pos",
+      "type": "plugin",
+      "purpose": "adds navigation entry and FAQ page under /plugin/faq (intended)",
+      "notes": "Plugin main is placeholder until wired to POS plugin SDK."
+    }
+  ]
+}
+

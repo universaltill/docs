@@ -1,322 +1,61 @@
-# Universal Till – System Architecture & Design Blueprint
-
-## 1. Overview
-Universal Till is a **free, open-source, plugin-based, offline-first POS system** designed to run on:
-- Raspberry Pi
-- Low-cost tills (Chinese OEM devices)
-- Local networks without internet
-- Cloud or hybrid mode
-
-It includes:
-1. POS App  
-2. Back Office App  
-3. App Store  
-4. Optional Cloud Core Services  
-
-POS and Back Office are **plugin-based**, and the system can operate:
-- As a **single machine**
-- Over a **local network**
-- Or in **hybrid cloud mode**
-
----
-
-## 2. High-Level Architecture
-
-```
-+-------------------------------------------------------------+
-|                    Universal Till Platform                  |
-|          Free • Plugin-Based • Offline-First POS            |
-+-------------------------+----------------+------------------+
-                          |                |
-                   +------+-----+    +-----+------+
-                   | Cloud Core |    | App Store  |
-                   | (Optional) |    | Marketplace|
-                   +------+-----+    +------------+
-                          |
-          ----------------+------------------------
-          |                                      |
-+---------+----------+                 +----------+---------+
-|     POS App        |                 |   Back Office App  |
-|  (Till UI, Plugins)|                 |   (Mgmt UI, Plugins)|
-+--------------------+                 +---------------------+
-```
-
----
-
-## 3. Deployment Modes
-
-### 3.1 Single Device Mode (Standalone)
-Everything runs on one device:
-
-```
-+-------------------------------------------+
-| POS App (8080)                            |
-| Back Office (9090)                        |
-| SQLite/Postgres                           |
-| Local Plugin Repo                         |
-+-------------------------------------------+
-```
-
-### 3.2 Local Network Mode (LAN Only)
-Back Office runs as a local server:
-
-```
-           +----------------------+
-           | Back Office Server   |
-           +----------+-----------+
-                      |
-     -----------------+-------------------------
-     |               |                         |
-+----+-----+   +-----+-----+           +--------+----+
-| POS 1    |   | POS 2     |           | POS 3       |
-+----------+   +-----------+           +-------------+
-```
-
-### 3.3 Hybrid / Cloud Mode
-```
-POS <--> Local Back Office <--> Cloud Services (optional)
-```
-
----
-
-## 4. POS Architecture
-
-```
-+------------------------------+
-|           POS UI             |
-|   (HTML/HTMX, themable)      |
-+--------------+---------------+
-               |
-               v
-           Edge Server (Go)
-               |
-               v
-       +-----------------------+
-       |       POS Engine      |
-       +-----------+-----------+
-                   |
-         +---------+----------+
-         | Plugin Runtime     |
-         +---------+----------+
-                   |
-          +--------+----------+
-          | Hardware Drivers  |
-          +-------------------+
-```
-
-**Key features:**
-- Offline-first  
-- Plugins control payments, UI, workflows, hardware  
-- Local SQLite database  
-- Ultra-light (<30MB RAM)
-
----
-
-## 5. Back Office Architecture
-
-```
-+------------------------------------------------+
-|             Back Office (Go + Web UI)          |
-|  - Product & price management                  |
-|  - Device management                           |
-|  - Sales reports                               |
-|  - Plugin management                           |
-|  - Plugin configuration                        |
-+------------------------------------------------+
-```
-
-Runs locally (single box / LAN) or in cloud.
-
----
-
-## 6. App Store Architecture (Marketplace)
-
-```
-+-------------------+       +-----------------------+
-| App Store UI      | <---> | Marketplace API       |
-+-------------------+       +-----------------------+
-                                 |
-                                 v
-                        +------------------------+
-                        | Plugin Registry        |
-                        | (Bundles, Manifests)   |
-                        +------------------------+
-```
-
-### Features:
-- Browse/search plugins  
-- Developer portal  
-- Upload bundles  
-- Automated validation  
-- Free or paid plugins  
-- Revenue sharing  
-
----
-
-## 7. Unified API (Local or Cloud)
-
-POS expects identical APIs whether talking to:
-- Local Back Office  
-- Cloud  
-- Hybrid environment  
-
-### Core endpoints:
-```
-GET  /api/v1/config
-GET  /api/v1/products
-GET  /api/v1/plugins
-POST /api/v1/sales/batch
-GET  /api/v1/devices/:id
-```
-
----
-
-## 8. Plugin Architecture
-
-### Supported Plugin Types:
-| Type | Runs On | Examples |
-|------|---------|----------|
-| POS UI | POS | custom screen, workflows |
-| POS Service | POS | PSP integration |
-| Hardware Driver | POS | printer, scanner, scale |
-| Back Office UI | Back Office | settings pages |
-| Back Office Service | Back Office | ERP sync |
-
----
-
-## 8.1 Plugin Manifest Example
-
-```yaml
-id: com.example.psp.stripe
-name: Stripe Payments
-version: 1.0.0
-
-entrypoints:
-  pos-service:
-    command: ["./stripe-pos"]
-  backoffice-ui:
-    url: "/plugin/stripe"
-
-permissions:
-  pos:
-    - read_basket
-    - open_payment_session
-
-config_schema:
-  properties:
-    apiKey: { type: string }
-  required: ["apiKey"]
-
-billing:
-  model: subscription
-  price_per_month: 9.99
-```
-
----
-
-## 8.2 POS Plugin gRPC API
-
-```proto
-service PosPlugin {
-  rpc OnBasketEvent(BasketEvent) returns (BasketUpdate);
-  rpc OnPaymentRequest(PaymentRequest) returns (PaymentResponse);
-}
-```
-
----
-
-## 9. Multi-Device Sync Architecture
-
-Universal Till uses **local-first with optional cloud sync**.
-
-### POS → Back Office Sync
-```
-POST /api/v1/sales/batch
-```
-
-### Back Office → POS Sync
-```
-GET /api/v1/config
-GET /api/v1/products
-GET /api/v1/plugins
-```
-
-### Cloud-enabled adds:
-- Multi-site sync  
-- Central reporting  
-- Backups  
-- Remote access  
-
----
-
-## 10. Local-First Configuration Files
-
-### POS Config
-
-```yaml
-device_id: POS-001
-tenant_id: LOCAL
-mode: local
-backoffice_url: http://localhost:9090
-cloud_url: ""
-plugins_dir: /var/lib/universaltill/plugins
-database_path: /var/lib/universaltill/local.db
-```
-
-### Back Office Config
-
-```yaml
-mode: local
-db_url: postgres://...
-cloud_url: ""
-app_store_url: ""
-```
-
----
-
-## 11. Development Roadmap
-
-### Phase 1 – MVP
-- POS
-- Back Office (local)
-- Local product management
-- One POS plugin
-- Plugin runtime
-- Offline-first
-
-### Phase 2 – LAN Mode
-- Multi-device sync
-- Device registration
-
-### Phase 3 – App Store
-- Developer portal
-- Plugin publishing
-- Local plugin mirror
-
-### Phase 4 – Cloud
-- Multi-site sync
-- Global analytics
-- Billing + subscriptions
-
----
-
-## 12. Summary
-
-Universal Till provides:
-- Free POS  
-- Plugin ecosystem  
-- Local or cloud mode  
-- Hardware-agnostic  
-- Developer marketplace  
-- Offline capabilities  
-- Optional cloud enhancements  
-
-It is designed to outperform both commercial and open-source POS systems through:
-- Zero lock-in  
-- Local-first independence  
-- Plugin-driven extensibility  
-- Open-source community  
-
----
-
-# End of Document
+# Architecture
+
+Sources merged so far:
+- docs-current/architecture.md (system blueprint)
+- universal-till/docs/arch/mapping.md (additional mapping guidance, to review/merge)
+
+## High-Level Components
+- POS App (Go edge server + HTML/HTMX UI; offline-first, plugin runtime, local DB)
+- Back Office (management UI/services; plugin-aware)
+- Marketplace (app store for plugins; API/UI)
+- Optional Cloud Core (sync, multi-site, analytics, backups, billing)
+- Plugin Ecosystem (POS/backoffice/hardware/integration plugins)
+- Future Mobile App (map of tills; ordering/delivery flows via plugins)
+
+## Deployment Modes
+- Standalone: POS + Back Office on one device (SQLite/Postgres, local plugin repo)
+- LAN: Back Office as local server; multiple POS on network
+- Hybrid/Cloud: POS ↔ Local Back Office ↔ Cloud services; marketplace reachable
+
+## Plugin Architecture (POS/Back Office)
+- POS plugin runtime with entrypoints for UI/services/hardware drivers.
+- Plugin manifests define id, version, entrypoints, permissions, config schema, billing model.
+- Plugin host responsibilities: lifecycle (install/update/remove), permission enforcement, manifest validation.
+- Everything-is-a-plugin: taxes, payments, hardware drivers, integrations (ERP/ecommerce/accounting), discount, delivery/ordering flows.
+- Marketplace provides discovery, trust tiers, validation; POS/backoffice consume manifests/bundles and report status.
+- Legacy manifest shape (from docs-current): see `docs/plugins/manifest.md` for the current schema; legacy examples included entrypoints (pos-service/backoffice-ui), permissions, config_schema, billing, and gRPC hooks.
+
+## Marketplace Role
+- Discovery, developer upload, validation, trust tiers, multi-version support.
+- Needs CLI-assisted onboarding/install flow (pending).
+- Provides APIs/REST/gRPC for POS/backoffice to fetch manifests/bundles and report status.
+
+## Sync Model (POS ↔ Back Office ↔ Cloud)
+- Local-first: POS queues sales/events; back office provides products/config/plugins; cloud is optional.
+- POS → Back Office: e.g., `POST /api/v1/sales/batch`.
+- Back Office → POS: e.g., `GET /api/v1/config`, `GET /api/v1/products`, `GET /api/v1/plugins`.
+- Cloud-enabled: multi-site sync, central reporting, backups, remote access; same API shape where possible.
+
+## Configuration Examples (legacy defaults)
+- POS config (local-first): device_id, tenant_id, mode, backoffice_url, cloud_url, plugins_dir, database_path.
+- Back office config: mode, db_url, cloud_url, app_store_url.
+- See `docs/pos/setup.md` for current env/config details; these legacy keys were captured from docs-current for compatibility review.
+
+## Platform & Deployment Notes
+- Platform targets: Raspberry Pi/low-cost tills, Linux, macOS, Windows; future Android/iOS via shared Go core.
+- Deployment: standalone (single box), LAN (back office server + multiple POS), hybrid/cloud (POS ↔ local back office ↔ cloud services/marketplace).
+
+## Roadmap (legacy snapshot for context)
+- Phase 1: POS + local back office, one POS plugin, plugin runtime, offline-first.
+- Phase 2: LAN mode and device registration.
+- Phase 3: App store (developer portal, upload/validation, local plugin mirror).
+- Phase 4: Cloud (multi-site sync, analytics, billing/subscriptions).
+- Use PRD and BMAD stories for the authoritative plan; this snapshot is retained from docs-current for historical intent.
+
+## Open Items to Refine
+- Sync model details (POS ↔ Back Office ↔ Cloud) from docs-current/architecture.md.
+- Align plugin manifest contracts across POS and marketplace.
+- Document security/i18n/compliance constraints (see marketplace docs).
+- Add sequence diagrams for plugin install flow once CLI is defined.
+- Detail platform support matrix: Raspberry Pi/low-cost tills today; Android/iOS via future mobile app.
+- Clarify free core vs paid cloud services (sync, analytics, multi-site, backups, billing).

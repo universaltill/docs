@@ -1,8 +1,0 @@
-site_name: Universal Till Docs
-theme:
-  name: material
-nav:
-  - Home: index.md
-  - Getting Started: getting-started.md
-  - Addons: addons.md
-  - Payments: payments.md
