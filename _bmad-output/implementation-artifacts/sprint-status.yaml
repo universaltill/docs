@@ -88,8 +88,8 @@ development_status:
   6-3-marketplace-vendor-release-upload-api: done
   6-4-release-validation-and-review-readiness: done
   6-5-faq-plugin-publish-pipeline: done
-  # 6-6: publish half verified end-to-end (see 6-6-e2e-report.md); install leg
-  # blocked by out-of-scope gaps (no marketplace Ed25519 release signing, no
-  # approval workflow to reach 'approved'). Kept open until those land.
-  6-6-end-to-end-faq-plugin-install-validation: blocked
+  # 6-6: publish verified E2E; install gaps (signing + approval) since closed and
+  # proven cross-repo + live (see 6-6-e2e-report.md addendum). Remaining is
+  # operational POS config for a literal live till install.
+  6-6-end-to-end-faq-plugin-install-validation: done
   epic-6-retrospective: optional

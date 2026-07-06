@@ -93,7 +93,35 @@ Both are confirmed against the live DB: `SELECT length(signature)` → `0`,
 ## Conclusion
 
 The **publish pipeline (stories 6-1 … 6-5) is end-to-end functional and verified**
-against a running marketplace. Story 6-6's install leg is **blocked by design gaps
-that are outside the 6-2…6-5 scope**: the marketplace does not yet sign releases,
-and there is no approval workflow to make a release downloadable. These are the
-concrete next work items to make a till install succeed.
+against a running marketplace. Story 6-6's install leg was blocked by two design
+gaps outside the 6-2…6-5 scope — now **closed** (see the addendum below).
+
+---
+
+## Addendum (2026-07-06) — install gaps closed
+
+The two blockers above were implemented and verified:
+
+- **GAP-1 signing + GAP-2 approval** (`ut-market-place`, commit `e523d0a`): the
+  marketplace now signs a release's manifest with an Ed25519 key, repackages the
+  bundle so its `manifest.json` carries the signature, and an approval step flips
+  the release `uploaded → approved` (setting `approved_at`, signature, and the
+  signed-bundle checksum). New endpoints: `POST /ui/api/admin/releases/{id}/approve`
+  and `GET /ui/api/signing-key`. Key from `MARKETPLACE_SIGNING_KEY`.
+- **GAP-3** (`ut-market-place`, commit `5fc6b09`): release uniqueness is now
+  per-listing.
+- **Cross-repo proof** (`universal-till`, commit `f4ca570`): a test using the
+  **real POS `ManifestVerifier`** accepts a marketplace-signed fixture, guarding
+  the canonical-JSON contract against struct drift.
+
+**Live re-run** (marketplace with signing key, sqlite + file blob):
+`publish.sh` → 201 (scan passed) → `POST …/approve` → `approved` with signature
+`baa952cd…`; the stored signed bundle's SHA-256 (`72d3c99d…`) matches the recorded
+checksum, and Ed25519 verification of its manifest (POS canonicalization) against
+the public key from `/ui/api/signing-key` returns **true**. A till configured with
+that public key would therefore accept and install the release.
+
+**Remaining for a literal live till install (operational, not code):** run the POS
+process pointed at the marketplace with `cfg.Marketplace.PublicKey` set to the
+published key and real merchant/store/device IDs; the download-token → download →
+verify → install path then exercises the deployed marketplace.
