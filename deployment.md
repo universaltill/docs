@@ -1,9 +1,14 @@
 # Deployment & Infrastructure (Universal Till)
 
 How the Universal Till marketplace and its supporting infrastructure are
-provisioned and deployed. **All provisioning and installation is done through
-GitHub Actions pipelines** — local `terraform apply` / `kubectl apply` is for
-validation and dry-runs only, never as the delivery mechanism.
+provisioned and deployed. Intended delivery is **GitHub Actions-driven**
+(terraform + image build + GitOps commit); the initial bring-up was done live and
+still has some GitOps debt (see the last section).
+
+Current live state: the marketplace runs at
+**https://marketplace.home.taskrunnertech.co.uk** on the homelab k3s cluster, with
+Postgres in-cluster and its secrets sourced from Azure Key Vault via the Secrets
+Store CSI driver.
 
 ---
 
@@ -15,93 +20,90 @@ validation and dry-runs only, never as the delivery mechanism.
    │  terraform          │  build & push        │  GitOps commit      │
    │  (infra/)           │  (ut-market-place)   │  (homelab-k8s)      │
    ▼                     ▼                      ▼
-Azure platform      ACR image              ArgoCD app-store app
+Azure platform      ACR image              ArgoCD unitill-marketplace app
 uni-till-platform   unitillacr01.azurecr   → k3s homelab cluster
-(RG, ACR, KeyVault, .io/ut-market-place    → store.home.taskrunnertech.co.uk
+(RG, ACR, KeyVault, .io/ut-market-place    → marketplace.home.taskrunnertech.co.uk
  DNS)
 ```
 
 ## 1. Azure platform — `infra/unitill-infra` (Terraform)
 
-Terraform root at `infra/unitill-infra` (providers: `azurerm ~> 4.0`,
-`github ~> 6.0` with owner `universaltill`). State is currently **local**; the
-azurerm remote backend block is commented out (target subscription
-`7e341019-7961-47ba-9251-1ca1e2859a78`).
+Terraform root at `infra/unitill-infra` (providers `azurerm ~> 4.0`,
+`github ~> 6.0`, `random ~> 3.6`). Provisions, in subscription
+`7e341019-…` / tenant `6823ebc7-…`:
 
-Resources:
+| Resource | Name |
+|---|---|
+| Resource group | `uni-till-platform` (uksouth) |
+| Container registry | `unitillacr01` → `unitillacr01.azurecr.io` |
+| Key Vault | `kv-unitill-dev` — single source of truth for credentials |
+| DNS zone | `home.taskrunnertech.co.uk` (delegated subzone; `*` CNAME → `farshiduk.ddns.net`) |
 
-| Resource | Name | Notes |
-|---|---|---|
-| Resource group | `uni-till-platform` | region `uksouth` |
-| Container registry | `unitillacr01` | SKU Basic, `admin_enabled=true` → `unitillacr01.azurecr.io` |
-| Key Vault | `kv-unitill-dev` | stores SP passwords / ACR creds |
-| DNS zone | `home.taskrunnertech.co.uk` | in RG `uni-till-platform`; wildcard `*` CNAME → `farshiduk.ddns.net` |
-| DNS NS record | `home` in `taskrunnertech.co.uk` (RG `DNS`) | delegates the `home` subzone to the zone above |
-
-Outputs expose the ACR login server + admin creds (sensitive), Key Vault
-id/endpoint, and the DNS zone name servers.
-
-**Pipeline:** a workflow runs `terraform fmt -check` / `validate` / `plan` on PRs
-and `apply` on merge to `main` (gated). Azure auth via an OIDC federated
-credential or `AZURE_CREDENTIALS` service principal secret.
+`secrets.tf` generates the Postgres password, upload token, and a 32-byte Ed25519
+signing seed and writes them (plus the Postgres DSN and ACR admin creds) into Key
+Vault. Pipeline: `.github/workflows/terraform.yml` (fmt/validate/plan on PR, gated
+apply). Remote state uses the azurerm backend (see `infra/README.md` for the
+one-time bootstrap).
 
 ## 2. Marketplace image — `ut-market-place`
 
-`ut-market-place/.github/workflows/build-and-push.yml` runs CI verification,
-logs in to Azure + ACR, builds the `production` Docker target, and pushes
-`:<sha>` and `:latest`.
-
-> **Action item:** the workflow currently targets `utmarketplaceacr.azurecr.io/ut-market-place`.
-> It must be repointed at the terraform-managed registry
-> `unitillacr01.azurecr.io/ut-market-place` (with matching `ACR_USERNAME` /
-> `ACR_PASSWORD` secrets sourced from Key Vault / terraform outputs).
+`.github/workflows/build-and-push.yml` runs CI verification, authenticates to
+Azure via **OIDC**, reads the ACR credentials from **Key Vault**, and builds +
+pushes the `production` Docker target for **linux/arm64** (buildx + QEMU; the
+cluster nodes are Raspberry Pi) as `unitillacr01.azurecr.io/ut-market-place:{sha,latest}`.
+The binary links go-sqlite3 (CGO), so the runtime image is debian-slim; it serves
+plain HTTP on **:8081** behind Traefik (`HTTP_TLS_AUTO_DEV_CERT=false`).
 
 ## 3. Cluster delivery — `homelab-k8s` (ArgoCD GitOps)
 
-Homelab k3s v1.31 cluster (repo `git@github.com:taskrunnertech/homelab-k8s.git`,
-2 Raspberry Pi nodes). ArgoCD runs with `selfHeal: true` + `prune: true`, so the
-only durable way to change the cluster is a git commit; manual kubectl edits are
-reverted within ~3 minutes.
+Homelab k3s v1.31 cluster (`git@github.com:taskrunnertech/homelab-k8s.git`, 2
+Raspberry Pi nodes), ArgoCD with `selfHeal`/`prune`. Relevant services: Traefik
+ingress, cert-manager, MetalLB (192.168.1.200–220), NFS provisioner, `local-path`.
 
-Cluster services relevant to the marketplace:
-- **Traefik** ingress controller (`ingressClassName: traefik`).
-- **cert-manager** `letsencrypt-prod` ClusterIssuer (Azure DNS-01 challenge) with
-  a wildcard `Certificate` producing secret **`wildcard-tls`** for
-  `*.home.taskrunnertech.co.uk`.
-- **MetalLB** (192.168.1.200–220), **NFS provisioner**, `local-path` storage
-  class on the `storage-tier=fast` control-plane node.
-
-The marketplace is the **`app-store`** ArgoCD application (Pattern B — plain
-manifests):
+The marketplace is the **`unitill-marketplace`** ArgoCD application
+(`kubernetes/apps/unitill-marketplace/`):
 
 | File | Contents |
 |---|---|
-| `kubernetes/apps/app-store/deployment.yaml` | Deployment + Service (80→3000) + Ingress `store.home.taskrunnertech.co.uk` (cert-manager, `wildcard-tls`) |
-| `kubernetes/apps/app-store/postgres.yaml` | Postgres 16-alpine StatefulSet, 20Gi `local-path` PVC on `storage-tier=fast`, headless service, envFrom `appstore-pg-secret` |
-| `kubernetes/apps/app-store/secret.yaml` | placeholder DB creds — **must be sealed with kubeseal, never committed in plaintext** |
-| `kubernetes/bootstrap/apps/app-store.yaml` | ArgoCD `Application` — **currently commented out (not deployed)** |
+| `deployment.yaml` | Deployment (image `unitillacr01.azurecr.io/ut-market-place:latest`, port 8081, non-root, /healthz probes) + Service (80→8081) + Ingress `marketplace.home.taskrunnertech.co.uk` (issuer `letsencrypt-home`, `wildcard-tls`). Mounts the CSI volume; `envFrom` the synced `marketplace-pg-secret`. Reloader-annotated. |
+| `postgres.yaml` | Postgres 16-alpine StatefulSet, 20Gi `local-path`; static DB/USER, `POSTGRES_PASSWORD` from the synced secret. |
+| `secretproviderclass.yaml` | Maps KV → `marketplace-pg-secret` (POSTGRES_PASSWORD/DSN, MARKETPLACE_UPLOAD_TOKEN/SIGNING_KEY). |
+| `pvc.yaml` | blob + Postgres PVCs. |
 
-**To go live:**
-1. Repoint `deployment.yaml` image to `unitillacr01.azurecr.io/ut-market-place:<tag>`
-   and confirm the container listen port (currently `3000`).
-2. Seal the DB secret: `kubeseal --format yaml < secret.yaml > sealed-secret.yaml`.
-3. Uncomment `kubernetes/bootstrap/apps/app-store.yaml`.
-4. Commit + push (via the deploy pipeline) → ArgoCD syncs.
+Supporting apps (ArgoCD): `secrets-store-csi` (CSI driver + Azure provider),
+`reloader` (restarts the marketplace on KV rotation).
 
-## Known mismatches to reconcile before first deploy
+**TLS:** the default `letsencrypt-prod` issuer solves DNS-01 against the parent
+`taskrunnertech.co.uk` zone (RG `DNS`, subscription `a1e235f5-…`), which is not
+reachable from this subscription. The marketplace instead uses **`letsencrypt-home`**
+(`kubernetes/infrastructure/cert-manager/clusterissuer-home.yaml`) which solves
+against the terraform-managed `home.taskrunnertech.co.uk` subzone.
 
-1. **ACR name** — marketplace CI pushes to `utmarketplaceacr.azurecr.io`; terraform
-   provisions `unitillacr01`. Pick one and align both.
-2. **App-store image** — homelab deployment references the stale
-   `ghcr.io/taskrunnertech/app-store:latest`, not the marketplace image.
-3. **DNS / cert-manager subscription** — the ClusterIssuer solves DNS in
-   subscription `a1e235f5-ab51-4005-8217-9ece95fe20a9` (RG `DNS`), which differs
-   from the terraform subscription. Verify the SP has rights in the zone actually
-   serving `home.taskrunnertech.co.uk`.
+## 4. Secrets model
 
-## Secrets
+- **App config** (DSN, upload token, signing key): Key Vault → CSI driver →
+  synced `marketplace-pg-secret` → `envFrom`. Rotation is picked up by Reloader
+  (marketplace only; Postgres password rotation is a DB-level `ALTER ROLE`).
+- **Two bootstrap secrets can't come from Key Vault** (root of trust):
+  `secrets-store-creds` (the SP the CSI driver uses to reach KV) and `acr-pull`
+  (image pull — kubelet pulls before the CSI volume mounts). Plus
+  `azure-dns-home-secret` (the SP for the cert DNS-01 challenge).
 
-- Cluster secrets: **sealed-secrets** (`kubeseal`) committed to `homelab-k8s`.
-- Azure/ACR creds for CI: GitHub Actions secrets, ideally sourced from Key Vault
-  `kv-unitill-dev` or terraform outputs.
-- cert-manager Azure DNS SP secret lives in-cluster as `azure-dns-secret`.
+## GitOps debt (initial bring-up was done live)
+
+The following exist **live but are not yet in git / terraform-managed**, so a
+clean rebuild would need them recreated:
+
+- KV secret **values** were set by hand (terraform `secrets.tf` would generate
+  them, but applying it now would rotate the live values → Reloader restart, and
+  the signing pubkey would change, requiring a POS update).
+- Two service principals created via `az`: `unitill-kv-csi` (KV get/list) and
+  `unitill-cert-dns` (DNS Zone Contributor on the home subzone). Not in terraform.
+- k8s secrets `secrets-store-creds`, `acr-pull`, `azure-dns-home-secret` created
+  via `kubectl` (not sealed — the sealed-secrets controller is not installed).
+- The `letsencrypt-home` ClusterIssuer **is** now in git; the deployed image was
+  built locally (CI can build it now that the branches are merged).
+
+To retire the debt: install sealed-secrets and seal the three bootstrap secrets;
+add the two SPs + their KV/DNS access policies to terraform; run terraform to own
+the KV secrets (accepting a one-time rotation).
