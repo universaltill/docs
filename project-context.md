@@ -63,6 +63,16 @@ This file captures the critical rules and patterns that AI agents must follow wh
 
 ---
 
+## Deployment
+
+Provisioning and cluster installation are **GitHub Actions-driven only** (no
+local `terraform apply` / `kubectl apply` as the delivery mechanism). Azure
+platform is Terraform in `infra/unitill-infra` (RG `uni-till-platform`, ACR
+`unitillacr01`, Key Vault `kv-unitill-dev`, DNS `home.taskrunnertech.co.uk`); the
+marketplace deploys to the homelab k3s cluster (`homelab-k8s`) as the ArgoCD
+`app-store` app behind Traefik + cert-manager wildcard TLS. See
+[`deployment.md`](./deployment.md) and [`../infra/README.md`](../infra/README.md).
+
 ## Usage Guidelines
 
 **For AI Agents:**

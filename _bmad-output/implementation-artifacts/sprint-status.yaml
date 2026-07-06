@@ -1,5 +1,5 @@
 # generated: 2026-03-13T15:40:34Z
-# last_updated: 2026-03-18T15:13:45Z
+# last_updated: 2026-03-19T14:22:58Z
 # project: docs
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-03-13T15:40:34Z
-last_updated: 2026-03-18T15:13:45Z
+last_updated: 2026-07-06T00:00:00Z
 project: docs
 project_key: NOKEY
 tracking_system: file-system
@@ -49,7 +49,7 @@ development_status:
   epic-1-retrospective: optional
   epic-2: backlog
   2-1-install-plugin-from-marketplace-with-verification: done
-  2-2-plugin-install-status-and-version-visibility: ready-for-dev
+  2-2-plugin-install-status-and-version-visibility: done
   2-3-update-and-rollback-plugin-versions: backlog
   2-4-disable-or-uninstall-a-plugin: backlog
   2-5-side-load-offline-plugin-package: backlog
@@ -82,3 +82,14 @@ development_status:
   5-2-trigger-pos-install-update-from-cli-backoffice: backlog
   5-3-push-offline-bundle-to-till: backlog
   epic-5-retrospective: optional
+  epic-6: in-progress
+  6-1-define-plugin-release-artifact-contract: done
+  6-2-package-faq-plugin-release-artifact: done
+  6-3-marketplace-vendor-release-upload-api: done
+  6-4-release-validation-and-review-readiness: done
+  6-5-faq-plugin-publish-pipeline: done
+  # 6-6: publish half verified end-to-end (see 6-6-e2e-report.md); install leg
+  # blocked by out-of-scope gaps (no marketplace Ed25519 release signing, no
+  # approval workflow to reach 'approved'). Kept open until those land.
+  6-6-end-to-end-faq-plugin-install-validation: blocked
+  epic-6-retrospective: optional
