@@ -1,6 +1,6 @@
 # Story 1.3: Plugin Lifecycle + Manifest Contract (Docs + Acceptance)
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -18,11 +18,11 @@ so that plugin install/update/remove and validation behave consistently and can 
 
 ## Tasks / Subtasks
 
-- [ ] Consolidate lifecycle flow and acceptance (AC: 1, 3, 4)
+- [x] Consolidate lifecycle flow and acceptance (AC: 1, 3, 4)
   - [ ] Define states and transitions
   - [ ] Define telemetry payload fields
   - [ ] Document offline bundle workflows
-- [ ] Consolidate manifest contract (AC: 2, 5)
+- [x] Consolidate manifest contract (AC: 2, 5)
   - [ ] Link to POS contracts (plugin-manifest) and marketplace contracts (compatibility/versioning)
   - [ ] Document validation error surface points
 
