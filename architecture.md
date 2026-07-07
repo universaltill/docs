@@ -92,5 +92,5 @@ Full details, including the one-time credential setup: [reference/deployment.md]
 | **Building & publishing a plugin** | [`for-plugin-developers.md`](for-plugin-developers.md) |
 | **Using the POS** | [`guides/pos.md`](guides/pos.md) |
 | **Using the marketplace (vendor + admin)** | [`guides/marketplace-admin.md`](guides/marketplace-admin.md) |
-| **Technical contracts** | [`reference/`](reference/) — code structure, data model, plugin manifest, lifecycle, release artifact, deployment |
+| **Technical contracts** | [`reference/`](reference/) — coding standards, code structure, data model, plugin manifest, lifecycle, release artifact, deployment |
 | **Project status / tasks** | [`STATUS.md`](STATUS.md) |

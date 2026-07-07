@@ -73,6 +73,10 @@ See [`for-plugin-developers.md`](for-plugin-developers.md).
 
 ## Conventions
 
+The **authoritative, enforced** rules — repository pattern, no inline SQL,
+naming, API/format, offline-first, i18n — are in
+[`reference/coding-standards.md`](reference/coding-standards.md). Highlights:
+
 - **Money** is always integer minor units.
 - Domain logic must be testable without DB/network/UI; side effects live in adapters.
 - API responses use the `{data}` / `{error:{message,details}}` JSON shape, snake_case.

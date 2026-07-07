@@ -52,7 +52,7 @@ for-plugin-developers.md  ← build & publish a plugin
 guides/
   pos.md                  ← using the till
   marketplace-admin.md    ← publishing, reviewing, approving
-reference/                ← code structure, data model, manifest, lifecycle,
-                            release artifact, deployment
+reference/                ← coding standards, code structure, data model,
+                            manifest, lifecycle, release artifact, deployment
 STATUS.md                 ← consolidated status / tasks
 ```
