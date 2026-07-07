@@ -12,3 +12,4 @@ link here for the authoritative detail.
 | [plugin-lifecycle.md](plugin-lifecycle.md) | The full package → publish → validate → review → sign → download → verify → install flow. |
 | [release-artifact.md](release-artifact.md) | The `.tar.gz` bundle layout and checksum rules. |
 | [deployment.md](deployment.md) | Live deployment topology and one-time credential/bootstrap steps. |
+| [pos-acceptance-matrix.md](pos-acceptance-matrix.md) | POS capabilities (epics 2–5) mapped to the automated tests that accept them. |
