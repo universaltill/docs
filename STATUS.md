@@ -47,9 +47,15 @@ not a mock.
   (verified 2026-07-07: `universal-till` 12 test packages + `ut-market-place` 18, **0
   failures**). The code exists and each capability is mapped to the tests that accept
   it. Remaining under this heading is only true greenfield (below), not story text.
-- **POS UI MVP (epic 1-4)** and **offline export/import bundles (epic 1-1 AC3)** —
-  backlog; these are genuine greenfield features needing a product decision on
-  scope/format before implementation.
+- **Offline export/import bundles (epic 1-1 AC3)** — **shipped for the single-plugin
+  case.** Import already existed; export was added (`internal/plugins/exporter.go`) and
+  both are wired: `GET /api/plugins/{id}/export?version=` + an Export action on the
+  plugins page, round-tripping through `POST /api/plugins/import-from-file`. Remaining:
+  **multi-plugin** bundles + making the `./data/plugins` base dir configurable — a
+  scope decision, not blocking.
+- **POS UI MVP (epic 1-4)** — still needs a design/scope decision (which screens/flows
+  constitute the MVP); the POS already renders functional pages (see the acceptance
+  matrix). The plugin Export action above is one concrete UI increment.
 
 ### Recently cleared (2026-07-07)
 
@@ -61,6 +67,9 @@ not a mock.
 - Money typing extended to the shifts/cash-drawer module (see Done above).
 - Dev flow / READMEs repointed to the deployed dev marketplace (mock fallback
   dropped).
+- Review-queue Approve/Reject buttons wired to the decision endpoint.
+- Epics 2–5 acceptance formalized as a capability→test matrix.
+- Offline plugin export bundle + endpoint + Export UI action (see above).
 
 ## 🔧 GitOps / reproducibility debt
 
