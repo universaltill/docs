@@ -42,13 +42,11 @@ not a mock.
 
 ## 🔶 Optional / not blocking the goal
 
-- **Epics 2–5 acceptance** — catalog/inventory/tender/receipt/sync/offline/
-  settings/permissions/etc. **code exists and the test suites are green** (verified
-  2026-07-07: `universal-till` 12 test packages + `ut-market-place` 18, **0
-  failures**). Only formal per-story acceptance authoring is outstanding — not
-  greenfield work. The acceptance criteria source (old BMAD stories) was removed in
-  the docs overhaul, so re-closing them means (re)writing criteria, then mapping to
-  the existing green tests.
+- **Epics 2–5 acceptance** — **formalized** as a capability→test matrix grounded in
+  the green suite: [`reference/pos-acceptance-matrix.md`](reference/pos-acceptance-matrix.md)
+  (verified 2026-07-07: `universal-till` 12 test packages + `ut-market-place` 18, **0
+  failures**). The code exists and each capability is mapped to the tests that accept
+  it. Remaining under this heading is only true greenfield (below), not story text.
 - **POS UI MVP (epic 1-4)** and **offline export/import bundles (epic 1-1 AC3)** —
   backlog; these are genuine greenfield features needing a product decision on
   scope/format before implementation.
