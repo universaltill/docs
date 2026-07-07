@@ -1,6 +1,6 @@
 # Project Status
 
-_Last updated: 2026-07-07._
+_Last updated: 2026-07-07 (self-serve entitlement + money-type + cleanups merged; epics 2–5 test-verified)._
 
 Single place for what's done, what's in flight, and what's left. This replaces the
 old BMAD sprint-status / story tracking.
@@ -34,21 +34,35 @@ not a mock.
 | Signing | `MARKETPLACE_SIGNING_KEY` (32-byte seed from Key Vault); pubkey at `/ui/api/signing-key`. |
 | POS install | Download-token → download → Ed25519 verify → install → register entries. |
 | Install-state reporting | POS reports state to `/ui/api/installs/{id}/state`; `mp-cli` create/query. |
+| Self-serve entitlement | **Done.** Free listings auto-acquire on the download path (`entitlements.Service.Acquire` + `downloadsvc` `WithAcquirer`); paid still needs approval. No more hand-granting. |
+| Money typing (POS) | `internal/money.Money` (compiler-enforced minor units) now covers the sale/tender engine **and** the shifts/cash-drawer module; conversions only at DB/DTO seams. |
 | Postgres migrations | Switched to **ent auto-migrate** (was drifting); proven on a fresh DB. |
 | Deployment | Marketplace live on k3s via ArgoCD; secrets from Azure Key Vault (CSI); Postgres in-cluster; Let's Encrypt TLS. |
 | CI/CD | Marketplace image → ACR (creds from Key Vault via OIDC); Terraform fmt/validate/plan; plugin release workflow. |
 
 ## 🔶 Optional / not blocking the goal
 
-- **Self-serve entitlement** — a store's entitlement was granted by hand. There is
-  no "acquire"/self-entitle flow yet (or auto-entitle for free listings).
 - **Review-queue UI** — `review_queue.html` still shows mock data; the API behind
   it is real.
 - **Epics 2–5 acceptance** — catalog/inventory/tender/receipt/sync/offline/
-  settings/permissions/etc. **code exists and tests are green**; only formal
-  per-story acceptance authoring is outstanding (not greenfield work).
+  settings/permissions/etc. **code exists and the test suites are green** (verified
+  2026-07-07: `universal-till` 12 test packages + `ut-market-place` 18, **0
+  failures**). Only formal per-story acceptance authoring is outstanding — not
+  greenfield work. The acceptance criteria source (old BMAD stories) was removed in
+  the docs overhaul, so re-closing them means (re)writing criteria, then mapping to
+  the existing green tests.
 - **POS UI MVP (epic 1-4)** and **offline export/import bundles (epic 1-1 AC3)** —
-  backlog.
+  backlog; these are genuine greenfield features needing a product decision on
+  scope/format before implementation.
+
+### Recently cleared (2026-07-07)
+
+- Self-serve entitlement (see Done above) — was the top optional item.
+- Dead `entitlementssvc` package removed from `ut-market-place` (never mounted,
+  off-contract).
+- Money typing extended to the shifts/cash-drawer module (see Done above).
+- Dev flow / READMEs repointed to the deployed dev marketplace (mock fallback
+  dropped).
 
 ## 🔧 GitOps / reproducibility debt
 
