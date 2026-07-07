@@ -53,7 +53,10 @@ checks these.
 
 - Success: `{ "data": …, "error": null }`. Error: `{ "error": { "code", "message" } }`.
 - **JSON fields are snake_case.** (CamelCase JSON is an anti-pattern.)
-- Dates are ISO-8601 strings. **Money is integer minor units — always.**
+- Dates are ISO-8601 strings. **Money is integer minor units — always.** In the
+  POS this is the distinct `internal/money.Money` type, so the compiler blocks
+  mixing money with quantities/rates; it marshals as the same integer. Convert
+  to/from raw `int64` only at DB / external-DTO boundaries.
 - Plugin/contract payloads carry explicit `version` fields.
 - Validate **all** external input (user, plugins, devices, integrations).
 
