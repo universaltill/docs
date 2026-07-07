@@ -2,6 +2,10 @@
 .bmad-core/
 .bmad-*/
 _bmad
+_bmad-output
+.agents
+AGENTS.md
+.DS_Store
 .claude
 .codex
 .github/chatmodes
