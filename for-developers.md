@@ -19,6 +19,10 @@ How to build, test, and run the Universal Till components. Read
 | `infra` | Terraform (Azure ACR / Key Vault / DNS). |
 | `homelab-k8s` | ArgoCD manifests for the k3s cluster. |
 
+For where things live inside each repo see
+[`reference/code-structure.md`](reference/code-structure.md); for the persistence
+layer see [`reference/data-model.md`](reference/data-model.md).
+
 ## Build, test, run
 
 ### Marketplace (`ut-market-place`)

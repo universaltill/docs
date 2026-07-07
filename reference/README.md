@@ -5,6 +5,8 @@ link here for the authoritative detail.
 
 | Document | Covers |
 |---|---|
+| [code-structure.md](code-structure.md) | Where things live in each repo — POS, marketplace, plugin, infra. |
+| [data-model.md](data-model.md) | Marketplace ent entities (fields + relationships) and the POS tables. |
 | [plugin-manifest.md](plugin-manifest.md) | The `manifest.json` contract — every field, canonical types, entries, permissions. |
 | [plugin-lifecycle.md](plugin-lifecycle.md) | The full package → publish → validate → review → sign → download → verify → install flow. |
 | [release-artifact.md](release-artifact.md) | The `.tar.gz` bundle layout and checksum rules. |
