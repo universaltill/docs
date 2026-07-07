@@ -1,6 +1,6 @@
 # Project Status
 
-_Last updated: 2026-07-07 (self-serve entitlement + money-type + cleanups merged; epics 2–5 test-verified)._
+_Last updated: 2026-07-07 (self-serve entitlement + money-type + review-queue-real-data + cleanups merged; epics 2–5 test-verified)._
 
 Single place for what's done, what's in flight, and what's left. This replaces the
 old BMAD sprint-status / story tracking.
@@ -42,8 +42,6 @@ not a mock.
 
 ## 🔶 Optional / not blocking the goal
 
-- **Review-queue UI** — `review_queue.html` still shows mock data; the API behind
-  it is real.
 - **Epics 2–5 acceptance** — catalog/inventory/tender/receipt/sync/offline/
   settings/permissions/etc. **code exists and the test suites are green** (verified
   2026-07-07: `universal-till` 12 test packages + `ut-market-place` 18, **0
@@ -60,6 +58,8 @@ not a mock.
 - Self-serve entitlement (see Done above) — was the top optional item.
 - Dead `entitlementssvc` package removed from `ut-market-place` (never mounted,
   off-contract).
+- **Review-queue UI** now renders real data — `/admin/reviews` lists releases with
+  an open review assignment (`reviews.Service.ListQueue`), replacing the mock row.
 - Money typing extended to the shifts/cash-drawer module (see Done above).
 - Dev flow / READMEs repointed to the deployed dev marketplace (mock fallback
   dropped).
