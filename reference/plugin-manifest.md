@@ -20,7 +20,7 @@ See also: [Release Artifact](./release-artifact.md) · [Lifecycle](./lifecycle.m
 | `id` | Globally unique, lowercase reverse-DNS (e.g. `com.universaltill.ut-faq`) |
 | `name` | Human-readable name |
 | `version` | Semantic version (`MAJOR.MINOR.PATCH`, optional pre-release/build) |
-| `canonical_type` | One of `page`, `button`, `payment`, `report`, `integration`, `background_job`, `device` (the POS taxonomy) |
+| `canonical_type` | The plugin's primary type — one of the taxonomy below |
 | `executable` | Relative path to the plugin binary (e.g. `bin/ut-faq`) |
 | `entrypoint` | Executable path/module (e.g. `./bin/ut-faq`) |
 | `device_arch` | `any`, or `os/arch` (e.g. `linux/amd64`); rewritten per target at package time |
@@ -28,13 +28,46 @@ See also: [Release Artifact](./release-artifact.md) · [Lifecycle](./lifecycle.m
 | `permissions` | Requested scopes (≥1 required by marketplace validation) |
 | `locales` | Supported locales (≥1) |
 
+## Plugin type taxonomy
+
+`canonical_type` (the plugin) and `entries[].type` (each surface it registers) share
+one taxonomy, enforced by the POS at manifest parse time and by the
+`plugin_entries.type` CHECK constraint:
+
+| Type | Meaning |
+|------|---------|
+| `page` | Adds a page to the POS (menu entry → rendered content bundle or static HTML) |
+| `button` | Adds an action button (products panel or a parent page); press publishes its event |
+| `popup` | Modal/overlay triggered by an event (`trigger_event`) |
+| `payment` | A tender method offered during checkout |
+| `device` | Peripheral driver (barcode scanner, scale, customer display) |
+| `integration` | Connects the till to an external system (accounting, ecommerce, …) |
+| `report` | Adds a report to the Reports area |
+| `pricing` | Price rules/promotions engine hooks |
+| `tax` | Tax calculation rules for a jurisdiction |
+| `import` | Data importer (catalog, customers, …) |
+| `export` | Data exporter (feeds, backups, …) |
+| `hardware` | Low-level hardware support (printer protocols, cash drawer) |
+| `background_job` | Long-running/background work owned by the plugin runtime |
+| `scheduler` | Time-based triggers (cron-like) for actions/events |
+| `receipt_template` | Receipt layout/content (legal text blocks, branding) |
+| `customer_facing` | Customer-side screens (second display, self-service) |
+| `auth` | Authentication providers (PIN pads, badges, SSO) |
+| `notification` | Outbound notifications (SMS/email/webhooks) |
+| `delivery` | Delivery/order-ahead platform integration |
+| `theme` | Restyles/repositions the POS UI (CSS, asset-only) |
+
+The engine currently renders `page`, `button` and `theme` natively; other types are
+registered, listed on the plugin info card, and dispatched to their engines as those
+land (payment → tender integration is next).
+
 ## Navigation / surfaces — `entries`
 
 Plugins expose UI/behaviour through an `entries` array. Each entry:
 
 | Field | Meaning |
 |---|---|
-| `type` | `page` \| `button` \| `payment` \| `device` \| … |
+| `type` | One of the taxonomy below |
 | `key` | Unique within the plugin |
 | `label` | Display name |
 | `route` | For pages (e.g. `/plugin/faq`) |
