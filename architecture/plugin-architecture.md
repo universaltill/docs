@@ -17,7 +17,7 @@ till. Contract details: [reference/plugin-manifest.md](../reference/plugin-manif
 | `runtime` | Executes | Use for |
 |-----------|----------|---------|
 | `none` | nothing — assets only | themes, language packs, content pages |
-| `wasm` | in-process WASM module (wazero) | payment glue, pricing, tax, schedulers, integrations, background jobs |
+| `wasm` | in-process WASM module (wazero) — **live**, see [wasm-runtime.md](wasm-runtime.md) | payment glue, pricing, tax, schedulers, integrations, background jobs |
 | `go` | separate supervised process | hardware/device drivers needing raw OS access (reserved; engine support pending) |
 
 WASM modules are architecture-independent (one artifact for every till),
@@ -78,8 +78,6 @@ auto-approves when `AUTO_APPROVE=true`. See the theme repos as the template.
 
 ## 8. Known gaps (tracked)
 
-- WASM runtime not yet implemented (next up) — `payment.*` events currently
-  audit with `subscribers=0`.
-- `runtime:"go"` process supervision not implemented.
+- `runtime:"go"` process supervision not implemented (hardware plugins).
 - ut-plugin-faq still declares `runtime:"go"` + unused binary — convert to `none`.
 - Merchant entitlement endpoints are unauthenticated (dev convenience).
