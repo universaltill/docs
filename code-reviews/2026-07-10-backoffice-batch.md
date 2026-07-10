@@ -40,3 +40,16 @@ completed sales only, applied = amount − change). Verified with 30-day live da
   renders the content bundle itself — binary is legacy scaffolding; plan: convert FAQ
   to runtime none and build a dedicated executable sample instead.
 - ui test schema updated for sort_order. Gates green (full suite + guard).
+
+## Addendum 3 (2026-07-10): multi-agent review of HEAD~8..HEAD — findings applied
+9 verified findings (5 finder angles + verification). All fixed & pushed:
+Deps.State data race (StateMu + CurrentState/UpdateState, race-tested);
+journal-detail i18n; shifts register picker; tender rejects invalid JSON (400);
+plugin payment method type from config (json_valid-guarded — empty config had
+broken plugin init at boot, caught live); scroll lock via body.sale-screen
+class; single payment-methods query on the sale screen; renderCatalogTable
+helper (8 duplicates); test plugin_entries schema completed.
+External (Codex) finding on ut-plugin-theme-buttons-left "journal grid slot":
+checked — /journal page has no .pos-container (plain cards), so the theme's
+grid template does not apply there; no regression. Noted to keep theme docs
+explicit that pos-container grids only affect the sale screen.
