@@ -74,3 +74,14 @@ Both vendored under `web/public/vendor/` with `assetv` cache-busting.
   .9375rem so the one-screen layout scales coherently. Verified: scale 0.85
   → root 13.6px. Documented in pos.env.dev + Pi service unit.
 - Smoke tests updated for the new inventory page headings.
+
+## Addendum 2 (2026-07-10): settings scroll + Display scale picker
+- **Bug (user):** /settings couldn't scroll — `body.kiosk { overflow:hidden }`
+  applied to every page. Scoped to the sale screen only via
+  `body.kiosk:has(> main .pos-container)` (fine in the Chromium kiosk).
+- **UI scale now in Settings:** Display card with a 70%–150% picker →
+  `POST /api/settings/ui-scale` (validates 0.5–2.0) → persisted as
+  `display.ui_scale` in the settings store, `httpx.InitUIScale` applies it
+  immediately, page reloads. Saved setting wins over the `UT_UI_SCALE` env
+  (env = provisioning default). Verified live: picker present, 0.8 → root
+  12.8px, persisted in DB, bad value → 400.
