@@ -59,3 +59,18 @@ Both vendored under `web/public/vendor/` with `assetv` cache-busting.
 
 ## Gates
 `go build ./... && go test ./...` green; data-access guard green; all pages 200 live.
+
+## Addendum (2026-07-10): receipt panel bleed + UI scale
+- **Bug (user screenshot):** after tender, the receipt swapped into `#basket`
+  WITHOUT `class="basket"` → the div lost its grid area and overlapped other
+  panels ("things hiding between panels"). Wrapper now emits
+  `class="basket receipt-view"`; `.receipt-view` is `display:block;
+  overflow-y:auto` so long receipts scroll inside the panel. Receipt inline
+  CSS no longer redefines `.btn` (was fighting app.css/themes); barcode
+  1.4rem. Verified live: tender → wrapper carries both classes.
+- **Feature: `UT_UI_SCALE`** (0.5–2.0, default 1) — scales the root
+  font-size (`html style="font-size: …px"` via new `uiscalepx` template func
+  + `httpx.InitUIScale`). Viewport offsets converted px→rem and kiosk font to
+  .9375rem so the one-screen layout scales coherently. Verified: scale 0.85
+  → root 13.6px. Documented in pos.env.dev + Pi service unit.
+- Smoke tests updated for the new inventory page headings.
