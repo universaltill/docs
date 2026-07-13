@@ -81,7 +81,7 @@ full pipeline to the dev marketplace):
 
 | Type | Repo | Runtime | Shows |
 |---|---|---|---|
-| page | ut-plugin-faq | go (legacy) | localized content-bundle page |
+| page | ut-plugin-faq | none | localized content-bundle page |
 | theme | ut-plugin-theme-{screen-top,buttons-left,midnight} | none | CSS restyle + panel layout |
 | payment | ut-plugin-payment-qrpay | wasm | tender method + settle handler |
 | language | ut-plugin-language-{de,es} | none | locale overlay packs (ADR-0010) |
@@ -93,5 +93,4 @@ background_job, scheduler, …).
 ## 8. Known gaps (tracked)
 
 - `runtime:"go"` process supervision not implemented (hardware plugins).
-- ut-plugin-faq still declares `runtime:"go"` + unused binary — convert to `none`.
 - Merchant entitlement endpoints are unauthenticated (dev convenience).
