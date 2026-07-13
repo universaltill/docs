@@ -39,6 +39,13 @@ Additions (mine):
 - **Click & collect / order ahead** — reuses commission-free online ordering
   (G5); the order drops onto the till like any sale. The strongest reason a
   shopper opens the app weekly.
+- **Delivery** (Farshid, 2026-07-14) — order from a nearby shop for delivery.
+  Phase 1: the shop's OWN delivery (shop sets radius/fee/hours; order lands
+  on the till, driver managed by the shop) — commission-free, the
+  anti-Uber-Eats pitch for shops that already deliver locally. Phase 2:
+  optional courier handoff via the delivery-relay integrations for shops
+  without drivers. Either way the order is a normal till sale — offline
+  rules unchanged.
 - **Gift cards & store credit in the wallet** (G2) — buy, send as a gift,
   redeem by QR.
 - **Offers & digital punch cards** — shops push a coupon/offer to customers
