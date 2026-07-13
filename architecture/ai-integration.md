@@ -1,6 +1,11 @@
 # AI in the unitill environment — proposal
 
-Status: **proposal — awaiting Farshid's direction** (ADR-0007 document-first).
+Status: **increment 1 (camera identify, §g) SHIPPED 2026-07-13** — universal-till
+`internal/ai` + `/api/pos/identify`; review record
+`code-reviews/2026-07-13-ai-camera-identify.md`. Defaults applied on Farshid's
+"continue": key = per-till env (`UT_AI_API_KEY`), model = `claude-haiku-4-5`
+(`UT_AI_MODEL` override), data red-line = only item identity (names/SKUs) and
+product photos leave the till. Remaining increments below unchanged.
 Task from 2026-07-13: "see how we can add AI to this pos and unitill
 environment".
 
@@ -140,6 +145,40 @@ same capability now.
 3. **Ask your till / accounting (a+i)** — reuses the foundation from (1).
 4. Catalog enrichment (b), nightly forecast (c+f), plugin migration (d) as
    before.
+
+### j. Camera-assisted device onboarding
+
+Farshid, 2026-07-13: "AI should be able to look at the new device by camera
+and install it on the pos (do the setting, install the plugin, what else it
+need) — is this possible?"
+
+Feasible, with one correction to the design: **the camera is the assistant,
+not the detector.** Pointing the camera at a receipt printer/scanner and
+having Claude read the make/model off the label works well (vision is good at
+labels), but the *exact* signal for "what is plugged in" is USB enumeration —
+vendor/product IDs are unambiguous where a photo of a black box is not. The
+right flow combines both:
+
+1. **Detect** — till enumerates USB/serial devices (`lsusb`-equivalent);
+   camera photo (same capture UI as §g) covers network/Bluetooth devices and
+   disambiguates model variants Claude reads off the label.
+2. **Match** — Claude maps `{vendor_id, product_id, label text}` → a
+   marketplace listing. Prerequisite: device/hardware-type listings need a
+   `supported_devices` metadata field (vendor/product IDs, model strings) in
+   the marketplace catalog — that's the main new build.
+3. **Install** — the existing verified installer path (token → checksum →
+   Ed25519 → install) needs nothing new; entitlement/approval rules apply
+   unchanged. The trust chain is not bypassed: AI proposes, the existing
+   signed-install machinery disposes, and the operator confirms.
+4. **Configure** — plugin manifests already declare config; Claude prefills
+   (port, baud, paper width) from what it saw; operator confirms; a test
+   action (print test page / test scan) closes the loop.
+
+Effort: medium — mostly marketplace metadata + a device-detect endpoint; the
+POS-side camera, install and audit plumbing all exist. Natural slot: after
+the hardware/device plugin engine work (receipt printer path is still a
+production gap; this feature is its onboarding UX). Depends on nothing in
+increments 2–3.
 
 ## Decision needed from Farshid
 
