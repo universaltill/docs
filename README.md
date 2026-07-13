@@ -39,6 +39,7 @@ downloaded and installed onto tills where the signature is verified before it ru
 | Build & publish a plugin | [for-plugin-developers.md](for-plugin-developers.md) |
 | Use the POS | [guides/pos.md](guides/pos.md) |
 | Use the marketplace (vendor/admin) | [guides/marketplace-admin.md](guides/marketplace-admin.md) |
+| Build your own POS terminal (hardware + 3D print) | [hardware/diy-pos.md](hardware/diy-pos.md) |
 | Look up a technical contract | [reference/](reference/) |
 | See what's done and what's left | [STATUS.md](STATUS.md) |
 
