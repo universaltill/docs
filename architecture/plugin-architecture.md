@@ -76,6 +76,20 @@ One repo per plugin, named **`ut-plugin-{type}-{name}`** (ADR-0009), released by
 CI validates → packages → uploads to the marketplace → (dev convenience)
 auto-approves when `AUTO_APPROVE=true`. See the theme repos as the template.
 
+Reference samples, one per proven canonical type (all published through the
+full pipeline to the dev marketplace):
+
+| Type | Repo | Runtime | Shows |
+|---|---|---|---|
+| page | ut-plugin-faq | go (legacy) | localized content-bundle page |
+| theme | ut-plugin-theme-{screen-top,buttons-left,midnight} | none | CSS restyle + panel layout |
+| payment | ut-plugin-payment-qrpay | wasm | tender method + settle handler |
+| language | ut-plugin-language-{de,es} | none | locale overlay packs (ADR-0010) |
+| button | ut-plugin-button-nosale | wasm | sale-screen action button + event handler |
+
+Remaining canonical types get samples as their engines land (popup,
+background_job, scheduler, …).
+
 ## 8. Known gaps (tracked)
 
 - `runtime:"go"` process supervision not implemented (hardware plugins).
