@@ -77,10 +77,68 @@ nothing is throwaway.
    the host function + `net.anthropic`-style permission becomes the general
    mechanism every third-party AI plugin uses.
 
+## Farshid's direction (2026-07-13)
+
+Three wanted capabilities, and how each maps onto the constraints:
+
+### g. Camera item identification ("the barcode isn't working")
+
+Cashier scans, barcode fails or is missing → taps **Identify by camera** →
+the till captures a photo (browser `getUserMedia`, works with a normal
+webcam/Pi camera) → Claude vision gets the photo **plus the shop's own
+catalog** (item names/categories and the reference thumbnails that already
+live under `assets/items/<id>/thumb.png`) → returns the top matches with
+confidence → cashier confirms one tap → line added.
+
+- **"Training with POS data" without training a model:** every confirmed
+  identification saves that photo as an extra reference image on the item
+  (`item_images` role `ai_ref`). The next identification includes those
+  references, so the shop's recognizer genuinely improves with use —
+  per-shop, no fine-tuning, nothing shared between shops.
+- **Offline-first:** strictly assistive. The button only appears when
+  online + key configured; barcode scan and manual search stay the primary
+  path and never wait on it. Cost ≈ 1–3¢ per identification.
+- If the item isn't in the catalog at all, the flow becomes "ask and add":
+  Claude proposes name/category from the photo → prefilled new-item form
+  (this is catalog enrichment (b) triggered from the till).
+
+### h. Related-item suggestions (customer display / self-checkout)
+
+"Customers may need X and forgot" — the right engine for this is the shop's
+**own sales history**, computed locally: a nightly job builds an item →
+related-items table from co-occurrence in past baskets (plain SQL market-
+basket stats). That means suggestions render **fully offline** at sale time
+— zero API calls in the checkout path, which is the only acceptable design
+under ADR-0003. Claude's role is the nightly polish (curating pairs that
+co-occur for boring reasons, phrasing the customer-facing line) via the
+Batches API. Surfaces: first the cashier's screen, then a
+`customer_facing`-type plugin (the taxonomy already reserves it) for a
+customer display; self-checkout reuses the same table when that vertical
+arrives.
+
+### i. Accounting help for the owner
+
+This is "Ask your till" (a) grown up: the same tool-use loop over the
+sales/shifts/tax repos answers "what's my VAT this quarter?", produces
+month-end summaries, and drafts export-ready figures. The natural long-term
+home is the back-office app (roadmap #2); the Reports-page Q&A ships the
+same capability now.
+
+### Revised build order (proposed)
+
+1. **`internal/ai` foundation + camera identify (g)** — the most
+   distinctive feature; also forces the vision + catalog-context plumbing.
+2. **Related items (h)** — local co-occurrence table + cashier-screen
+   suggestions (works with zero AI infra); Claude nightly curation after.
+3. **Ask your till / accounting (a+i)** — reuses the foundation from (1).
+4. Catalog enrichment (b), nightly forecast (c+f), plugin migration (d) as
+   before.
+
 ## Decision needed from Farshid
 
-1. Green-light increment 1 ("Ask your till") as specced?
+1. Confirm the revised order (camera identify first)?
 2. Where should the API key live — per-till env/settings (proposed), or
    centralized later behind the back-office app?
-3. Any red lines on data leaving the till (e.g. exclude customer names from
-   tool results — easy to enforce at the repo-tool seam)?
+3. Any red lines on data leaving the till (item photos and names do; sales
+   figures do for (a)/(i); customer names can be excluded at the repo-tool
+   seam)?
