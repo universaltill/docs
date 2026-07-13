@@ -1,8 +1,11 @@
 # Translation editor — manager page (short spec)
 
-Status: **spec — proposed 2026-07-13** (Farshid: "maybe we should add a page
-to let manager edit translations (all pos and plugins in one place)").
-Build on next session unless redirected.
+Status: **SHIPPED 2026-07-14** (universal-till main; review record
+`code-reviews/2026-07-14-translation-editor.md`). Built as specced; the open
+question was resolved as assumed — en is editable like any locale. v2
+candidates (export/import of overrides, new-locale creation) remain open.
+Original ask (Farshid 2026-07-13): "maybe we should add a page to let manager
+edit translations (all pos and plugins in one place)".
 
 ## What
 
