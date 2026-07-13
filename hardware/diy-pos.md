@@ -120,14 +120,41 @@ when `UT_KIOSK=1`.
 
 ## 4. The 3D-printed enclosure
 
-The design lives next to this file:
+The design lives next to this file, in three interchangeable forms of the
+same angled desktop terminal — a wedge **base** that holds the board (vents,
+cable slot, standoffs, screw bosses) and a **screen bezel** that closes the
+~56° slanted top and holds the panel:
 
-- **[`enclosure.scad`](enclosure.scad)** — a parametric OpenSCAD model of an
-  angled desktop terminal: a wedge **base** that holds the board (with vents,
-  a cable slot, and standoffs) and a snap/screw-on **screen bezel** that holds
-  the panel at a comfortable ~65° viewing angle.
+- **[`enclosure-base.step`](enclosure-base.step)** +
+  **[`enclosure-bezel.step`](enclosure-bezel.step)** — ready-to-use STEP
+  solids (validated geometry, default 7"-panel + Pi dimensions). **This is
+  the Fusion 360 route**: `File → Open` (or *Insert → Insert CAD file*) and
+  they load as editable solid bodies — press-pull faces, add fillets,
+  reshape, then export STL/3MF from Fusion. FreeCAD, Onshape and SolidWorks
+  open them the same way, and modern slicers (PrusaSlicer, Bambu Studio,
+  Cura) slice STEP directly — you can skip CAD entirely if the defaults fit.
+  Note: `.f3d` is Fusion's proprietary format and can only be saved from
+  Fusion itself; STEP is the standard interchange that gets you fully
+  editable solids there.
+- **[`enclosure.py`](enclosure.py)** — the parametric source for the STEP
+  files ([build123d](https://build123d.readthedocs.io), `pip install
+  build123d`, Python 3.10–3.12). Change the parameters at the top (screen,
+  board, angle) and rerun to regenerate both STEP files for your hardware.
+- **[`enclosure.scad`](enclosure.scad)** — the same model for
+  [OpenSCAD](https://openscad.org) users, exporting STL directly.
 
-### Print it
+### Fusion 360 workflow
+
+1. Download `enclosure-base.step` and `enclosure-bezel.step`.
+2. In Fusion: **File → Open → Open from my computer** — each opens as a
+   solid body (no mesh conversion, full boolean/fillet editing).
+3. To resize for a different screen, the cleanest path is editing
+   `enclosure.py` and regenerating — direct-modeling a different panel
+   pocket in Fusion works but touches many faces at once.
+4. Export for printing: **File → Export → 3MF/STL**, or use Fusion's own
+   slicer integration.
+
+### Print it (OpenSCAD route)
 
 1. Install [OpenSCAD](https://openscad.org) (free).
 2. Open `enclosure.scad`. Edit the parameters at the top for **your** screen
