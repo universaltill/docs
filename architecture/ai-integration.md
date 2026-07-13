@@ -20,12 +20,19 @@ environment".
 - **Repository pattern (ADR-0005).** Any AI feature that reads sales/stock
   data does it through repo methods, never raw SQL — including data handed to
   the model via tool calls.
-- **Cost/model.** Default model `claude-opus-4-8` ($5/$25 per MTok). A
-  reports question with a few tool round-trips is roughly 5–15K input +
-  1–2K output tokens ≈ **$0.05–0.15 per question** — negligible for a
-  shopkeeper asking a handful of questions a day. High-volume/background
-  tasks (nightly enrichment, forecasting) can use the Batches API (50% off)
-  and can be downgraded to a cheaper tier later if volume warrants.
+- **Cost posture (Farshid, 2026-07-13: "cheap or free").** Default model
+  **`claude-haiku-4-5`** ($1/$5 per MTok; `UT_AI_MODEL` overridable to
+  `claude-opus-4-8` for shops that want maximum quality). With Haiku, a
+  camera identification is ~half a cent, a reports/accounting question is
+  ~a penny; nightly jobs run on the Batches API (50% off) and prompt
+  caching cuts the repeated catalog context ~90%. Realistic all-in for a
+  busy single shop: **~£3–6/month**. Free-first design rules: related-item
+  suggestions use NO API (local SQL co-occurrence); the camera feature
+  gains a phase-2 **local image-embedding matcher** (nearest-neighbour
+  against the accumulated `ai_ref` photos, runs on the Pi, free + offline)
+  so the API is only consulted on uncertain matches. Fully self-hosted
+  open models were considered and parked: the Pi-class hardware can't run
+  usefully capable models, and vision quality matters here.
 
 ## Candidate directions, evaluated
 
