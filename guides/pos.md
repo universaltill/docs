@@ -74,3 +74,10 @@ Open the FAQ plugin from the Help/Support menu to see localized help content
   doesn't match the key the marketplace signed with.
 - **Can't reach marketplace** — checkout still works offline; only plugin
   install/update needs connectivity.
+
+## Hardware
+
+To build a physical till (micro PC + touchscreen + 3D-printed enclosure,
+receipt printer, scanner), see [hardware/diy-pos.md](../hardware/diy-pos.md).
+The Raspberry Pi boot-to-POS kiosk setup ships in the universal-till repo
+under `deploy/raspberry-pi/`.
