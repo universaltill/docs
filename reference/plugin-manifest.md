@@ -69,7 +69,7 @@ Plugins expose UI/behaviour through an `entries` array. Each entry:
 |---|---|
 | `type` | One of the taxonomy below |
 | `key` | Unique within the plugin |
-| `label` | Display name |
+| `label` | Display name, rendered through the POS translator. Plain text passes through unchanged; to localize it, use a key (e.g. `plugin.faq.menu`) and ship `locales/<locale>.json` overlay files in the bundle — the same mechanism language packs use (any active plugin may ship translations for its own strings). |
 | `route` | For pages (e.g. `/plugin/faq`) |
 | `icon_path`, `sort_order`, `menu_group` | Placement metadata |
 | `parent_page_key`, `target_action`, `trigger_event` | For buttons/popups/hooks |
