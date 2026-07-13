@@ -2,10 +2,13 @@
 
 Status: **increment 1 (camera identify, §g) SHIPPED 2026-07-13** — universal-till
 `internal/ai` + `/api/pos/identify`; review record
-`code-reviews/2026-07-13-ai-camera-identify.md`. Defaults applied on Farshid's
-"continue": key = per-till env (`UT_AI_API_KEY`), model = `claude-haiku-4-5`
-(`UT_AI_MODEL` override), data red-line = only item identity (names/SKUs) and
-product photos leave the till. Remaining increments below unchanged.
+`code-reviews/2026-07-13-ai-camera-identify.md`. **Backend is provider-based
+and SELF-HOSTED FIRST** (same day, on Farshid's correction — see the
+constraint below): primary = Ollama (`UT_AI_ENDPOINT`, open vision model,
+runs on a store machine / homelab / shop-provided VM), Claude API =
+explicit opt-in only (`UT_AI_PROVIDER=claude`). Data red-line: with the
+self-hosted provider nothing leaves the shop's infrastructure at all.
+Remaining increments below unchanged.
 Task from 2026-07-13: "see how we can add AI to this pos and unitill
 environment".
 
@@ -25,19 +28,22 @@ environment".
 - **Repository pattern (ADR-0005).** Any AI feature that reads sales/stock
   data does it through repo methods, never raw SQL — including data handed to
   the model via tool calls.
-- **Cost posture (Farshid, 2026-07-13: "cheap or free").** Default model
-  **`claude-haiku-4-5`** ($1/$5 per MTok; `UT_AI_MODEL` overridable to
-  `claude-opus-4-8` for shops that want maximum quality). With Haiku, a
-  camera identification is ~half a cent, a reports/accounting question is
-  ~a penny; nightly jobs run on the Batches API (50% off) and prompt
-  caching cuts the repeated catalog context ~90%. Realistic all-in for a
-  busy single shop: **~£3–6/month**. Free-first design rules: related-item
-  suggestions use NO API (local SQL co-occurrence); the camera feature
-  gains a phase-2 **local image-embedding matcher** (nearest-neighbour
-  against the accumulated `ai_ref` photos, runs on the Pi, free + offline)
-  so the API is only consulted on uncertain matches. Fully self-hosted
-  open models were considered and parked: the Pi-class hardware can't run
-  usefully capable models, and vision quality matters here.
+- **SELF-HOSTED FIRST (Farshid, 2026-07-13 — supersedes the earlier
+  "cheap or free" API posture).** Direct quote: *"I want to run a custom ai
+  model with llama or something later or a custom model which train with our
+  data, not a paid ai."* Every AI feature targets a self-hosted backend:
+  an **Ollama server** running an open vision/chat model (`UT_AI_ENDPOINT`),
+  on a machine in the store, the homelab, or a VM the shop provides. The
+  till itself (Pi-class) stays a thin client — the model runs on whatever
+  box the shop points it at. Zero per-call cost, no account, photos and
+  item data never leave the shop's infrastructure, and the collected
+  `ai_ref` photo corpus doubles as training data for a future **custom
+  per-shop model** (fine-tuned open model or embedding matcher). The Claude
+  API remains available only as an explicit opt-in provider
+  (`UT_AI_PROVIDER=claude`) — never the default, never required. Design
+  rule for local models: keep requests small (photo + catalog text, no
+  bulk reference images per call). Related-item suggestions use no model
+  at all (local SQL co-occurrence).
 
 ## Candidate directions, evaluated
 

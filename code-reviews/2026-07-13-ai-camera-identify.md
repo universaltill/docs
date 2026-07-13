@@ -85,3 +85,28 @@ only item identity (names/SKUs) and product photos leave the till.
   (fa-IR)"). Wrote 6 real Q&As genuinely translated in all 9 locales,
   released v0.2.1 through the pipeline (green), updated on the till
   (signature verified), verified fa/es/en render translated content.
+
+## Addendum (same day): backend refactored to self-hosted first
+
+Farshid's correction after the initial ship: "I didn't say claude api. I want
+to run a custom ai model with llama or something later or a custom model
+which train with our data not a paid ai." Also: it can run on a machine in
+the store, or a model he provides (e.g. in Azure) — cheapest and best-fitting
+preferred.
+
+- `internal/ai` refactored to a `provider` interface: **`ollama.go`
+  (primary)** — self-hosted Ollama `/api/chat` with an open vision model
+  (`UT_AI_ENDPOINT`, default model `llama3.2-vision`), structured output via
+  Ollama's `format` schema; **`claude.go` (optional)** — the previous
+  implementation, now behind explicit `UT_AI_PROVIDER=claude`.
+- Provider inference: endpoint set → ollama; key set → claude; neither →
+  feature invisible (unchanged behavior).
+- Ollama path deliberately sends NO reference images (small open models
+  degrade with dozens of images per request); catalog text + photo does the
+  matching, and the `ai_ref` corpus is retained as training data for a
+  future custom per-shop model — which is exactly Farshid's stated end
+  state. Timeout raised to 90s for modest hardware.
+- Tests: provider inference, disabled-without-backend, and an httptest-backed
+  Ollama identify round-trip incl. the hallucination filter. All gates green.
+- Endpoint/UI/`ai_ref` collection unchanged. Memory record:
+  `ai-self-hosted-only` (no paid AI defaults, ever).
