@@ -13,6 +13,16 @@ go run .
 The app serves a web UI and self-migrates its SQLite database on first start.
 Open the printed local URL in a browser.
 
+## Signing in
+
+Operators sign in with a numeric PIN (see
+[`../architecture/pos-auth.md`](../architecture/pos-auth.md)). On the very
+first start the login screen asks you to choose the admin PIN. Manage
+operators (add cashiers/managers, set PINs, deactivate) on the **Users**
+page; the nav shows who is signed in plus a **Lock** button. Manager-gated
+actions (e.g. negative-stock override) ask for a manager PIN when a cashier
+is signed in. `UT_AUTH=off` disables login for dev tooling only.
+
 ## Day-to-day
 
 - **Checkout** — build a sale, take payment, print/issue a receipt. Amounts are in
