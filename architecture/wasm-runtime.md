@@ -73,6 +73,23 @@ runtime without reloading the module.
   plugins build on; reference + copy-paste Go guest bindings live in
   `reference/plugin-host-functions.md`.
 
+## Payment authorization (2026-07-14)
+
+A payment plugin can hook **`payment.<key>.authorize`** (alongside its
+post-settle `payment.<key>.requested`). When any plugin subscribes, the
+tender path publishes it **blocking, BEFORE `CompleteSale`**: module exit 0
+= approved (sale proceeds), non-zero or deadline = declined (**402, no sale
+row is created**, basket intact). `.authorize` hook events get Blocking
+mode automatically at Sync. No subscriber = the old post-settle-only
+behaviour (qrpay unchanged). Reference consumer:
+`ut-plugin-payment-demo` v1.1.0 (deterministic fake cards). This is the
+engine seam real terminal plugins (SumUp/Stripe Terminal) build on — they
+additionally hold `net:<provider>` and get the 10s deadline.
+
+Fixed along the way: `WasmRuntime.load` kept the previously compiled
+module across plugin **updates** — the till executed stale code until
+restart. Modules now recompile when the installed version changes.
+
 ## Out of scope (planned)
 Resident reactor modules with `go:wasmexport`, popup/background_job/scheduler
 engines on top of this, host-function quotas beyond the size caps.
