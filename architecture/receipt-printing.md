@@ -41,6 +41,19 @@ bitmap rendering — explicitly a follow-up, noted for fa shops.
   no.), live preview + test print. Must be easy for non-computer people;
   `receipt_template` plugins remain the advanced path.
 
+## Label printing (G9 — SHIPPED 2026-07-14, review code-reviews/2026-07-14-label-printing.md)
+
+Product/shelf labels on the same ESC/POS transport (small shops label with
+the receipt printer; dedicated label printers = follow-up transport).
+
+- **Label** = item name, price (double height), CODE128 barcode of the
+  item's primary barcode (SKU fallback — alphanumeric is fine on the
+  printer), cut per label.
+- Catalog page: pick an item (row click, as with images/variants), choose
+  copies (1–50), print. Any signed-in operator (labelling shelves is
+  normal staff work). `POST /api/print/labels` (item_id, copies), audited.
+- Items with neither barcode nor SKU refuse with a clear message.
+
 ## Out of scope (later phases)
 
 USB hot-plug auto-detect (full phase C), printer status polling (paper
