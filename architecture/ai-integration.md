@@ -134,6 +134,21 @@ Batches API. Surfaces: first the cashier's screen, then a
 customer display; self-checkout reuses the same table when that vertical
 arrives.
 
+**SHIPPED (2026-07-14, universal-till) — increment 2, cashier surface:**
+`related_items` table (migration 009) holds per-item top-12 neighbours
+scored by cosine² (`support² / (baskets_a × baskets_b)` — same ranking as
+cosine without sqrt; demotes carrier-bag-style ubiquitous items), computed
+from completed sales in the last 180 days with minimum support 2.
+`RelatedItemsRepo.Rebuild` runs at startup and every 24 h (tills that
+reboot daily get a fresh table each morning). The sale screen shows a
+"Customers also buy" chip strip under the basket totals
+(`GET /ui/suggestions`, re-fetched on every basket swap); scores are
+blended across all basket items, items already in the basket are excluded,
+and a tap adds the item through the normal `POST /api/pos/scan` path.
+Only active items with a SKU are suggested. Still open from this design:
+Claude nightly curation via Batches, and the `customer_facing` display
+plugin.
+
 ### i. Accounting help for the owner
 
 This is "Ask your till" (a) grown up: the same tool-use loop over the
