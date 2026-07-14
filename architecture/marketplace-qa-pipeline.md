@@ -1,9 +1,9 @@
 # Marketplace publishing QA (G20)
 
-Status: **increment 1 SHIPPED 2026-07-15** (automated gates + first-party
-fast lane + gate-aware review queue; review record
-`code-reviews/2026-07-15-g20-automated-gates.md`). Remaining: install E2E
-in CI, reviewer identity via Universal Till ID (G21), provider
+Status: **increments 1+2 SHIPPED 2026-07-15** (automated gates +
+first-party fast lane + gate-aware review queue + install E2E in CI;
+review record `code-reviews/2026-07-15-g20-automated-gates.md`).
+Remaining: reviewer identity via Universal Till ID (G21), provider
 registration (G26).
 
 ## Current state (after increment 1)
@@ -47,8 +47,11 @@ registration (G26).
    - **sandbox smoke run**: instantiate the wasm module against synthetic
      events (the runtime + host functions make this cheap) — must not
      crash, must not call undeclared capabilities ✅;
-   - install E2E on a headless POS in CI (install → enable → menu/entries
-     render → disable → uninstall clean) — **remaining**.
+   - install E2E on a headless POS in CI ✅ (`install-e2e` job in the
+     marketplace CI: fixture upload through every gate → fast-lane sign →
+     POS `install-from-marketplace` with Ed25519 verification → plugin
+     page renders → uninstall clean; the public universal-till repo is
+     checked out in-job — `scripts/ci/install-e2e.sh` also runs locally).
 3. **Human review by Universal Till** — real review queue UI with
    automated-gate results and permission changes highlighted ✅; diff vs
    previous version rendering and reviewer role from Universal Till ID

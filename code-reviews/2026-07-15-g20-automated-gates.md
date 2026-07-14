@@ -127,9 +127,23 @@ module fails. Existing scanner/gatekeeper/api tests updated (real tar.gz
 fixtures, stub approver grew FastLaneAllowed, third-party direct-approve
 422 test). `scripts/ci/verify.sh` green.
 
+## Increment 2 (same day): install E2E in CI
+
+`scripts/ci/install-e2e.sh` + the `install-e2e` CI job prove the whole
+pipeline against a REAL POS on every marketplace push: build both
+binaries (the public universal-till repo is checked out in-job), start a
+fresh marketplace (SQLite, file blob, fresh signing key), package the
+hermetic fixture plugin (`tests/installe2e/fixture`, runtime none,
+`com.universaltill.e2e-fixture` so the fast lane applies), upload — all
+gates must pass — fast-lane approve (signs), then the POS installs it
+from the marketplace (`install-from-marketplace`, **Ed25519 verification
+on the real wire path** incl. `/api/v1/downloads/tokens`), the plugin
+page renders the fixture marker, and uninstall removes it. Verified
+locally end-to-end before wiring the job; also verified in CI on the
+merge (run link in repo checks).
+
 ## Follow-ups
 
-- Install E2E on a headless POS in marketplace CI (G20 remaining).
 - Reviewer identity + roles (G21); provider registration (G26).
 - Re-validate endpoint for releases scanned before the new gates.
 - COPYFILE_DISABLE in the other plugin repos' package.sh.
