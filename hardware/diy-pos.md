@@ -143,6 +143,36 @@ cable slot, standoffs, screw bosses) and a **screen bezel** that closes the
 - **[`enclosure.scad`](enclosure.scad)** — the same model for
   [OpenSCAD](https://openscad.org) users, exporting STL directly.
 
+### Embedded card reader cradle (Farshid, 2026-07-14)
+
+The tap-to-pay terminal should live **inside the printed body** — a
+customer-facing cradle rather than a loose gadget on the counter. Design
+rules (these are constraints of certified payment hardware, not ours):
+
+- **Never disassemble a payment terminal.** They carry tamper sensors —
+  opening the case permanently bricks it (by design, PCI). Embedding
+  means printing a **cradle the sealed device sits in**, not building
+  the reader into the till electrically.
+- **NFC needs a thin window**: the tap surface must sit behind ≤2–3 mm
+  of plastic, and **no conductive/carbon-fill filament** anywhere near
+  the antenna face. Leave the reader's own tap logo visible or emboss a
+  contactless symbol above the cradle.
+- **Keep the card slot + keypad reachable**: contactless sometimes falls
+  back to chip & PIN (SCA step-up, limits). Cradle = friction-fit dock
+  the device lifts out of in one motion, or an open-front design where
+  slot and keypad face the customer.
+- **Route power inside**: channel for the USB-C cable to the internal
+  supply so the reader charges in the dock (the printer/drawer side of
+  the base already has the cable slot).
+- Size targets (pick the cradle insert for your device):
+  **Square Reader** 66×66×10 mm (smallest, cleanest flush mount),
+  **SumUp Air** 84×84×23 mm, **Stripe WisePad 3** ≈118×67×18 mm
+  (keypad — favour the open-front cradle).
+- CAD follow-up: add a `reader = "none"|"square"|"sumup-air"|"wisepad3"`
+  parameter to `enclosure.py`/`enclosure.scad` generating the cradle
+  pocket in the bezel's lower-right, customer side. (Not yet modelled —
+  regenerate STEPs when it lands.)
+
 ### Fusion 360 workflow
 
 1. Download `enclosure-base.step` and `enclosure-bezel.step`.
