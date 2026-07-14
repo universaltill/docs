@@ -101,6 +101,29 @@ nothing is throwaway.
    the host function + `net.anthropic`-style permission becomes the general
    mechanism every third-party AI plugin uses.
 
+## Farshid's direction (2026-07-14): AI is a PLUGIN, off by default
+
+"Using Ollama is a plugin and is not active by default. They should be able
+to run it on a separate machine and connect the till to it. I want to have
+it on my server as well as a service."
+
+Consequences (this fixes the destination that was sketched as option (d)):
+
+1. **`ut-plugin-integration-ai`** becomes the delivery vehicle: a
+   marketplace plugin holding `net:<ollama-host>` (the WASM host functions
+   shipped 2026-07-14 make this possible). Installing + granting = opting
+   in; no plugin = no AI anywhere in the UI.
+2. The Ollama **endpoint is configuration, not env**: the plugin's settings
+   hold the URL, so a shop can point one or many tills at a shared model
+   server on the LAN/homelab. `UT_AI_*` env stays as the low-level override
+   for dev.
+3. Host-side `internal/ai` remains the engine, but its features render only
+   while the AI plugin is installed+enabled once the plugin ships
+   (migration step for camera identify + ask-your-till).
+4. Ollama deployments: dev machine = brew service (done 2026-07-14);
+   Farshid's homelab server = k8s Deployment via the ArgoCD app-store repo
+   (CI-driven per the deployment rule), CPU-only is fine for small models.
+
 ## Farshid's direction (2026-07-13)
 
 Three wanted capabilities, and how each maps onto the constraints:
