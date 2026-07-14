@@ -27,8 +27,11 @@ Farshid's list:
 - **Points & rewards** — per-shop programs collected in one wallet; shop
   configures earn/redeem rules on the till.
 - **Paperless invoices / e-receipts** — scan the app QR at tender → receipt
-  lands in the app (G11). Returns and warranty claims without paper; VAT
-  invoices for business customers.
+  lands in the app (now first-class backlog item **G16**; G11's email/SMS
+  becomes the no-app fallback). One scan does double duty: loyalty capture
+  AND receipt delivery — the till simply skips printing (shopper's choice,
+  per sale). Central account = full cross-shop purchase history; returns
+  and warranty claims without paper; VAT invoices for business customers.
 - **Map & nearest shop** — find Universal Till shops around you; hours,
   contact, what they sell.
 - **Search & price comparison** — find a product across nearby shops, compare

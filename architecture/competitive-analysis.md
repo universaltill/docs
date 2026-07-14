@@ -57,6 +57,7 @@ is universally hated; automatic guest/loyalty data capture and
 | G13 | **Consumer stock search** — app shows nearest shop with the item in stock (subscribed shops share stock) | Nobody cross-merchant; supermarket apps per-chain | Consumer app + cloud tier; spec: [item-discovery-and-universal-catalog.md](item-discovery-and-universal-catalog.md) |
 | G14 | **Public web discovery / SEO** — googling a product surfaces nearby offline shops that stock it | Google local inventory ads (paid); ours organic+free | Public web app + schema.org structured data; same spec |
 | G15 | **Universal item catalog** — barcode → auto-filled item data, community-corrected, GTIN-keyed + UT ids for the GTIN-less long tail | Open Food Facts (food only), GS1 (closed) | Cloud catalog service; till-side auto-fill can ship early; same spec |
+| G16 | **Central paperless receipts & invoices** — one loyalty-QR scan at tender and the bill lands in the shopper's app account instead of the printer; full history, returns/warranty/VAT invoices without paper | Square email receipts (email-only, per-merchant); nobody has one cross-shop receipt account | Consumer app + cloud tier; the loyalty scan (G1) and the receipt push share one scan — supersedes G11's email/SMS as the primary path, email/SMS stay as the no-app fallback |
 
 Verticals (restaurant KDS/tables, salon appointments) confirm the existing
 appointments-plugin plan — Clover's app-marketplace model validates our
