@@ -54,6 +54,9 @@ is universally hated; automatic guest/loyalty data capture and
 | G10 | **E-commerce sync** (Shopify/WooCommerce as optional plugin, not forced bundle) | Shopify (inverted) | Integration plugin + relay; anti-Shopify positioning |
 | G11 | **Guest data → e-receipts** (email/SMS receipt captures the customer) | Square's loyalty engine | Cloud tier; feeds G1 |
 | G12 | **AI insights/forecasting** | 2026 trend everywhere | Already our AI roadmap (ask-your-till, nightly forecast) |
+| G13 | **Consumer stock search** — app shows nearest shop with the item in stock (subscribed shops share stock) | Nobody cross-merchant; supermarket apps per-chain | Consumer app + cloud tier; spec: [item-discovery-and-universal-catalog.md](item-discovery-and-universal-catalog.md) |
+| G14 | **Public web discovery / SEO** — googling a product surfaces nearby offline shops that stock it | Google local inventory ads (paid); ours organic+free | Public web app + schema.org structured data; same spec |
+| G15 | **Universal item catalog** — barcode → auto-filled item data, community-corrected, GTIN-keyed + UT ids for the GTIN-less long tail | Open Food Facts (food only), GS1 (closed) | Cloud catalog service; till-side auto-fill can ship early; same spec |
 
 Verticals (restaurant KDS/tables, salon appointments) confirm the existing
 appointments-plugin plan — Clover's app-marketplace model validates our

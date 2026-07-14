@@ -33,7 +33,9 @@ Farshid's list:
   contact, what they sell.
 - **Search & price comparison** — find a product across nearby shops, compare
   prices, see stock ("who has it, cheapest, closest"). Shop opt-in publishes
-  catalog+stock to the cloud.
+  catalog+stock to the cloud. Now specced as G13 (plus the public-web/SEO
+  variant G14 and the universal item catalog G15) in
+  [item-discovery-and-universal-catalog.md](item-discovery-and-universal-catalog.md).
 
 Additions (mine):
 - **Click & collect / order ahead** — reuses commission-free online ordering
