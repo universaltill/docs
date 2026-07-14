@@ -32,6 +32,11 @@ Farshid's list:
   AND receipt delivery — the till simply skips printing (shopper's choice,
   per sale). Central account = full cross-shop purchase history; returns
   and warranty claims without paper; VAT invoices for business customers.
+  **The receipt can never be lost** (Farshid, 2026-07-14): paper receipts
+  get thrown away, and thermal print fades to blank within months — right
+  when a warranty claim needs it. An account receipt is permanent proof
+  of purchase for the life of the product: warranty, returns, insurance
+  claims, expense reports. This is the headline benefit to market G16 on.
 - **Map & nearest shop** — find Universal Till shops around you; hours,
   contact, what they sell.
 - **Search & price comparison** — find a product across nearby shops, compare
