@@ -20,3 +20,4 @@ Keep them short: Context → Decision → Consequences.
 | [0008](0008-ui-server-rendered-htmx.md) | POS UI: server-rendered Go templates + HTMX/Alpine, no SPA |
 | [0009](0009-plugin-repo-naming.md) | One repo per plugin: `ut-plugin-{type}-{name}` + own pipeline |
 | [0010](0010-language-type.md) | `language` plugin type: locale-file overlays, base strings win |
+| [0011](0011-multi-till-sync.md) | Multi-till sync: primary/replica per shop, sale journals over LAN HTTP |
