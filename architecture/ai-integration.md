@@ -66,6 +66,12 @@ nothing is throwaway.
 
 ### Sketch for increment 1 — "Ask your till"
 
+> **SHIPPED 2026-07-14** on the self-hosted provider architecture (Ollama
+> tool loop, separate `UT_AI_ASK_MODEL`, read-only tool surface incl. the
+> identity-free `till_activity_summary`; manager-gated, audited). See
+> `code-reviews/2026-07-14-ask-your-till.md` for the as-built details and
+> deviations (non-streaming; claude provider has no ask loop yet).
+
 - `internal/ai` package wrapping the Anthropic Go SDK. Config:
   `UT_AI_API_KEY` (+ optional `UT_AI_MODEL`, default `claude-opus-4-8`).
   No key → the whole feature is invisible; nothing else changes.
