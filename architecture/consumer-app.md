@@ -60,8 +60,17 @@ Additions (mine):
   redeem by QR.
 - **Offers & digital punch cards** — shops push a coupon/offer to customers
   who opted in; classic "10th coffee free" without the paper card.
-- **Shopping list** — checks item availability/prices at nearby shops as you
-  build the list.
+- **Speak your order in your language** (Farshid, 2026-07-14 — G17) — the
+  customer speaks the order in their own language (e.g. Farsi, Polish,
+  Urdu); the shop receives it translated into the shop's language and
+  matched to real catalog items. In the app, speech-to-text is the
+  phone's own on-device engine (free, private); translation + item
+  matching run server-side (or local Ollama when built into the till's
+  self-checkout / customer display — self-hosted per the AI rule, and the
+  offline-first sale screen stays untouched: this is an ordering surface,
+  not checkout). Removes the language barrier for immigrant communities
+  and tourists — an audience the big POS vendors ignore, and a natural
+  companion to the till's existing 9-locale/RTL support.
 - **Spending history & simple budgeting** — every e-receipt is structured
   data; show per-shop and per-category totals. (Data stays the shopper's.)
 - **Household sharing** — share receipts/warranties/gift cards with family.
