@@ -84,6 +84,7 @@ full pipeline to the dev marketplace):
 | page | ut-plugin-faq | none | localized content-bundle page |
 | theme | ut-plugin-theme-{screen-top,buttons-left,midnight} | none | CSS restyle + panel layout |
 | payment | ut-plugin-payment-qrpay | wasm | tender method + settle handler |
+| payment | ut-plugin-payment-demo | wasm | fake-card terminal (deterministic approve/decline/timeout); first host-functions consumer (`storage`) |
 | language | ut-plugin-language-{de,es} | none | locale overlay packs (ADR-0010) |
 | button | ut-plugin-button-nosale | wasm | sale-screen action button + event handler |
 
