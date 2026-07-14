@@ -23,8 +23,18 @@ machine.
   mechanism (`VACUUM INTO`, P0.2) streams the DB; the replica applies it
   via the staged-restore path (both already exist!). The replica then
   rewrites its identity keys (device id, receipt prefix `T<n>-`).
-- After that: a pull loop (30s) fetches admin deltas — catalog, settings,
-  users, translations — as "changed since cursor" rows; primary wins.
+- After that (**D2b, shipped**): a pull loop (30s) fetches the primary's
+  whole **admin bundle** — catalog, users, shop settings, translation
+  overrides — from `GET /api/sync/admin` and applies it in one
+  transaction; primary wins. *Design note:* the spec's original
+  "changed since cursor" rows were replaced by a whole-bundle SHA-256
+  **fingerprint** (`?have=` short-circuits an unchanged poll): most admin
+  tables have no `updated_at`, and a fingerprint makes **deletes**
+  propagate for free. Apply = prune-then-upsert; a pruned row still
+  referenced by local sales history falls back to `is_active = 0`.
+  Per-till settings never travel (`sync.*`, `printer.*`, `display.*`,
+  `reports.eod_*` — `data.PerTillSettingPrefixes`). After an apply the
+  replica re-derives theme/tax engine/currency/i18n in place.
 
 ## Increment D3 — sale journal push
 
@@ -34,12 +44,39 @@ machine.
   double-spend guard, records provenance (till id), and returns acks.
 - Shop-wide reports/Z-report on the primary include replica sales.
 
-## Increment D4 — UX hardening
+## Increment D4 — UX hardening (shipped)
 
-- Status chips on both sides (last sync, queue depth) per ADR-0003's
-  "surface state, never block". Catalog edits on a replica redirect to
-  the primary when reachable, queue-and-warn otherwise. Documented manual
-  promote-replica procedure.
+- Status chips on both sides per ADR-0003's "surface state, never block":
+  the nav polls `/ui/sync-chip` every 30s. Replica chip = till name +
+  push-queue depth, amber ⚠ when the primary hasn't answered for 90s
+  (sales keep queueing). Primary chip = enrolled till count, amber when
+  any till hasn't been seen for 2 minutes; links to the Tills page.
+- *Deviation from this spec:* catalog edits on a replica are **not
+  redirected or queued** — the catalog page shows a banner ("this till
+  follows the primary; changes here are overwritten") linking to the
+  primary's catalog. Redirects would need a reachability probe in the
+  page path, and queued edits would need a conflict story; the 30-second
+  primary-wins pull already resolves any local edit honestly. Revisit only
+  if real shops lose edits this way.
+
+## Promoting a replica (primary till died)
+
+Manual procedure, v1 — every till holds the full DB, so any replica can
+become the shop's primary:
+
+1. On the chosen replica, clear its replica identity:
+   `DELETE FROM settings WHERE key LIKE 'sync.%';` (stop the till first,
+   or use the settings API; a Settings-page "promote" button is future
+   work). Restart the till. It stops pulling/pushing and its receipts
+   keep their `T<n>-` prefix (acceptable; receipts stay unique).
+2. On that till: Settings → Tills → pair the remaining replicas again
+   (fresh QR each). Joining wipes a replica's DB with the new primary's
+   snapshot — do this **after** its unsynced sales pushed, or accept
+   losing what never synced.
+3. Point the shop's plugins/printer settings as needed (per-till settings
+   never synced, so they are already local).
+4. If the old primary comes back, treat it as a NEW till: factory-reset
+   it (delete its DB) and join it to the promoted primary via the wizard.
 
 ## Pricing posture (per the monetization doc)
 
