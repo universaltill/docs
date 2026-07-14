@@ -80,8 +80,10 @@ in. Design keeps auth fully offline and the checkout path unblocked:
   (append-only migration). The auth middleware compares
   `now − last_seen_at` against the configured window on every request:
   stale sessions are revoked exactly like Lock (pages → 303 `/login`,
-  APIs → 401 JSON). `last_seen_at` is refreshed at most once per minute
-  per session to avoid a write per request on SQLite.
+  APIs → 401 JSON). `last_seen_at` is refreshed when older than
+  `min(60s, window/4)` — no write per request on SQLite, and the throttle
+  always stays well under the window (a flat once-per-minute refresh would
+  let a 1-minute window lock an operator who was active 59s ago).
 - **Client side is cosmetic.** A small idle timer in `app.js` (reset on
   pointer/key/touch activity) redirects to `/login` when the window
   elapses, so an abandoned till visibly locks without waiting for the
