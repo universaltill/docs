@@ -38,6 +38,41 @@ Compile or load failure marks the plugin errored in the log but never blocks
 the till (offline-first: checkout must not depend on a plugin). Handler
 errors/timeouts audit as `error` and are dropped — non-blocking mode.
 
-## Out of scope for v1 (planned)
-Host functions (storage, HTTP by permission), resident reactor modules with
-`go:wasmexport`, popup/background_job/scheduler engines on top of this.
+## Host functions — v2 (spec 2026-07-14)
+
+Modules import host module **`ut`** (Go guests: `//go:wasmimport ut <name>`).
+Every capability is **permission-gated per call** through the existing
+`CheckPermission` path, so denials are audited and grants are revocable at
+runtime without reloading the module.
+
+| import | permission | semantics |
+|---|---|---|
+| `log_write(ptr,len)` | none | line into the POS log, prefixed `[wasm:<id>]` |
+| `storage_get(kPtr,kLen,dstPtr,dstCap) i32` | `storage` | per-plugin KV read |
+| `storage_set(kPtr,kLen,vPtr,vLen) i32` | `storage` | per-plugin KV write |
+| `http_request(reqPtr,reqLen,dstPtr,dstCap) i32` | `net:<host>` | outbound HTTP |
+
+- **Buffer ABI**: calls that return data write `min(len, dstCap)` bytes into
+  the guest buffer and return the FULL length; if it exceeds `dstCap` the
+  guest retries with a bigger buffer. Negative returns: `-1` not found,
+  `-2` permission denied, `-3` internal error, `-4` invalid/too large.
+- **Storage**: SQLite `plugin_storage` (migration 011), namespaced by plugin
+  id. Caps: key ≤ 128 B, value ≤ 64 KiB, ≤ 1024 keys/plugin — a plugin
+  cannot bloat a Pi's SD card.
+- **HTTP**: request/response as JSON (`method,url,headers,body_b64` /
+  `status,headers,body_b64`, response body ≤ 256 KiB). The URL's hostname
+  must be covered by a granted `net:<host>` permission — the manifest
+  declares exactly which hosts a plugin may talk to, shown at install.
+  HTTPS only, except plain http to localhost (dev/Ollama). The call runs
+  under the module's deadline; plugins holding any `net:` permission get a
+  **10s** event deadline instead of the default 2s.
+- State reaches host functions via the instantiation context (plugin id +
+  db handle), so one host-module registration serves every plugin safely
+  in parallel.
+- This is the tool surface `ut-plugin-integration-ai` and device-onboarding
+  plugins build on; reference + copy-paste Go guest bindings live in
+  `reference/plugin-host-functions.md`.
+
+## Out of scope (planned)
+Resident reactor modules with `go:wasmexport`, popup/background_job/scheduler
+engines on top of this, host-function quotas beyond the size caps.
