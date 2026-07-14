@@ -31,6 +31,16 @@ Thermal printers in text mode don't render Farsi/Arabic reliably.
 raw UTF-8) or `ascii` (transliterate, unmappable → `?`). Proper RTL needs
 bitmap rendering — explicitly a follow-up, noted for fa shops.
 
+## Follow-ups queued (Farshid, 2026-07-14)
+
+- **Receipt barcode (G28, roadmap P1.0)**: print the receipt number as a
+  CODE128 barcode (`GS k`) + human-readable line, so the cashier scans a
+  paper receipt to open the sale for a refund.
+- **Receipt designer (G29, roadmap P1.5)**: owner-editable receipt —
+  logo, header/footer lines, which fields show (SKU, tax breakdown, VAT
+  no.), live preview + test print. Must be easy for non-computer people;
+  `receipt_template` plugins remain the advanced path.
+
 ## Out of scope (later phases)
 
 USB hot-plug auto-detect (full phase C), printer status polling (paper

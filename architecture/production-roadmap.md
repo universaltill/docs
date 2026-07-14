@@ -21,10 +21,12 @@ platform that opens the ecosystem; then growth features. The bar stays
 
 | # | Task | Notes |
 |---|---|---|
+| P1.0 | **G27 refunds & returns** + **G28 receipt barcode → scan-to-refund** (Farshid 2026-07-14: "I cannot see any refund!!!") | A shop cannot operate without returns; engine support exists, UI doesn't. Barcode on the receipt (ESC/POS `GS k`) is the entry point: scan receipt → sale opens → pick lines → refund. Includes the manager-PIN gate (folds in part of old P1.2) |
 | P1.1 | **G23a `ut-plugin-payment-demo`** (fake cards) then **first real terminal** (SumUp sandbox→live) | Cash + standalone card machine works today (quick-tender), so integrated payments are P1 not P0 |
-| P1.2 | **Auth leftovers**: manager-PIN keypad partial for void/refund, self-service PIN change | Small; closes the pos-auth spec's out-of-scope list |
+| P1.2 | **Auth leftovers**: self-service PIN change (manager-PIN partial lands with P1.0) | Small; closes the pos-auth spec's out-of-scope list |
 | P1.3 | **G9 barcode label printing** | Rides P0.1's printer transport |
 | P1.4 | **G22a Loyverse + Square importers** | Onboarding an existing shop = production adoption |
+| P1.5 | **G29 receipt designer** (owner styles the receipt: logo, header/footer, shown fields, preview + test print — easy to use) | Over the P0.1 print doc model; `receipt_template` plugins stay the advanced path |
 
 ## P2 — committed platform work (opens the ecosystem)
 
