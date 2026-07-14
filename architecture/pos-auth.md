@@ -68,6 +68,35 @@ set/reset PIN, activate/deactivate. Deactivating revokes the user's
 sessions; the last active admin cannot be deactivated (nor can `system`
 be edited).
 
+## Idle auto-lock (increment, 2026-07-14)
+
+Promoted from "out of scope": a till left unattended must not stay signed
+in. Design keeps auth fully offline and the checkout path unblocked:
+
+- **Setting** `auth.idle_lock_minutes` (integer, `0` = disabled;
+  default **10**), editable on the Settings page (manager/admin section)
+  through the normal settings-save path.
+- **Server side is authoritative.** `sessions` gains `last_seen_at`
+  (append-only migration). The auth middleware compares
+  `now − last_seen_at` against the configured window on every request:
+  stale sessions are revoked exactly like Lock (pages → 303 `/login`,
+  APIs → 401 JSON). `last_seen_at` is refreshed at most once per minute
+  per session to avoid a write per request on SQLite.
+- **Client side is cosmetic.** A small idle timer in `app.js` (reset on
+  pointer/key/touch activity) redirects to `/login` when the window
+  elapses, so an abandoned till visibly locks without waiting for the
+  next request. The timer reads the window from a `data-idle-lock`
+  attribute; it never blocks and is absent when the feature is off.
+- **Basket survives.** The sale engine is server-side state; locking
+  mid-sale then signing back in returns to the same basket (same
+  behaviour as the manual Lock button today).
+- Lock events are audited (`auth.session.idle_lock`).
+
+Acceptance: with a 1-minute window set, an idle till redirects to the
+keypad and its next API call 401s; activity keeps the session alive past
+the window; `0` disables both mechanisms; basket contents are intact
+after re-login.
+
 ## Acceptance
 
 - Fresh DB → first boot asks for admin PIN → lands on sale screen.
