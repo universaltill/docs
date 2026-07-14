@@ -46,5 +46,10 @@ tills at a PC/mini-PC Ollama. All stated in the manifests + README.
 Push → root app created the Application automatically → pod Ready in
 78 s on pi5-main, PVC bound → ingress live: first strict-TLS probe failed
 while cert-manager was mid-DNS-01 (secret 41 s old), issued within ~2 min
-→ `https://…/api/tags` 200 over valid TLS. Model pull job + a real
-generation through the ingress verified (see addendum below).
+→ `https://…/api/tags` 200 over valid TLS. Second live finding: the stuck PostSync
+operation ("waiting for healthy state of Ingress") also **blocked all
+subsequent auto-syncs** — terminated it (`kubectl patch app --type json
+remove /operation`), after which the postStart change rolled cleanly.
+Final state: `llama3.2:3b` pulled by postStart, and a real generation
+through https://ollama.home.taskrunnertech.co.uk answered in **12 s** on
+the Pi ("TILL-READY"). App Synced.
