@@ -85,6 +85,7 @@ full pipeline to the dev marketplace):
 | theme | ut-plugin-theme-{screen-top,buttons-left,midnight} | none | CSS restyle + panel layout |
 | payment | ut-plugin-payment-qrpay | wasm | tender method + settle handler |
 | payment | ut-plugin-payment-demo | wasm | fake-card terminal (deterministic approve/decline/timeout); first host-functions consumer (`storage`) |
+| integration | ut-plugin-integration-ai | none | config-only opt-in: installing turns on the host's self-hosted AI; settings = Ollama endpoint/models |
 | language | ut-plugin-language-{de,es} | none | locale overlay packs (ADR-0010) |
 | button | ut-plugin-button-nosale | wasm | sale-screen action button + event handler |
 
