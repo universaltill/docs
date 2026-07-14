@@ -85,6 +85,33 @@ friction for every new shop (no catalog typing) while making the network's
 data quality compound. None of the majors (Square/Toast/Clover/Lightspeed)
 offers cross-merchant discovery — they have no incentive to; we do.
 
+## G15 increment 1 — till-side barcode auto-fill (spec, 2026-07-14)
+
+Green-lit by Farshid ("so we can have auto fill. nice. go ahead"). Scope:
+the till looks up scanned barcodes in open product databases and pre-fills
+the new-item form. No cloud tier, no contribution loop yet.
+
+- **`internal/lookup`** package: queries Open Food Facts, then Open
+  Products Facts, then Open Beauty Facts (`/api/v2/product/{barcode}` —
+  free, no key, proper User-Agent per their API policy). Barcode must be
+  6–14 digits (EAN-8/UPC-A/EAN-13/GTIN-14 plus short internal codes).
+  Returns name, brand, quantity, description, image URL, source.
+- **`GET /api/catalog/lookup?barcode=…`** → `{data,error}` envelope;
+  400 invalid barcode, 404 not in any source, 502 network down. Audited
+  (`catalog` / `barcode_lookup`).
+- **Catalog page**: barcode field + Auto-fill button on the new-item form.
+  Found → fills name/description, remembers the image URL; the barcode
+  itself is submitted with the create and **attached as the item's primary
+  barcode**, so the item is instantly scannable at the till.
+- **Item image**: on create, if the lookup supplied an image URL the server
+  downloads it and saves the standard `thumb.png` — host-allowlisted to
+  the three Open*Facts image domains (SSRF guard), 5 MB cap, decoded and
+  re-encoded like the manual upload path.
+- **Offline-first posture**: back-office convenience only; the button
+  fails soft with a message. Checkout untouched.
+- Later increments (not now): community contribution loop, GTIN-less UT
+  identifiers, cloud shared catalog seeded by shop publications.
+
 ## Build order & fit with existing plans
 
 1. G15's till-side half (barcode → auto-fill from open databases) can ship
