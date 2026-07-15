@@ -1,8 +1,10 @@
 # Universal Till ID — single sign-on for the whole platform (proposal — G21)
 
-Status: **backlog proposal — 2026-07-14** (Farshid: "a role-based single
-signing app with double-factor auth, so mobile and other webs, even the POS,
-can login with it — device flow etc").
+Status: **direction decided 2026-07-15 — ADR-0012: built IN-HOUSE** as our
+own Go OIDC provider (`ut-id`). Hosted identity (Azure B2C/Entra) and
+self-hosted third-party IdPs (Zitadel/Keycloak) were both rejected by
+Farshid: "I don't want to be related to any 3rd party. I want OIDC on my
+system." The "Build shape" section below is superseded by ADR-0012.
 
 ## What it is
 
