@@ -35,3 +35,14 @@ Full suite green.
   half of the D2 limit only.
 - ai_ref training photos ride along automatically (same tree) — the
   camera-identify corpus now survives on whichever till takes over.
+
+---
+
+# Addendum — on-screen receipt design (same session)
+
+The post-sale receipt view now renders the owner's receipt.* design
+(store name, header lines, footer, SKU/tax/barcode toggles) from the
+same `receiptDesignFromSettings` the thermal print uses — the
+receipt-designer follow-up from 2026-07-14. Template-level test
+(`TestRenderReceiptHonorsDesign`) + live E2E (designed header/footer/SKU
+shown; subtotal/tax hidden when toggled off). universal-till e2a54c4.
