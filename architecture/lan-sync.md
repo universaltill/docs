@@ -61,21 +61,22 @@ machine.
 
 ## Promoting a replica (primary till died)
 
-Manual procedure, v1 — every till holds the full DB, so any replica can
-become the shop's primary:
+Every till holds the full DB, so any replica can become the shop's
+primary. **Shipped (D4 follow-up):** Settings → Tills on the replica has
+a "Promote this till" card (manager, type `PROMOTE` to confirm, audited
+`till_promoted`). It clears the sync identity — the push/pull loops stop
+on their next tick, no restart needed — but **keeps the `T<n>-` receipt
+prefix** so numbering never collides with the old primary's.
 
-1. On the chosen replica, clear its replica identity:
-   `DELETE FROM settings WHERE key LIKE 'sync.%';` (stop the till first,
-   or use the settings API; a Settings-page "promote" button is future
-   work). Restart the till. It stops pulling/pushing and its receipts
-   keep their `T<n>-` prefix (acceptable; receipts stay unique).
-2. On that till: Settings → Tills → pair the remaining replicas again
-   (fresh QR each). Joining wipes a replica's DB with the new primary's
-   snapshot — do this **after** its unsynced sales pushed, or accept
-   losing what never synced.
-3. Point the shop's plugins/printer settings as needed (per-till settings
-   never synced, so they are already local).
-4. If the old primary comes back, treat it as a NEW till: factory-reset
+After promoting:
+
+1. On the promoted till: pair the remaining replicas again (fresh QR
+   each). Joining wipes a replica's DB with the new primary's snapshot —
+   do this **after** its unsynced sales pushed, or accept losing what
+   never synced.
+2. Per-till settings (printer, display) were never synced, so they are
+   already local everywhere.
+3. If the old primary comes back, treat it as a NEW till: factory-reset
    it (delete its DB) and join it to the promoted primary via the wizard.
 
 ## Pricing posture (per the monetization doc)
