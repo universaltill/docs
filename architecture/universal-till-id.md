@@ -1,10 +1,10 @@
 # Universal Till ID — single sign-on for the whole platform (proposal — G21)
 
-Status: **direction decided 2026-07-15 — ADR-0012: built IN-HOUSE** as our
-own Go OIDC provider (`ut-id`). Hosted identity (Azure B2C/Entra) and
-self-hosted third-party IdPs (Zitadel/Keycloak) were both rejected by
-Farshid: "I don't want to be related to any 3rd party. I want OIDC on my
-system." The "Build shape" section below is superseded by ADR-0012.
+Status: **direction decided 2026-07-15 — ADR-0012: SELF-HOSTED ZITADEL**,
+live at id.home.taskrunnertech.co.uk (homelab-k8s app `zitadel`). Hosted
+identity (Azure B2C/Entra) is permanently rejected; an in-house spike
+(ut-id) was built, E2E-tested and then deleted on Farshid's request.
+Next: marketplace console behind it (rollout step 1).
 
 ## What it is
 
