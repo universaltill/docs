@@ -44,8 +44,19 @@ anti-lock-in half of the import that shipped as P1.4).
   → "Imported: 50 — Skipped: 0" → barcode `5000000000066` scans and rings
   Apple Juice 1L → second import: "Imported: 0 — Skipped: 50" (idempotent).
 
+## Addendum (same day): stock import shipped
+
+The importer now reads the stock column (`ImportItem.Stock/HasStock`,
+blank/unparseable never blocks a row) and the commit path records a
+`receive` movement at the default location per created item with
+positive stock (same call as the inventory page, reason
+"catalog import"). Round-trip test asserts stock; live E2E: till A
+exported Apple Juice at 18.0 → emptied till B imported 50 items with 50
+receive movements and inventory 18.0. Negative/zero stock intentionally
+not carried (an opening receive of ≤0 makes no sense; adjustments are a
+till-side action).
+
 ## Follow-ups
 
-- Stock import (write inventory on import when the column is present).
 - Customer + sales-history export (rest of G22's anti-lock-in story).
 - Variant rows once variants are actually in use.
