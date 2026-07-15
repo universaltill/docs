@@ -53,6 +53,32 @@ Spec: docs/architecture/invoicing.md (written first, same session).
   its own series. Cross-till invoice visibility lands with the cloud
   tier; documented here.
 
+## Post-merge review (1 finder agent) — findings and fixes
+
+1. **On-screen invoice barcode rendered BLANK** (CONFIRMED): the SVG
+   helper only mapped digits; every display number carries letters and a
+   dash. Fixed: full CODE39 charset (A–Z, dash, dot, space); test pins
+   `T2-INV-000001` rendering and rejects unencodable input. Thermal
+   CODE128 was always fine.
+2. **Whole-sale discounts ignored in invoice totals** (CONFIRMED, the
+   important one): `sale_discounts` isn't folded into any line, so the
+   invoice overstated what the customer paid (£100 invoice for a £90
+   sale). Fixed: `vatBreakdown` prorates the discount across bands by
+   gross share (largest remainder), re-deriving net/tax per band —
+   inclusive mode off the gross, exclusive off the net — so invoice
+   totals equal `sales.total` in both modes. Unit tests for both; live
+   E2E: discounted sale 124 → invoice gross 124/net 100/tax 24.
+3. **Numbering race** (PLAUSIBLE): MAX+1 in a read-then-write tx could
+   deadlock on lock upgrade (busy handler doesn't run there). Fixed:
+   allocation folded into ONE `INSERT…SELECT` statement (no upgrade
+   window) with a 3-attempt retry on lost races; "already invoiced"
+   (UNIQUE(sale_id,kind)) is never retried.
+4. **Unescaped err.Error() in HTML** (hygiene): now htmlEscape'd.
+5. Accepted/documented: credit-note amounts are stored POSITIVE and
+   distinguished by `kind` — every consumer must subtract by kind (the
+   register page and CSV export do; convention noted in the spec).
+   Multiple partial refunds correctly produce one credit note each.
+
 ## Tests + E2E
 
 - `TestVATBreakdownGroupsByRecordedRate` (mixed 20%/zero-rate lines),
