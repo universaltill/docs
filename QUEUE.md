@@ -76,7 +76,8 @@ Two tracks run **independently** of that path and can happen anytime:
       page under the period selector, **Margins** (cost-price field in the catalog
       panel → revenue−cost card, unknown costs excluded), **Year-over-year KPI** (same
       window one year back; hidden until history exists), **Tax summary per rate**
-      (net + tax collected, returns deducted). REMAINING: variant-level cost editing.
+      (net + tax collected, returns deducted), **variant-level cost editing** (Cost
+      column in the variant grid → variant-cost-aware margins). Core report set DONE.
       ALSO FIXED: variant sales now fold into the parent item's sell rate / dead-stock
       / margin queries (an item selling via variants no longer shows as dead).
 - [x] 🔴 **Multi-year retention verified** — sales/sale_lines are never pruned (only the
