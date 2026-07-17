@@ -56,6 +56,20 @@ machine.
   double-spend guard, records provenance (till id), and returns acks.
 - Shop-wide reports/Z-report on the primary include replica sales.
 
+## Increment D3b — stock levels follow the primary (2026-07-17)
+
+- Every till's journal lands on the primary, making its aggregate on-hand
+  the shop truth — but replicas' local levels only reflected their own
+  sales. Replicas now poll `GET /api/sync/stock` (same bearer +
+  fingerprint protocol as the admin bundle) in the 30s tick, **after** the
+  admin apply and **only when their own journal is fully pushed**, and
+  reconcile via corrective `adjust` movements through the normal movement
+  path (ledger + audit intact, idempotent, primary-absent keys → zero).
+- Consequence: **stock is primary-owned**. Goods-in/adjustments entered on
+  a replica are overwritten by the next reconcile; the replica inventory
+  page carries the same "follows the primary" banner as the catalog.
+  Possible follow-up: forward replica adjustments to the primary.
+
 ## Increment D4 — UX hardening (shipped)
 
 - Status chips on both sides per ADR-0003's "surface state, never block":
