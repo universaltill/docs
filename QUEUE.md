@@ -83,11 +83,13 @@ Two tracks run **independently** of that path and can happen anytime:
 - [ ] 🟡 **(field)** **Variant-specific images** (Farshid 2026-07-17) — variants can look
       different (sizes/flavours); today images are per item
       (`assets/items/{id}/thumb.png`). Needs: per-variant storage + upload in the
-      variant grid + surfacing on sale buttons/store. Design the storage/fallback
-      (variant → item image) first.
-- [ ] 🟡 **Keyboard-layout plugin** — NEEDS DESIGN FIRST: what exactly it remaps (scan
-      wedge input vs search-field layout vs per-cashier layout) is unspecified; write the
-      spec before building.
+      variant grid + surfacing on sale buttons/store. **Spec written:**
+      `architecture/variant-images.md` (storage layout, fallback chain, upload
+      endpoint, sync caveat) — ready to build.
+- [ ] 🟡 **Keyboard-layout plugin** — design questions written
+      (`architecture/keyboard-layout-plugin.md`): scanner-wedge normalization vs
+      search transliteration vs OS switching — **awaiting Farshid's pick** (recommend
+      scanner normalization in core + transliteration as the plugin).
 - [ ] 🟡 **Windows regular-printing** — plain-text/CUPS-equivalent path on Windows.
 - [x] 🟡 **WKDownloadDelegate** — attachments / undisplayable responses / `<a download>`
       links now save to ~/Downloads with browser-style dedupe (macOS 11.3+ guarded).
