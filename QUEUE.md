@@ -132,24 +132,63 @@ Designed in `architecture/consumer-app.md`, `item-discovery-and-universal-catalo
       merchant-side companion; mostly independent (LAN pairing exists).
 - [ ] 🟢 **Storefront & hardware** — store.universaltill.com selling devices/parts;
       3D-print profiles for DIY POS; pro multilingual website.
-- [ ] 🟡 **Payment orchestration + least-cost routing** (Farshid's real hardware idea) —
-      NOT becoming a payment provider: a router that sends each card to the **cheapest
-      eligible acquirer** (by BIN/scheme/region + failover), keeping the shop's money flow
-      shop→acquirer→bank so we never hold funds / avoid acquiring licences. Fits plugin-
-      first: each PSP/bank = a payment plugin behind one interface (Stripe plugin exists),
-      a routing engine picks the cheapest. **Path:** (1) online/CNP routing first — pure
-      software, add a 2nd PSP + cost-rules engine; (2) card-present later on a certified
-      SmartPOS (PAX/Ingenico), certifying one acquirer then adding more (each = a cert
-      project); start with debit dual-network LCR. Savings = acquirer markup + debit
-      network + local-vs-cross-border (interchange itself is fixed). Caveats: PCI DSS on
-      the routing layer (tokenize to reduce scope), PSP "no-steering" clauses, ISV/
-      acquirer agreements. Build vs buy: Spreedly/Primer/Gr4vy/ProcessOut vs own router.
-      Iran = separate Shetab/Shaparak track. **ADR-0016 written (Proposed).** Device
-      answer: no generic reader forwarding to any provider — card-present routing is
-      server-side at the terminal's gateway or on a multi-acquirer SmartPOS; online routes
-      freely. **Next: decide build-vs-buy + first 2 providers + target markets.**
 - [ ] 🟢 **Integration plugins** — Twilio SMS · SAP · iyzico (Turkey) · Google Calendar ·
       WhatsApp — each built + tested for real once Farshid provides sandbox keys.
+
+## 💳 Payment orchestration + least-cost routing (major arc)
+
+We route each card to the **cheapest eligible provider** — never a payment provider
+ourselves, never holding funds. Each provider = a `payment` plugin; POS shows a button
+per provider; **manual mode** (cashier picks among provider-locked readers — no
+certification, ships now) + **automatic mode** (multi-acquirer device/gateway picks —
+later). Full plan: `architecture/payment-orchestration-roadmap.md`; decision:
+[ADR-0016](adr/0016-payment-orchestration-least-cost-routing.md); markets:
+`architecture/payment-markets-launch-set.md`. Launch: **UK → GCC (UAE/BH/QA/OM) → Turkey.**
+
+**A. Decisions & agreements (blockers, no code):**
+- [ ] 🔴 A1 Build own router vs orchestration platform (Spreedly/Primer/Gr4vy/ProcessOut).
+- [ ] 🔴 A2 First two providers to route between (e.g. Stripe + SumUp / Stripe + Adyen).
+- [ ] 🟡 A3 GCC aggregator covering UAE+BH+QA+OM + domestic schemes — coverage in writing.
+- [ ] 🟡 A4 Turkey: GİB-certified fiscal-POS partner + iyzico vs Craftgate.
+- [ ] 🟡 A5 ISV/acquirer agreements + review PSP **"no-steering"** clauses.
+- [ ] 🟡 A6 PCI scope strategy (tokenization / network tokens / P2PE).
+
+**B. Foundation (provider-agnostic):**
+- [ ] 🔴 B1 Define the common **`PaymentProvider` plugin interface**.
+- [ ] 🔴 B2 Refactor the existing **Stripe plugin** onto that interface.
+- [ ] 🔴 B3 POS **payment screen: one button per enabled provider**.
+- [ ] 🔴 B4 **Cost-rules config** per shop (drives manual hint + auto router).
+- [ ] 🟡 B5 Keep the **offline-first sale path** intact (ADR-0003).
+
+**C. Manual multi-provider — ships now, UK, no certification (← the near-term win):**
+- [ ] 🔴 C1 Add a **second provider plugin** (per A2) so there are ≥2 buttons.
+- [ ] 🔴 C2 Manual-selection UX: cashier picks; **merchant default + per-provider cost hint**.
+- [ ] 🟡 C3 Record which provider was used on sale/journal/receipt.
+- [ ] 🔴 C4 **UK pilot** on real hardware (Farshid's shop) with two providers.
+
+**D. Online / card-not-present automatic routing (UK; pure software):**
+- [ ] 🟡 D1 **BIN → scheme/type/region** detection.
+- [ ] 🟡 D2 **Routing engine** — cheapest by cost table + failover + success-rate.
+- [ ] 🟡 D3 Second **online acquirer** integration (Adyen/Checkout) as a plugin.
+- [ ] 🟢 D4 Pay-by-link / e-commerce surface uses the router.
+
+**E. Card-present automatic LCR (later; certification-heavy):**
+- [ ] 🟢 E1 Target device: certified **SmartPOS** (PAX/Sunmi) app or gateway-bound terminal.
+- [ ] 🟢 E2 **Per-acquirer certification** (EMV L3 + scheme + host) — one, then add.
+- [ ] 🟢 E3 **Debit dual-network selection** (standards-native LCR).
+- [ ] 🟢 E4 **Tap-to-Pay (PCI MPoC)** — no-hardware option.
+- [ ] 🟢 E5 Key injection / estate management (PAXSTORE / RKI).
+
+**F. Market rollout (parallel once C/D prove out):**
+- [ ] 🟡 F2 **UAE** — GCC beachhead via the A3 aggregator (F1 UK = done via C/D).
+- [ ] 🟢 F3 **Bahrain → Qatar → Oman** — same aggregator + per-country CB approval + switch.
+- [ ] 🟢 F4 **Turkey** — own track: fiscal-POS + Troy + iyzico/Craftgate.
+
+**G. Cross-cutting / compliance (ongoing):** PCI DSS on the routing layer · cost-rules
+maintenance · per-market agreements/CB approvals · Iran/Shetab as a separate future track.
+
+_Milestones: M1 decisions locked · **M2 foundation + manual mode live in the UK (near-term)** ·
+M3 automatic online routing · M4 card-present auto LCR · M5 market expansion._
 
 ---
 
