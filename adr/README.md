@@ -25,3 +25,4 @@ Keep them short: Context → Decision → Consequences.
 | [0013](0013-store-enrolment-and-plugin-tiers.md) | Store enrolment + plugin access tiers: anonymous → claim → paid |
 | [0014](0014-erp-integration-connectors.md) | ERP integration: reusable connector plugins on the sale.completed event |
 | [0015](0015-lazy-store-registration.md) | Lazy store registration: enrol on first marketplace use, not at boot |
+| [0016](0016-payment-orchestration-least-cost-routing.md) | Payment orchestration + least-cost routing: we route to the cheapest acquirer, never hold funds |

@@ -144,8 +144,10 @@ Designed in `architecture/consumer-app.md`, `item-discovery-and-universal-catalo
       network + local-vs-cross-border (interchange itself is fixed). Caveats: PCI DSS on
       the routing layer (tokenize to reduce scope), PSP "no-steering" clauses, ISV/
       acquirer agreements. Build vs buy: Spreedly/Primer/Gr4vy/ProcessOut vs own router.
-      Iran = separate Shetab/Shaparak track. **Next: decide build-vs-buy + first 2 PSPs,
-      then an ADR.**
+      Iran = separate Shetab/Shaparak track. **ADR-0016 written (Proposed).** Device
+      answer: no generic reader forwarding to any provider — card-present routing is
+      server-side at the terminal's gateway or on a multi-acquirer SmartPOS; online routes
+      freely. **Next: decide build-vs-buy + first 2 providers + target markets.**
 - [ ] 🟢 **Integration plugins** — Twilio SMS · SAP · iyzico (Turkey) · Google Calendar ·
       WhatsApp — each built + tested for real once Farshid provides sandbox keys.
 
