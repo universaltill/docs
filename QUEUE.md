@@ -146,7 +146,11 @@ later). Full plan: `architecture/payment-orchestration-roadmap.md`; decision:
 `architecture/payment-markets-launch-set.md`. Launch: **UK → GCC (UAE/BH/QA/OM) → Turkey.**
 
 **A. Decisions & agreements (blockers, no code):**
-- [ ] 🔴 A1 Build own router vs orchestration platform (Spreedly/Primer/Gr4vy/ProcessOut).
+- [ ] 🔴 A1 Routing engine plumbing: **write our own provider connections** vs **rent an
+      orchestration service** (Spreedly/Primer/Gr4vy — software APIs, NOT devices; they
+      maintain ready-made connections to dozens of PSPs). Our orchestrator (plugins,
+      buttons, cost rules) exists either way; this only decides what's under its hood.
+      Affects Phase D (online auto-routing) only — Phase C manual mode needs neither.
 - [ ] 🔴 A2 First two providers to route between (e.g. Stripe + SumUp / Stripe + Adyen).
 - [ ] 🟡 A3 GCC aggregator covering UAE+BH+QA+OM + domestic schemes — coverage in writing.
 - [ ] 🟡 A4 Turkey: GİB-certified fiscal-POS partner + iyzico vs Craftgate.

@@ -17,8 +17,13 @@ Turkey**.
 
 ## Phase A — Decisions & agreements _(blockers; no code)_
 
-- **A1** Build our own router vs adopt an orchestration platform (Spreedly /
-  Primer / Gr4vy / ProcessOut) for the online/multi-acquirer layer.
+- **A1** Routing-engine plumbing: write our own provider connections, or rent an
+  **orchestration service** (Spreedly / Primer / Gr4vy / ProcessOut — software
+  APIs, **not devices**: they maintain ready-made connections to dozens of PSPs
+  behind one API). Our orchestrator — the plugins, the POS buttons, the cost
+  rules, the routing decisions — is ours **in both cases**; this decides only
+  whether its provider plumbing is hand-built or leased. Scope: affects Phase D
+  (online automatic routing) onward; Phase C manual mode needs neither.
 - **A2** First two providers to route between (e.g. Stripe + SumUp for
   card-present manual; Stripe + Adyen/Checkout for online).
 - **A3** GCC regional aggregator that covers UAE+Bahrain+Qatar+Oman + their
