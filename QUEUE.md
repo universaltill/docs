@@ -51,6 +51,15 @@ Two tracks run **independently** of that path and can happen anytime:
       remain; staff/owner UI fully role-gated; fleet untouched.**
 - [x] 🟡 Plugin **manifest descriptions** — verified: all 11 manifests ALREADY carry real
       descriptions; the bad summaries were purely the ingest bug (root-cause fixed).
+- [ ] 🟡 **(field)** **Plugin trust badges + install consent** (Farshid 2026-07-17):
+      three visible tiers on every plugin card/detail — (1) **official Universal Till**
+      plugins get a distinctive "golden house" badge; (2) **verified developers**
+      (registered + paid) get a verified badge; (3) **unverified** publishers get an
+      untrusted marker AND the till shows an install-time alert: "Do you trust this
+      publisher?" with the publisher name before installing. Builds on the existing
+      `trust_tier` field + first-party slug prefixes (signing config) + ADR-0006 trust
+      chain; needs: tier assignment rules, badge design (storefront + portal + POS
+      store cards), and the POS confirm dialog on untrusted installs.
 - [ ] 🟢 Self-serve **vendor registration** flow (request + admin approval) — today a
       developer needs a manually-granted vendor role.
 
