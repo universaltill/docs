@@ -70,8 +70,9 @@ Two tracks run **independently** of that path and can happen anytime:
 
 - [~] 🟡 **More owner reports** — SHIPPED: **Slow sellers**, **Dead stock** (tied-up
       value), **Busiest days & hours** (local-time buckets, CSS bars) on the reports
-      page under the period selector. REMAINING: margins per item/category (needs
-      cost_price capture UI), year-over-year, tax summaries.
+      page under the period selector, **Margins** (cost-price field in the catalog
+      panel → revenue−cost card, unknown costs excluded). REMAINING: year-over-year,
+      tax summaries, variant-level cost editing.
 - [x] 🔴 **Multi-year retention verified** — sales/sale_lines are never pruned (only the
       explicit factory-reset deletes them); SQLite keeps full history, replicas journal
       to the primary, so the primary holds the whole shop's time series. Forecasting can
