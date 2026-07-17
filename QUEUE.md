@@ -128,6 +128,11 @@ Designed in `architecture/consumer-app.md`, `item-discovery-and-universal-catalo
 
 ## Phase 4 — Adjacent & strategic arcs
 
+- [ ] 🟡 **Android till app** (Farshid 2026-07-17) — the FULL Universal Till running on
+      Android-ready POS hardware (PAX/Sunmi SmartPOS class, Android tablets). Distinct
+      from the BYOD companion below: this is the till itself as an Android app (Go server
+      via gomobile/WebView shell, or the till server + Android webview shell like the
+      desktop shells). Also the delivery vehicle for the Phase-E SmartPOS payment app.
 - [ ] 🟢 **Mobile light POS** (Android/iOS BYOD register, LAN-paired to primary till) —
       merchant-side companion; mostly independent (LAN pairing exists).
 - [ ] 🟢 **Storefront & hardware** — store.universaltill.com selling devices/parts;
