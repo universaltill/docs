@@ -176,6 +176,10 @@ Designed in `architecture/consumer-app.md`, `item-discovery-and-universal-catalo
 - [ ] 🟡 **Appointment booking for service shops** (barber, dentist, salon, garage…) —
       services + staff + availability. Shared **bookable-resource** scheduling engine for
       tables *and* appointments; likely a booking/reservation-type plugin + cloud calendar.
+- [ ] 🟢 **Shop ratings & reviews in the app** (Farshid 2026-07-17): shoppers can rate
+      and review shops (and later items); shows on the shop's app/web page. Needs
+      moderation + verified-purchase weighting (tie reviews to e-receipts so only real
+      customers review); feeds the G14 public pages (schema.org AggregateRating = SEO).
 - [ ] 🟢 **Speak your order in your language** (G17), spending history/budgeting, household
       sharing, privacy controls — later polish.
 
