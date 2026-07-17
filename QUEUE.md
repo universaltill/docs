@@ -80,12 +80,10 @@ Two tracks run **independently** of that path and can happen anytime:
       feature, or a reveal.js explainer exported to video).
 
 ### 🖥️ POS / till polish
-- [ ] 🟡 **(field)** **Variant-specific images** (Farshid 2026-07-17) — variants can look
-      different (sizes/flavours); today images are per item
-      (`assets/items/{id}/thumb.png`). Needs: per-variant storage + upload in the
-      variant grid + surfacing on sale buttons/store. **Spec written:**
-      `architecture/variant-images.md` (storage layout, fallback chain, upload
-      endpoint, sync caveat) — ready to build.
+- [x] 🟡 **(field)** **Variant-specific images** — SHIPPED: 📷 upload per variant in the
+      grid, stored `assets/items/{item}/variants/{variant}/thumb.png`, fallback chain
+      variant → item → hidden. Follow-ups in the spec: sale-tile/store surfacing of
+      variant images; image LAN-sync (item images have the same gap).
 - [ ] 🟡 **Keyboard-layout plugin** — design questions written
       (`architecture/keyboard-layout-plugin.md`): scanner-wedge normalization vs
       search transliteration vs OS switching — **awaiting Farshid's pick** (recommend
