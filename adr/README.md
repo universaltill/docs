@@ -21,3 +21,7 @@ Keep them short: Context → Decision → Consequences.
 | [0009](0009-plugin-repo-naming.md) | One repo per plugin: `ut-plugin-{type}-{name}` + own pipeline |
 | [0010](0010-language-type.md) | `language` plugin type: locale-file overlays, base strings win |
 | [0011](0011-multi-till-sync.md) | Multi-till sync: primary/replica per shop, sale journals over LAN HTTP |
+| [0012](0012-universal-till-id-zitadel.md) | Universal Till ID: self-hosted Zitadel at id.universaltill.com |
+| [0013](0013-store-enrolment-and-plugin-tiers.md) | Store enrolment + plugin access tiers: anonymous → claim → paid |
+| [0014](0014-erp-integration-connectors.md) | ERP integration: reusable connector plugins on the sale.completed event |
+| [0015](0015-lazy-store-registration.md) | Lazy store registration: enrol on first marketplace use, not at boot |
