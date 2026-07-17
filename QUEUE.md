@@ -66,9 +66,10 @@ Two tracks run **independently** of that path and can happen anytime:
 
 ## Phase 1 — Owner intelligence _(independent track — needs only sales-history in the till)_
 
-- [ ] 🟡 **More owner reports** — best/worst sellers, dead stock, margins per
-      item/category, year-over-year, hourly/weekday patterns, tax summaries. Uses data
-      that already exists. (Ask Farshid which first.) Likely reporting-type plugins.
+- [~] 🟡 **More owner reports** — SHIPPED: **Slow sellers** + **Dead stock** (with
+      tied-up value) cards on the reports page under the period selector (best sellers
+      already existed). REMAINING: margins per item/category (needs cost_price capture),
+      year-over-year, hourly/weekday patterns for staffing, tax summaries.
 - [x] 🔴 **Multi-year retention verified** — sales/sale_lines are never pruned (only the
       explicit factory-reset deletes them); SQLite keeps full history, replicas journal
       to the primary, so the primary holds the whole shop's time series. Forecasting can
