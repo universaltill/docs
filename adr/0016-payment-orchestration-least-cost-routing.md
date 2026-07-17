@@ -75,14 +75,37 @@ route; we do not settle.
   and success-rate awareness. It is part of the paid cloud tier (ADR-0013:
   honest gating — the server genuinely provides the multi-acquirer connections).
 
+### 2a. Two orchestration modes — automatic and manual (Farshid, 2026-07-17)
+A merchant reaches "route to the cheapest provider" one of two ways, and the POS
+supports both because both are just `payment` plugins with buttons:
+
+- **Automatic** — on a **multi-acquirer device** (SmartPOS/gateway), the device
+  reads the card and the routing engine picks the cheapest acquirer with no
+  cashier action. Needs per-acquirer certification (the heavier, later path).
+- **Manual / assisted** — the merchant has **several ordinary provider-locked
+  readers** (Stripe Terminal + SumUp + a bank terminal). The POS shows a **button
+  per provider**; the cashier taps the right one and the POS sends the sale to
+  that device's plugin. **Each reader is already certified by its own provider,
+  so this needs NO new certification from us** — it works today with cheap
+  off-the-shelf hardware. Nuance: with locked readers the button is pressed
+  *before* the card is read, so selection is the cashier's (the POS can't
+  auto-detect the card first); the POS **assists** by showing per-provider cost
+  guidance (e.g. "cheapest for debit: SumUp") and a merchant-set default.
+
+Both modes are the same plugin model — the difference is whether the *device* or
+the *cashier* chooses the provider. Manual mode ships early (Phase 2); automatic
+mode is Phase 3.
+
 ### 3. Device support, phased (this is the answer to "buy hardware per provider?")
 - **Phase 1 — online / card-not-present.** Orchestrate e-commerce & pay-by-link
   in pure software. No hardware. Prove routing + failover with a second PSP
   alongside Stripe.
-- **Phase 2 — card-present, provider-locked readers.** Keep using each
-  provider's own certified reader (Stripe Terminal today). LCR stays online-only.
-  Cheapest to reach; **no device-level routing** (this is the "buy the reader
-  from the provider" model, and it's fine as a starting point).
+- **Phase 2 — card-present, provider-locked readers + manual selection.** The
+  merchant connects one or more providers' own certified readers (Stripe Terminal,
+  SumUp, a bank terminal); the POS shows a **button per provider** and the cashier
+  picks (mode 2a "manual"). No new certification — the readers are already
+  certified by their providers. This is the **early, cheap, ships-now** form of
+  least-cost routing across multiple providers.
 - **Phase 3 — card-present with LCR.** Either a **certified SmartPOS**
   (PAX/Ingenico/Castles) running the UT payment app that talks to our
   orchestration API and is certified against multiple acquirers, **or** terminals
