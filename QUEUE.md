@@ -124,7 +124,9 @@ Two tracks run **independently** of that path and can happen anytime:
       variant sales folded in), ⚠ ≤7-day warnings, header chips (inventory + reports),
       **reorder suggestions** ("order ~N" to a 14-day cover on running-out rows).
       REMAINING: per-item lead times, unusual-sales + seasonal-spike alerts,
-      multilingual email alerts (needs an email/notification subsystem — design).
+      multilingual email alerts — **design written**
+      (`architecture/notifications-and-email.md`: till→cloud alert events, one mp
+      delivery service on Brevo, per-owner locale, in-app inbox first).
 
 ---
 
