@@ -124,6 +124,14 @@ Two tracks run **independently** of that path and can happen anytime:
 
 - [ ] 🔴 **Cloud sync backend / paid cloud tier** — the monetization gate; a shop must be
       cloud-connected for anything shopper-facing to reach it (tills sit behind shop NAT).
+- [ ] 🔴 **Subscription select + pay** (Farshid 2026-07-17): NOT implemented — the owner
+      back-office needs a plan page (free / paid tiers per ADR-0013), plan selection,
+      and actual payment for the subscription (likely Stripe Billing to start), driving
+      the entitlements that gate paid features/plugins. Design the plan matrix first.
+- [ ] 🟡 **Shop badges** (Farshid 2026-07-17): shops get visible badges too (e.g.
+      registered / claimed / subscribed tiers) — surface in the owner back-office and
+      later on the shopper platform's shop pages. Define the badge set with the
+      subscription tiers.
 - [ ] 🔴 **Store registry** — the public directory of cloud-connected shops the app/web
       searches. _Needs the cloud tier._
 - [ ] 🟡 **Centralized back-office portal** (ADR-0013 L2/L3) — manage catalog/stock/fleet
