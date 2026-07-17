@@ -38,6 +38,26 @@ out of PCI scope). Consequences that decide the architecture:
   arrives in software and can be routed freely. This is why online LCR is easy
   and card-present LCR is hard.
 
+### How the router knows the card without seeing the secret data
+
+Routing needs the card's **metadata**, not its secret. When a card is read, the
+certified reader exposes to the POS/SDK **non-sensitive** fields — **scheme**
+(Visa/MC/Amex), **funding type** (debit/credit/prepaid), the **BIN** (first
+6–8 digits), **issuing country**, and **last 4** — while withholding the full
+PAN, expiry, CVV and chip cryptogram. The **BIN** is an industry-standard
+lookup (scheme, type, bank, country); it is not the sensitive secret and is
+used everywhere for routing/fraud. On EMV chip/contactless the card also
+announces its supported networks via **application selection (AIDs)** — a debit
+card commonly carries two networks, and picking the cheaper is least-cost
+routing native to the EMV standard.
+
+So the routing decision (BIN → scheme/type/region → cost table → cheapest
+acquirer) uses only non-sensitive data. The **sealed** transaction is then sent
+to the chosen acquirer for authorization — and *that* step is what requires the
+device/gateway to be certified/connected to that acquirer (the cost). Hence the
+two clean card-present forms: **debit dual-network selection** (card carries
+both, terminal picks cheaper) and **gateway-orchestrated** routing.
+
 ## Decision
 
 ### 1. We are an orchestrator/ISV, never an acquirer or PayFac
