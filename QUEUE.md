@@ -40,8 +40,8 @@ Two tracks run **independently** of that path and can happen anytime:
       enforcement completed instead; last gap closed: anonymous merchant
       entitlement writes now 401 whenever web login exists. **No anonymous writes
       remain; staff/owner UI fully role-gated; fleet untouched.**
-- [ ] 🟡 Fix each `ut-plugin-*` **manifest description** (currently name-as-description —
-      a re-publish would clobber the real summaries back) — do per plugin at next release.
+- [x] 🟡 Plugin **manifest descriptions** — verified: all 11 manifests ALREADY carry real
+      descriptions; the bad summaries were purely the ingest bug (root-cause fixed).
 - [ ] 🟢 Self-serve **vendor registration** flow (request + admin approval) — today a
       developer needs a manually-granted vendor role.
 
@@ -58,9 +58,9 @@ Two tracks run **independently** of that path and can happen anytime:
 - [ ] 🟡 **Windows regular-printing** — plain-text/CUPS-equivalent path on Windows.
 - [ ] 🟡 **WKDownloadDelegate** — arbitrary downloads inside the mac app.
 - [ ] 🟡 **Scope-aware user settings** — the `user` settings scope isn't surfaced yet.
-- [ ] 🟢 Tone down the **registration nag chip** (registration is optional, ADR-0015).
-- [ ] 🟢 **Claim by QR on kiosk/Windows/Linux** — those shells navigate in place; show a
-      QR on the claim panel so the owner claims from their phone.
+- [x] 🟢 Registration nag → **quiet outline hint** "Marketplace: not connected" (ADR-0015).
+- [x] 🟢 **Claim by QR** — the claim panel now shows a QR of the claim URL; the owner
+      scans and claims from their phone (works on kiosk/Windows/Linux shells).
 
 ---
 
@@ -69,15 +69,18 @@ Two tracks run **independently** of that path and can happen anytime:
 - [ ] 🟡 **More owner reports** — best/worst sellers, dead stock, margins per
       item/category, year-over-year, hourly/weekday patterns, tax summaries. Uses data
       that already exists. (Ask Farshid which first.) Likely reporting-type plugins.
-- [ ] 🔴 **Multi-year sales + stock history retention** — _prerequisite for forecasting_;
-      confirm the journal/report data is kept long enough and is queryable as a
-      per-item/variant time series.
+- [x] 🔴 **Multi-year retention verified** — sales/sale_lines are never pruned (only the
+      explicit factory-reset deletes them); SQLite keeps full history, replicas journal
+      to the primary, so the primary holds the whole shop's time series. Forecasting can
+      query `sales`+`sale_lines` directly (see `ItemDailySellRates` as the pattern).
 - [ ] 🔴 **Order-ahead forecasting** — previous years' sales → suggested purchase
       quantities before seasonal demand. Start with seasonal statistics; any ML is
       self-hosted / Ollama (no paid AI APIs). _Needs history retention above._
-- [ ] 🔴 **Predictions + alerts** — "runs out in ~N days", reorder-point low-stock
-      warnings before stockout, unusual-sales / seasonal-spike alerts. Chips/banners +
-      an alerts panel; later multilingual email. _Needs history + sell-rate._
+- [~] 🔴 **Predictions + alerts** — FIRST SLICE SHIPPED: inventory page "Days left"
+      column (28-day sell rate → days-to-stockout), ⚠ row warning ≤7 days + header count
+      chip. REMAINING: variant-level rates, reorder-point suggestions, an alerts panel /
+      status chips outside the inventory page, unusual-sales + seasonal-spike alerts,
+      multilingual email alerts.
 
 ---
 
