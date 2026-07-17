@@ -51,7 +51,12 @@ Two tracks run **independently** of that path and can happen anytime:
       remain; staff/owner UI fully role-gated; fleet untouched.**
 - [x] 🟡 Plugin **manifest descriptions** — verified: all 11 manifests ALREADY carry real
       descriptions; the bad summaries were purely the ingest bug (root-cause fixed).
-- [ ] 🟡 **(field)** **Plugin trust badges + install consent** (Farshid 2026-07-17):
+- [~] 🟡 **(field)** **Plugin trust badges + install consent** — TILL SIDE SHIPPED:
+      🏠 gold official (com.universaltill.*), ✔ verified, ⚠ unverified badges on store
+      cards + localized "do you trust this publisher: X?" confirm before downloading/
+      installing unverified plugins. REMAINING: matching badge styling on the
+      marketplace storefront/portal/detail; "verified" assignment rules (ties into
+      vendor registration). Original ask:
       three visible tiers on every plugin card/detail — (1) **official Universal Till**
       plugins get a distinctive "golden house" badge; (2) **verified developers**
       (registered + paid) get a verified badge; (3) **unverified** publishers get an
