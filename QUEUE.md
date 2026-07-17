@@ -17,6 +17,15 @@ Two tracks run **independently** of that path and can happen anytime:
 
 ## Phase 0 — Fix & polish what's already live _(no dependencies — do now)_
 
+### 🧾 Till field bugs (Farshid screenshots 2026-07-17 evening)
+- [x] 🔴 **(field)** **PIN pad rendered inside the header** — expired-session htmx
+      fragment loads got a 302 that htmx swapped in place; now 401 + HX-Redirect →
+      real navigation to the lock screen (v0.2.25, class-wide for all fragments).
+- [x] 🔴 **(field)** **Catalog right panel too long** — sticky + capped height + inner
+      scroll (v0.2.26).
+- [x] 🟡 **(field)** **Labels print per variant** — Variant dropdown on the labels form;
+      prints the variant's name, price and its own barcode (v0.2.26).
+
 ### 🏪 Marketplace portal (Farshid field feedback)
 - [x] 🔴 **(field)** Fix account role — grant trimmed to `merchant_admin` only (verified
       live; sign out/in to refresh). Admin stays on the dedicated admin@ account.
