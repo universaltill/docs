@@ -51,7 +51,10 @@ Two tracks run **independently** of that path and can happen anytime:
       remain; staff/owner UI fully role-gated; fleet untouched.**
 - [x] 🟡 Plugin **manifest descriptions** — verified: all 11 manifests ALREADY carry real
       descriptions; the bad summaries were purely the ingest bug (root-cause fixed).
-- [~] 🟡 **(field)** **Plugin trust badges + install consent** — TILL SIDE SHIPPED:
+- [x] 🟡 **(field)** **Plugin trust badges + install consent** — SHIPPED BOTH SIDES:
+      till (v0.2.27) + marketplace (storefront/portal/detail pills, same mapping).
+      REMAINING (separate): "verified" assignment rules ride the vendor-registration
+      decision. Original notes:
       🏠 gold official (com.universaltill.*), ✔ verified, ⚠ unverified badges on store
       cards + localized "do you trust this publisher: X?" confirm before downloading/
       installing unverified plugins. REMAINING: matching badge styling on the
