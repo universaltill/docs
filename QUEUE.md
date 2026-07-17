@@ -18,30 +18,37 @@ Two tracks run **independently** of that path and can happen anytime:
 ## Phase 0 — Fix & polish what's already live _(no dependencies — do now)_
 
 ### 🏪 Marketplace portal (Farshid field feedback)
-- [ ] 🔴 **(field)** Fix account role — Farshid's login shows the **Admin** button but
-      he's a **shop owner, not a marketplace admin**. Reduce his Zitadel grant to
-      `merchant_admin` only (drop the staff/vendor roles I over-granted). Confirm which
-      account he uses (farsid.mirza@gmail.com vs Farshid3003@gmail.com). **← blocks the
-      "enable prod auth" item below.**
-- [ ] 🔴 **(field)** Show **who is signed in** at the top (name + role chip); only show
-      Admin / Developer links when the role is genuinely held.
-- [ ] 🔴 **(field)** Merge **"My shop"** and **"My stores"** into one back-office.
-- [ ] 🔴 **(field)** Build the real **plugin detail page** — today it's a stub showing a
-      fake "Example Plugin"; its "Approve for stores" button does nothing.
-- [ ] 🔴 **(field)** Plugin **cards have no description** — surface each listing's summary.
-- [ ] 🔴 **(field)** "My shop": clicking a plugin **doesn't open details**; **Approve
-      buttons do nothing** (wire the JS + fix silent auth failures).
-- [ ] 🔴 **(field)** "Back to marketplace" link on `/plugins/{id}` → `/plugins` = **404**.
-- [ ] 🟡 **(field)** `/ui/admin/reviews` **does nothing** — make the review queue work.
-- [ ] 🟡 **(field)** **Developer console** — limit to **registered developers** + provide
-      **API docs / OpenAPI** (endpoints, tokens, auth). mp already serves `/openapi.yaml`
-      + Swagger `/docs` + `/redoc`; wire them in + gate behind developer registration.
-- [ ] 🔴 Enable **marketplace auth in prod** (`Auth.Disabled=false`) — _needs the role fix
-      first_; today `/ui/admin` is open to anonymous (mitigated per-page).
+- [x] 🔴 **(field)** Fix account role — grant trimmed to `merchant_admin` only (verified
+      live; sign out/in to refresh). Admin stays on the dedicated admin@ account.
+- [x] 🔴 **(field)** Signed-in **name + role chip** in the nav; Admin/Developer links only
+      for holders of those roles.
+- [x] 🔴 **(field)** **"My shop"** single back-office (per-store "Tills & details" +
+      "Manage plugins"; approvals bind to the browsed store).
+- [x] 🔴 **(field)** Real **plugin detail page** (live listing data + working
+      approve/unapprove; stub + fake buttons removed).
+- [x] 🔴 **(field)** Plugin **descriptions** — real summaries written for all 11 listings
+      (data had summary = name). ⚠️ follow-up below: fix plugin manifests too.
+- [x] 🔴 **(field)** "My shop" **approve buttons + card clicks fixed** (handler was
+      auth-gated out on prod; links pointed at a 404).
+- [x] 🔴 **(field)** "Back to marketplace" 404 link fixed.
+- [x] 🟡 **(field)** `/ui/admin/reviews`: staff **sessions** can assign/decide without the
+      upload token; reviewer prefilled. (Page was live; queue was empty + token-only.)
+- [x] 🟡 **(field)** **Developer console** gated to registered developers (vendor role) +
+      **API docs linked** (Swagger UI / ReDoc / openapi.yaml with token notes).
+- [x] 🔴 **Prod auth — closed deliberately**: `Auth.Disabled` stays true (flipping would
+      demand JWTs on /api and break every till — they use store tokens). Per-surface
+      enforcement completed instead; last gap closed: anonymous merchant
+      entitlement writes now 401 whenever web login exists. **No anonymous writes
+      remain; staff/owner UI fully role-gated; fleet untouched.**
+- [ ] 🟡 Fix each `ut-plugin-*` **manifest description** (currently name-as-description —
+      a re-publish would clobber the real summaries back) — do per plugin at next release.
+- [ ] 🟢 Self-serve **vendor registration** flow (request + admin approval) — today a
+      developer needs a manually-granted vendor role.
 
 ### 🎨 Content & assets
-- [ ] 🟡 **(field)** Generate an **icon for every plugin** (~11: stripe, qrpay, demo, faq,
-      ai, webhook, nosale, themes ×3, language packs ×2). Cards show a letter fallback now.
+- [x] 🟡 **(field)** **Icons for all 11 plugins** — consistent SVG set embedded in the
+      marketplace, served at `/ui/assets/icons/{slug}.svg`, wired to storefront/portal/
+      detail. Follow-up: render `icon_url` on the POS store page too.
 - [ ] 🟢 **(field)** **Teaching / advertising videos** for the POS (can't generate video
       directly — propose scripted screen-capture of real flows, GIF micro-demos per
       feature, or a reveal.js explainer exported to video).
@@ -213,6 +220,11 @@ M3 automatic online routing · M4 card-present auto LCR · M5 market expansion._
 
 ## ✅ Recently shipped (2026-07-16 → 17)
 
+- [x] **Marketplace portal fix batch** (tasks 1–8 of the ordered queue, 2026-07-17
+      evening): role trim, identity chip, one "My shop" back-office, real plugin detail
+      page, working approvals, descriptions + icons, staff review sessions, developer
+      console gating + API docs, per-surface auth enforcement completed (no anonymous
+      writes anywhere; global flag left as designed for the fleet).
 - [x] Help page **feature guide** (expandable per-feature explanations + steps, 4 locales)
 - [x] Claim UX fixes: code **reuse** on repeat clicks; desktop webview **pinned to till**
       (external links open the browser) — v0.2.19
