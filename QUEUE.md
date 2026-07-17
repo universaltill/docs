@@ -48,7 +48,7 @@ Two tracks run **independently** of that path and can happen anytime:
 ### 🎨 Content & assets
 - [x] 🟡 **(field)** **Icons for all 11 plugins** — consistent SVG set embedded in the
       marketplace, served at `/ui/assets/icons/{slug}.svg`, wired to storefront/portal/
-      detail. Follow-up: render `icon_url` on the POS store page too.
+      detail. **POS store page renders them too** (28px beside the name).
 - [ ] 🟢 **(field)** **Teaching / advertising videos** for the POS (can't generate video
       directly — propose scripted screen-capture of real flows, GIF micro-demos per
       feature, or a reveal.js explainer exported to video).
@@ -56,7 +56,9 @@ Two tracks run **independently** of that path and can happen anytime:
 ### 🖥️ POS / till polish
 - [ ] 🟡 **Keyboard-layout plugin** — physical layouts per locale (distinct from the OSK).
 - [ ] 🟡 **Windows regular-printing** — plain-text/CUPS-equivalent path on Windows.
-- [ ] 🟡 **WKDownloadDelegate** — arbitrary downloads inside the mac app.
+- [x] 🟡 **WKDownloadDelegate** — attachments / undisplayable responses / `<a download>`
+      links now save to ~/Downloads with browser-style dedupe (macOS 11.3+ guarded).
+      Needs a real-app click test on the next dmg.
 - [ ] 🟡 **Scope-aware user settings** — the `user` settings scope isn't surfaced yet.
 - [x] 🟢 Registration nag → **quiet outline hint** "Marketplace: not connected" (ADR-0015).
 - [x] 🟢 **Claim by QR** — the claim panel now shows a QR of the claim URL; the owner
@@ -66,10 +68,10 @@ Two tracks run **independently** of that path and can happen anytime:
 
 ## Phase 1 — Owner intelligence _(independent track — needs only sales-history in the till)_
 
-- [~] 🟡 **More owner reports** — SHIPPED: **Slow sellers** + **Dead stock** (with
-      tied-up value) cards on the reports page under the period selector (best sellers
-      already existed). REMAINING: margins per item/category (needs cost_price capture),
-      year-over-year, hourly/weekday patterns for staffing, tax summaries.
+- [~] 🟡 **More owner reports** — SHIPPED: **Slow sellers**, **Dead stock** (tied-up
+      value), **Busiest days & hours** (local-time buckets, CSS bars) on the reports
+      page under the period selector. REMAINING: margins per item/category (needs
+      cost_price capture UI), year-over-year, tax summaries.
 - [x] 🔴 **Multi-year retention verified** — sales/sale_lines are never pruned (only the
       explicit factory-reset deletes them); SQLite keeps full history, replicas journal
       to the primary, so the primary holds the whole shop's time series. Forecasting can
