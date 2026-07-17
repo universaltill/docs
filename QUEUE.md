@@ -59,7 +59,10 @@ Two tracks run **independently** of that path and can happen anytime:
 - [x] 🟡 **WKDownloadDelegate** — attachments / undisplayable responses / `<a download>`
       links now save to ~/Downloads with browser-style dedupe (macOS 11.3+ guarded).
       Needs a real-app click test on the next dmg.
-- [ ] 🟡 **Scope-aware user settings** — the `user` settings scope isn't surfaced yet.
+- [ ] 🟡 **Scope-aware user settings** — NEEDS DESIGN FIRST (document-first): the wasm
+      runtime carries no user identity into plugin evaluation, so a per-user setting has
+      no runtime meaning yet. Write the spec (what user-scoped settings mean, how
+      settings_get would resolve per-user) before any code.
 - [x] 🟢 Registration nag → **quiet outline hint** "Marketplace: not connected" (ADR-0015).
 - [x] 🟢 **Claim by QR** — the claim panel now shows a QR of the claim URL; the owner
       scans and claims from their phone (works on kiosk/Windows/Linux shells).
@@ -71,8 +74,9 @@ Two tracks run **independently** of that path and can happen anytime:
 - [~] 🟡 **More owner reports** — SHIPPED: **Slow sellers**, **Dead stock** (tied-up
       value), **Busiest days & hours** (local-time buckets, CSS bars) on the reports
       page under the period selector, **Margins** (cost-price field in the catalog
-      panel → revenue−cost card, unknown costs excluded). REMAINING: year-over-year,
-      tax summaries, variant-level cost editing.
+      panel → revenue−cost card, unknown costs excluded), **Year-over-year KPI** (same
+      window one year back; hidden until history exists). REMAINING: tax summaries,
+      variant-level cost editing.
 - [x] 🔴 **Multi-year retention verified** — sales/sale_lines are never pruned (only the
       explicit factory-reset deletes them); SQLite keeps full history, replicas journal
       to the primary, so the primary holds the whole shop's time series. Forecasting can
