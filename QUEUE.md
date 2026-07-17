@@ -124,9 +124,11 @@ Two tracks run **independently** of that path and can happen anytime:
       variant sales folded in), ⚠ ≤7-day warnings, header chips (inventory + reports),
       **reorder suggestions** ("order ~N" to a 14-day cover on running-out rows).
       REMAINING: per-item lead times, unusual-sales + seasonal-spike alerts,
-      multilingual email alerts — **design written**
-      (`architecture/notifications-and-email.md`: till→cloud alert events, one mp
-      delivery service on Brevo, per-owner locale, in-app inbox first).
+      multilingual email alerts — **increment 1 SHIPPED**: claim captures the owner's
+      email as org contact; `Notification` entity + till push endpoint + **My shop
+      inbox** (unread badge, refresh-not-duplicate digests, i18n ×9); till pushes a
+      **daily low-stock digest** (registered tills, best-effort). REMAINING: the
+      actual EMAIL sender (Brevo SMTP config into the mp env) + more alert types.
 
 ---
 
