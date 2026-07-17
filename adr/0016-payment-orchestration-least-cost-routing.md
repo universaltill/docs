@@ -129,5 +129,7 @@ certification track**. The plugin model accommodates it without special-casing.
 ## Open questions (to resolve before building)
 1. Build the router vs adopt an orchestration platform for multi-acquirer.
 2. First two providers to route between (Stripe + Adyen? Stripe + a local bank?).
-3. Target markets first (drives which schemes/acquirers and whether Iran's
-   Shetab track is in scope early).
+3. ~~Target markets first~~ — **CHOSEN (Farshid, 2026-07-17): UK, UAE, Qatar,
+   Bahrain, Oman, Turkey.** Grouped as UK (open) → GCC cluster (one aggregator)
+   → Turkey (fiscal-POS track). Detail + per-market schemes/acquirers/regulators
+   in [payment-markets-launch-set.md](../architecture/payment-markets-launch-set.md).
