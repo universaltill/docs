@@ -54,7 +54,9 @@ Two tracks run **independently** of that path and can happen anytime:
       feature, or a reveal.js explainer exported to video).
 
 ### 🖥️ POS / till polish
-- [ ] 🟡 **Keyboard-layout plugin** — physical layouts per locale (distinct from the OSK).
+- [ ] 🟡 **Keyboard-layout plugin** — NEEDS DESIGN FIRST: what exactly it remaps (scan
+      wedge input vs search-field layout vs per-cashier layout) is unspecified; write the
+      spec before building.
 - [ ] 🟡 **Windows regular-printing** — plain-text/CUPS-equivalent path on Windows.
 - [x] 🟡 **WKDownloadDelegate** — attachments / undisplayable responses / `<a download>`
       links now save to ~/Downloads with browser-style dedupe (macOS 11.3+ guarded).
@@ -131,8 +133,9 @@ Designed in `architecture/consumer-app.md`, `item-discovery-and-universal-catalo
       crawlable pages carrying `schema.org/Product` + `Offer`/`LocalBusiness` structured
       data so **Google surfaces "in stock nearby" physical shops**, not just online ones.
       _Same publication pipeline as G13, one more frontend._
-- [ ] 🟢 **Universal item catalog (G15)** — shared barcode→product repository. _Note:_ its
-      till-side barcode auto-fill (increment 1) is **independent** and can ship in Phase 0/1.
+- [ ] 🟢 **Universal item catalog (G15)** — shared barcode→product repository (community
+      loop, cloud). _Increment 1 (till-side barcode auto-fill from Open*Facts) is ALREADY
+      SHIPPED — lookup package + /api/catalog/lookup + Auto-fill button all live._
 
 **3c — Transactions & services (needs 3a/3b):**
 - [ ] 🟡 **Click & collect / order ahead** + **delivery** (shop's own delivery first,
