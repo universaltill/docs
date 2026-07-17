@@ -79,6 +79,43 @@ Legend: 🔴 high / 🟡 medium / 🟢 later. **(field)** = Farshid reported it 
 - [ ] 🟡 **2-till LAN stock-level sync** on the homelab.
 - [ ] 🟡 Re-test **claim flow** after v0.2.19 (external link → browser; code reuse).
 
+## 🛍️ Shopper platform — consumer app + public web (major arc)
+
+The shopper-facing side of Universal Till — the network-effect engine. Designed
+in `architecture/consumer-app.md`, `item-discovery-and-universal-catalog.md`,
+`arch/product-search-network.md`. Depends on the cloud sync tier + store
+registry; build after those. Shops must be cloud-connected to appear (honest
+gating → subscription driver).
+
+- [ ] 🔴 **Consumer mobile app (Android + iOS)** — one app across every Universal
+      Till shop. One codebase (Flutter/React Native, decide later), talks only to
+      the cloud API. Core: e-receipts + loyalty first (works with even one shop).
+- [ ] 🔴 **Digital loyalty card + points/rewards wallet** — one QR scanned at any
+      till; per-shop programs in one wallet.
+- [ ] 🔴 **Paperless e-receipts & invoices in the app** — scan at tender → receipt/
+      VAT invoice lands in the app; permanent proof of purchase (warranty/returns).
+- [ ] 🔴 **Coupons/offers, digital punch cards, gift cards & store credit** — per shop.
+- [ ] 🟡 **Map & nearest shop** — find Universal Till shops nearby; hours, what they sell.
+- [ ] 🟡 **Item search across nearby shops + price comparison** ("who has it, cheapest,
+      closest") — shop opt-in publishes catalog+stock to the cloud (G13).
+- [ ] 🟡 **Click & collect / order ahead** + **delivery** (shop's own delivery first,
+      courier handoff later) — orders drop onto the till as normal sales.
+- [ ] 🟡 **Restaurant: order at table / takeaway** — table-QR → menu → kitchen ticket.
+- [ ] 🟡 **Table reservations** — book a table; shows on the till's booking view.
+- [ ] 🟡 **Appointment booking for service shops** (barber, dentist, salon, garage…) —
+      services + staff + availability; booking becomes a scheduled sale. Shared
+      "bookable resource" scheduling engine for tables *and* appointments; likely a
+      booking/reservation-type plugin + cloud calendar.
+- [ ] 🟢 **Speak your order in your language** (G17), spending history/budgeting,
+      household sharing, privacy controls.
+- [ ] 🔴 **Public web app + SEO discovery (G14)** — same nearby-item search as the app
+      but **no login required**, with crawlable product/shop pages carrying
+      `schema.org/Product` + `Offer`/`availability` + `LocalBusiness` structured data,
+      so **Google surfaces "in stock nearby" physical shops** — not just online stores.
+      Same publication pipeline as G13, one more frontend.
+- [ ] 🟢 **Universal item catalog (G15)** — shared barcode→product repository; till-side
+      barcode auto-fill can ship earlier (increment 1), community contribution last.
+
 ## ☁️ Cloud / back-office (bigger arcs)
 
 - [ ] 🟡 **Centralized back-office portal** (cloud tier, ADR-0013 L2/L3) — manage

@@ -78,6 +78,47 @@ Additions (mine):
   everything anytime. The credible position given our open-source stance, and
   a contrast to supermarket loyalty schemes.
 
+### Services & bookings (Farshid, 2026-07-17)
+
+The app so far assumes *retail* (find item → buy/collect/deliver). Farshid's
+list adds two service verticals that need **availability/scheduling**, not just
+a catalog — a distinct capability the big grocery-loyalty apps don't touch, and
+a natural fit for the independent barbers, clinics and restaurants Universal
+Till targets.
+
+- **Restaurant — order at the table & takeaway ordering.** Scan a table QR →
+  the shop's menu (the till catalog, with modifiers) → order lands on the till
+  as a normal sale/kitchen ticket (reuses order-ahead G5 + kitchen print; the
+  offline sale screen is untouched). Pairs with "speak your order in your
+  language" (G17) for tourists/immigrant diners. Pay in-app or at the counter.
+- **Table reservations.** Book a table for a time/party size; the shop sets
+  its floor/slots/capacity; the reservation shows on the till's booking view.
+  No-show and reminder handling via the app.
+- **Appointment booking for service shops** (barber, dentist, salon, garage,
+  clinic…). The shop publishes **services** (name, duration, price, which
+  staff member), working hours and per-staff availability; the shopper picks a
+  service + time + (optionally) a specific person and books. On the till side
+  the booking becomes a scheduled appointment that converts to a sale when the
+  service is delivered. Deposits/prepay via the wallet; reminders + reschedule
+  + cancellation windows in the app.
+- **Shared scheduling model.** Tables and appointments are the same underlying
+  primitive — a **bookable resource** (a table, a chair, a dentist, a bay) with
+  a calendar of availability and bookings. Build one scheduling/availability
+  service; restaurant tables and service appointments are two configurations of
+  it. This is almost certainly a **plugin(s)** on the till (booking/reservation
+  type) plus the cloud calendar the app reads/writes — per the plugin-first and
+  honest-gating rules (the shop must be cloud-connected for the app to reach its
+  calendar).
+- **Why it matters:** appointments and reservations give the shopper a reason
+  to open the app *between* purchases, and pull in a whole class of merchants
+  (services) that a pure retail loyalty app can't serve. Booking is also a
+  standalone paid feature for shops that only want scheduling, not a till.
+
+Sequencing: this is a **later phase** — after e-receipts + loyalty + the cloud
+tier prove out. Restaurant/table ordering is the closest to existing pieces
+(order-ahead + kitchen print already exist); appointment booking is the larger
+net-new build (scheduling engine, staff/availability model).
+
 ## Architecture sketch (build later, after the cloud sync tier)
 
 - Depends on: cloud sync backend (monetization gate #1), merchant/store
