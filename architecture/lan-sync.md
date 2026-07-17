@@ -35,6 +35,18 @@ machine.
   Per-till settings never travel (`sync.*`, `printer.*`, `display.*`,
   `reports.eod_*` — `data.PerTillSettingPrefixes`). After an apply the
   replica re-derives theme/tax engine/currency/i18n in place.
+- **Shared plugin settings (2026-07-17):** `plugin_settings` rides in the
+  admin bundle, **global scope only** — change a shop-wide plugin setting
+  (e.g. a payment gateway's secret key) on the primary and every joined
+  till gets it within one pull. Register/user-scoped rows stay per-till,
+  as do settings of plugins only the replica has. Apply is a per-plugin
+  delete-then-insert (`data.applyPluginSettings`), not the generic
+  prune/upsert: the UNIQUE index includes a NULL `scope_id` on global rows
+  (SQLite treats NULLs as distinct, upserts can't target it), and the
+  generic prune would wipe the replica's per-till rows. Rows for plugins
+  the replica hasn't installed are skipped (FK onto `plugins`); installing
+  a plugin clears `sync.pull_version` so the next tick re-delivers its
+  shared settings.
 
 ## Increment D3 — sale journal push
 
