@@ -96,6 +96,23 @@ Both modes are the same plugin model — the difference is whether the *device* 
 the *cashier* chooses the provider. Manual mode ships early (Phase 2); automatic
 mode is Phase 3.
 
+### 2b. Product posture: meet the merchant's existing hardware (Farshid, 2026-07-17)
+
+We support **all** of the above at once, per shop — the POS adapts to whatever
+payment hardware the merchant already owns rather than forcing a purchase:
+
+| The shop has… | Behaviour | Mode |
+|---|---|---|
+| A terminal bound to a **routing gateway / orchestration service** | Route **automatically at the gateway** (its rules pick the acquirer) | automatic (server-side) |
+| An **open SmartPOS** (PAX/Sunmi class) | Our payment app on the device routes **automatically on-device** (needs Phase-E certs) | automatic (device-side) |
+| One or more **normal provider-locked readers** (Stripe, SumUp, bank box) | **Button per provider** on the POS; cashier picks, cost hint guides | manual / assisted |
+
+Selection is **per-shop configuration**, not auto-detection: the merchant or
+installer enables the matching `payment` plugins and declares which devices
+exist (the existing plugin-settings flow, incl. per-till `register` scope for
+reader ids). A shop can mix modes — e.g. a gateway terminal on lane 1 and a
+SumUp on lane 2 — because every route is just an enabled payment plugin.
+
 ### 3. Device support, phased (this is the answer to "buy hardware per provider?")
 - **Phase 1 — online / card-not-present.** Orchestrate e-commerce & pay-by-link
   in pure software. No hardware. Prove routing + failover with a second PSP
