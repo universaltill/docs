@@ -54,6 +54,11 @@ Two tracks run **independently** of that path and can happen anytime:
       feature, or a reveal.js explainer exported to video).
 
 ### 🖥️ POS / till polish
+- [ ] 🟡 **(field)** **Variant-specific images** (Farshid 2026-07-17) — variants can look
+      different (sizes/flavours); today images are per item
+      (`assets/items/{id}/thumb.png`). Needs: per-variant storage + upload in the
+      variant grid + surfacing on sale buttons/store. Design the storage/fallback
+      (variant → item image) first.
 - [ ] 🟡 **Keyboard-layout plugin** — NEEDS DESIGN FIRST: what exactly it remaps (scan
       wedge input vs search-field layout vs per-cashier layout) is unspecified; write the
       spec before building.
