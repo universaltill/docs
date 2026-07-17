@@ -170,14 +170,22 @@ later). Full plan: `architecture/payment-orchestration-roadmap.md`; decision:
 - [ ] 🟡 A6 PCI scope strategy (tokenization / network tokens / P2PE).
 
 **B. Foundation (provider-agnostic):**
-- [ ] 🔴 B1 Define the common **`PaymentProvider` plugin interface**.
-- [ ] 🔴 B2 Refactor the existing **Stripe plugin** onto that interface.
-- [ ] 🔴 B3 POS **payment screen: one button per enabled provider**.
-- [ ] 🔴 B4 **Cost-rules config** per shop (drives manual hint + auto router).
-- [ ] 🟡 B5 Keep the **offline-first sale path** intact (ADR-0003).
+- [x] 🔴 B1 **Payment-provider contract defined + documented**
+      (`reference/payment-provider-contract.md`): payment entries → tender buttons,
+      blocking `.authorize`, async `.requested` (settle-link), and the NEW blocking
+      **`.refund` leg** — a provider must send the money back or the return is blocked
+      (cash unaffected). Much of this existed; refund was the real gap.
+- [x] 🔴 B2 **Stripe plugin 1.2.0 on the full contract** — event dispatch, sale→charge
+      linking in plugin storage, partial refunds via /v1/refunds. **Proven E2E against
+      the real Stripe test API**; published + approved on the marketplace.
+- [x] 🔴 B3 POS **button per enabled provider** — verified pre-existing
+      (SyncPluginPaymentMethods → payment_methods → tender UI).
+- [ ] 🔴 B4 **Cost-rules config** per shop (drives manual hint + auto router) — with C2.
+- [x] 🟡 B5 Offline-first sale path untouched (refund gate is per-method, cash never gated).
 
 **C. Manual multi-provider — ships now, UK, no certification (← the near-term win):**
-- [ ] 🔴 C1 Add a **second provider plugin** (per A2) so there are ≥2 buttons.
+- [ ] 🔴 C1 Add a **second REAL provider plugin** (per A2 — SumUp/Adyen; demo+qrpay+stripe
+      already give multiple buttons for the UX, so this is about a second real acquirer).
 - [ ] 🔴 C2 Manual-selection UX: cashier picks; **merchant default + per-provider cost hint**.
 - [ ] 🟡 C3 Record which provider was used on sale/journal/receipt.
 - [ ] 🔴 C4 **UK pilot** on real hardware (Farshid's shop) with two providers.
