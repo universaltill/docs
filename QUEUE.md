@@ -132,10 +132,20 @@ Designed in `architecture/consumer-app.md`, `item-discovery-and-universal-catalo
       merchant-side companion; mostly independent (LAN pairing exists).
 - [ ] 🟢 **Storefront & hardware** — store.universaltill.com selling devices/parts;
       3D-print profiles for DIY POS; pro multilingual website.
-- [ ] 🟢 **Own certified payment hardware** — branded SmartPOS on a certified platform
-      (PAX/Ingenico/etc.) and/or Tap-to-Pay (PCI MPoC), rather than a from-scratch
-      terminal; Iran = separate Shetab/Shaparak certification track. (Strategy only so
-      far — decide direction + markets, then an ADR.)
+- [ ] 🟡 **Payment orchestration + least-cost routing** (Farshid's real hardware idea) —
+      NOT becoming a payment provider: a router that sends each card to the **cheapest
+      eligible acquirer** (by BIN/scheme/region + failover), keeping the shop's money flow
+      shop→acquirer→bank so we never hold funds / avoid acquiring licences. Fits plugin-
+      first: each PSP/bank = a payment plugin behind one interface (Stripe plugin exists),
+      a routing engine picks the cheapest. **Path:** (1) online/CNP routing first — pure
+      software, add a 2nd PSP + cost-rules engine; (2) card-present later on a certified
+      SmartPOS (PAX/Ingenico), certifying one acquirer then adding more (each = a cert
+      project); start with debit dual-network LCR. Savings = acquirer markup + debit
+      network + local-vs-cross-border (interchange itself is fixed). Caveats: PCI DSS on
+      the routing layer (tokenize to reduce scope), PSP "no-steering" clauses, ISV/
+      acquirer agreements. Build vs buy: Spreedly/Primer/Gr4vy/ProcessOut vs own router.
+      Iran = separate Shetab/Shaparak track. **Next: decide build-vs-buy + first 2 PSPs,
+      then an ADR.**
 - [ ] 🟢 **Integration plugins** — Twilio SMS · SAP · iyzico (Turkey) · Google Calendar ·
       WhatsApp — each built + tested for real once Farshid provides sandbox keys.
 
