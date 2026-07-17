@@ -80,11 +80,11 @@ Two tracks run **independently** of that path and can happen anytime:
 - [ ] 🔴 **Order-ahead forecasting** — previous years' sales → suggested purchase
       quantities before seasonal demand. Start with seasonal statistics; any ML is
       self-hosted / Ollama (no paid AI APIs). _Needs history retention above._
-- [~] 🔴 **Predictions + alerts** — FIRST SLICE SHIPPED: inventory page "Days left"
-      column (28-day sell rate → days-to-stockout), ⚠ row warning ≤7 days + header count
-      chip. REMAINING: variant-level rates, reorder-point suggestions, an alerts panel /
-      status chips outside the inventory page, unusual-sales + seasonal-spike alerts,
-      multilingual email alerts.
+- [~] 🔴 **Predictions + alerts** — SHIPPED SO FAR: inventory "Days left" column
+      (28-day sell rate), ⚠ row warning ≤7 days, header count chip, and a clickable
+      **low-stock chip on the reports header**. REMAINING: variant-level rates,
+      reorder-point suggestions, unusual-sales + seasonal-spike alerts, multilingual
+      email alerts.
 
 ---
 
