@@ -26,5 +26,5 @@ Keep them short: Context → Decision → Consequences.
 | [0014](0014-erp-integration-connectors.md) | ERP integration: reusable connector plugins on the sale.completed event |
 | [0015](0015-lazy-store-registration.md) | Lazy store registration: enrol on first marketplace use, not at boot |
 | [0016](0016-payment-orchestration-least-cost-routing.md) | Payment orchestration + least-cost routing: we route to the cheapest acquirer, never hold funds |
-| [0017](0017-universal-erp-metadata-kernel.md) | Metadata-driven ERP kernel: AI-authored metadata not per-customer code, modular monolith, DB-per-tenant, plugin-based modules (Proposed) |
+| 0017 | _Moved 2026-07-18: Universal Core (ERP) became a separate product — its ADR now lives at `erp/universal-core/docs/adr/0001-universal-erp-metadata-kernel.md`, renumbered ADR-0001 in that repo._ |
 | [0018](0018-universal-till-cloud.md) | Universal Till Cloud (cloud.universaltill.com): marketplace app renamed & scoped as the cloud tier; till-initiated sync + directives; back-office device = till in back-office mode |
