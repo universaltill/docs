@@ -131,8 +131,10 @@ Two tracks run **independently** of that path and can happen anytime:
       sender is now BUILT and shipping DORMANT (localized mail to the org's
       claim-captured contact, retry + no-resend semantics) — activation = setting
       NOTIFY_SMTP_*/NOTIFY_FROM on the mp deployment (Brevo creds from KV), done
-      deliberately with Farshid since it makes prod send real mail. Then: more
-      alert types (unusual sales, seasonal spikes).
+      deliberately with Farshid since it makes prod send real mail. **Unusual-sales
+      alert SHIPPED** (yesterday vs same-weekday 4-week baseline, ≥3-week guard,
+      >1.8×/<0.4× incl. zero days; inbox row + mail text ×locales). Then: seasonal
+      spikes (with the forecasting arc).
 
 ---
 
