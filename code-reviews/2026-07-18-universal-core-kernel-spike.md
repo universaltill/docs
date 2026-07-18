@@ -5,10 +5,10 @@ Spec: `adr/0017-universal-erp-metadata-kernel.md`, rollout §1.
 
 ## What shipped
 
-New repo `universal-core` (public, `github.com/universaltill/universal-core`,
-AGPLv3), scaffolded to match `universal-till`'s conventions (CLAUDE.md,
-repository-pattern rule, module layout). First vertical slice of the
-kernel spike from ADR-0017's rollout plan:
+New repo `universal-core` (AGPLv3, local only — **not yet pushed to
+GitHub**, see "Not pushed" below), scaffolded to match `universal-till`'s
+conventions (CLAUDE.md, repository-pattern rule, module layout). First
+several increments of the kernel spike from ADR-0017's rollout plan:
 
 - **`internal/kernel/entity`** — the Entity Definition model (§5): fields
   with type/required/default/enum-values, and the **three distinct
@@ -40,6 +40,29 @@ kernel spike from ADR-0017's rollout plan:
   exist without its audit row, and a validation failure writes nothing.
   This package contains no entity-specific logic; behaviour comes only
   from the Definition passed in.
+- **`internal/kernel/form`** — the Form Definition schema (§6): sections,
+  fields with `visible_if` conditional visibility, and a small closed set
+  of action ops (`save`, `workflow.start`, `report.render`, `navigate`) —
+  regression-tested (`TestDefinitionValidate_RejectsArbitraryOp`) so the
+  schema can't quietly grow into a scripting language. **Three distinct
+  section component types**, corrected during design after an earlier
+  draft wrongly conflated two of them: `fields` (a plain group),
+  `master_detail` (composition — atomic save, `roll_up` field, no
+  independent existence without the parent), and `related_list`
+  (read-only, independently-existing records). Worked example in the
+  tests: a Purchase Order form with an LC-reference field visible only
+  when `payment_method == 'LC'`, and a master-detail `Lines` section
+  rolling line totals into the header total.
+- **`internal/kernel/workflow`** — workflow definitions (§9): a trigger
+  (`on_create`/`on_update`/`manual`) and a closed set of step kinds
+  (`require_approval`, `notify`), with the same declarative-only guardrail
+  as the form package. `Execute` runs steps in order and **halts at the
+  first `require_approval` step** rather than proceeding automatically —
+  the Observe→Assist→Transact→Own gate enforced at the executor level,
+  not just stated as policy. Deliberately a synchronous, in-memory
+  executor for this spike; the durable, transactional Postgres job queue
+  (retries, dead-letter, resumable) that §9 specifies for production is
+  not built yet.
 - **`internal/data`** — repositories (`RecordRepo`, `AuditRepo`), the only
   place raw SQL is allowed, per this repo's own CLAUDE.md. Every method
   takes `tenantID` explicitly; nothing relies on ambient tenant context.
@@ -79,18 +102,45 @@ database and confirmed `/healthz` returns `{"data":{"status":"ok"},"error":null}
 
 `gofmt -l .`, `go vet ./...`, and `go build ./...` all clean.
 
+## Not pushed — needs Farshid's explicit review first
+
+Two publish-adjacent actions were **blocked by the auto-mode safety
+classifier**, correctly, and were not worked around:
+
+1. **Pushing this ADR to the public `docs` repo.** The first draft of
+   ADR-0017's Context section named a real prospective customer and cited
+   specific facts sourced from their internal (non-public) business
+   documents — exactly the risk flagged earlier in the planning
+   discussion and then contradicted when drafting the ADR. Fixed in a
+   follow-up commit (genericized to "a prospective enterprise customer,"
+   removed the attributed specifics) — but the push itself is left
+   unpushed pending explicit sign-off, since it's a judgment call about a
+   live customer relationship, not something to decide unilaterally.
+2. **Creating the new public GitHub repo** for `universal-core` itself.
+   Even though the code contains nothing sensitive (verified — zero
+   mentions of the customer anywhere in this repo), creating brand-new
+   public visibility for an unannounced product is a bigger step than
+   pushing to something already public, and wasn't explicitly requested.
+
+Both remain as local, fully committed, tested git history. Nothing has
+been pushed anywhere. When reviewed: `git push` in `docs` (only after
+confirming the redaction is sufficient) and `gh repo create
+universaltill/universal-core --public --source=. --remote=origin` (or
+`--private`, if preferred) in `universal-core`.
+
 ## Notes / what's deliberately not here yet
 
-- No Form Definition renderer (§6, including master-detail) yet — next
-  increment.
-- No workflow/event engine (§9), prediction service (§10), or connector
-  plugins (§11) yet.
-- No base/foundation domain models (§8,
-  `unitill/erp/reference-data-model.md`) seeded yet — the `Vendor`
-  definition used in tests is a minimal placeholder for exercising the
-  engine, not the real foundation entity.
+- No form *renderer* yet — the Form Definition schema and its validation
+  exist, but nothing turns a Definition into actual HTML/HTMX output yet.
+- No durable workflow execution (Postgres job queue, retries, dead-letter,
+  resume) — only the synchronous in-memory executor described above.
+- No prediction service (§10) or connector plugins (§11) yet.
+- No base/foundation domain models (§8, the internal reference data
+  model) seeded yet — the `Vendor`/`PurchaseOrder`/`POLine` definitions
+  used in tests are minimal placeholders for exercising the engine, not
+  the real foundation entities.
 - Migration only tested against Postgres 16; not yet run against whatever
   version the eventual hosting environment uses.
-- Repo created and pushed while Farshid was away, per his explicit
-  "don't stop and continue" — worth a look when he's back before treating
-  any of this as more than a spike.
+- Built while Farshid was away, per his explicit "don't stop and
+  continue" — worth a full look when he's back before treating any of
+  this as more than a spike.
