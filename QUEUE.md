@@ -250,16 +250,18 @@ later). Full plan: `architecture/payment-orchestration-roadmap.md`; decision:
       the real Stripe test API**; published + approved on the marketplace.
 - [x] 🔴 B3 POS **button per enabled provider** — verified pre-existing
       (SyncPluginPaymentMethods → payment_methods → tender UI).
-- [ ] 🔴 B4 **Cost-rules config** per shop (drives manual hint + auto router) — with C2.
+- [x] 🔴 B4 **Cost-rules config SHIPPED**: per-provider percent+fixed fees in
+      Settings → Payments (bp/minor storage, LAN-synced).
 - [x] 🟡 B5 Offline-first sale path untouched (refund gate is per-method, cash never gated).
 
 **C. Manual multi-provider — ships now, UK, no certification (← the near-term win):**
 - [ ] 🔴 C1 Add a **second REAL provider plugin** (per A2 — SumUp/Adyen; demo+qrpay+stripe
       already give multiple buttons for the UX, so this is about a second real acquirer).
-- [~] 🔴 C2 Manual-selection UX — **merchant default SHIPPED**: `payments.default_method`
-      (Settings → Payments) makes the preferred provider the one-tap first choice on
-      both tender UIs, LAN-synced shop-wide. REMAINING: per-provider **cost hint**
-      (needs B4 cost-rules data).
+- [x] 🔴 C2 Manual-selection UX **COMPLETE**: merchant default (preferred provider
+      leads the tender UIs) + live **"≈ −fee" hints** on every Pay button computed from
+      the basket total and the B4 fee rules — the cashier sees the cheaper provider at
+      a glance. Manual least-cost routing (M2) is now fully usable pending C1's second
+      real provider (A2 decision) and the C4 shop pilot.
 - [ ] 🟡 C3 Record which provider was used on sale/journal/receipt.
 - [ ] 🔴 C4 **UK pilot** on real hardware (Farshid's shop) with two providers.
 
