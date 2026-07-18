@@ -1,6 +1,8 @@
 # Universal Till — Work Queue
 
-_Last updated: 2026-07-18 (overnight batch closed; till at v0.2.36). Living checklist of what's left, **ordered by dependency**:
+_Last updated: 2026-07-18 (mp Playwright suite merged + in CI; Phase 2 rescoped to
+**Universal Till Cloud** per ADR-0018 and STARTED — Farshid's shop syncs to his homelab
+cloud). Living checklist of what's left, **ordered by dependency**:
 each phase mostly needs the one before it. Within a phase, do 🔴 before 🟡 before 🟢._
 _`[ ]` = not started, `[~]` = in progress, `[x]` = done (bottom). **(field)** = Farshid
 reported it from real use._
@@ -103,6 +105,9 @@ Two tracks run **independently** of that path and can happen anytime:
       search transliteration vs OS switching — **awaiting Farshid's pick** (recommend
       scanner normalization in core + transliteration as the plugin).
 - [ ] 🟡 **Windows regular-printing** — plain-text/CUPS-equivalent path on Windows.
+- [ ] 🟡 **(field)** **Buttons can carry icons** (Farshid 2026-07-18): tender/menu
+      buttons show an icon; a plugin can ship its own icon in the manifest and it shows
+      on the plugin card AND on the button it contributes.
 - [x] 🟡 **WKDownloadDelegate** — attachments / undisplayable responses / `<a download>`
       links now save to ~/Downloads with browser-style dedupe (macOS 11.3+ guarded).
       Needs a real-app click test on the next dmg.
@@ -154,25 +159,59 @@ Two tracks run **independently** of that path and can happen anytime:
 
 ---
 
-## Phase 2 — Cloud foundation _(the gate for the whole shopper platform)_
+## Phase 2 — Universal Till Cloud _(the gate for the whole shopper platform)_
 
-- [ ] 🔴 **Cloud sync backend / paid cloud tier** — the monetization gate; a shop must be
-      cloud-connected for anything shopper-facing to reach it (tills sit behind shop NAT).
-- [ ] 🔴 **Subscription select + pay** (Farshid 2026-07-17): NOT implemented — the owner
-      back-office needs a plan page (free / paid tiers per ADR-0013), plan selection,
-      and actual payment for the subscription (likely Stripe Billing to start), driving
-      the entitlements that gate paid features/plugins. Design the plan matrix first.
-- [ ] 🟡 **Shop badges** (Farshid 2026-07-17): shops get visible badges too (e.g.
-      registered / claimed / subscribed tiers) — surface in the owner back-office and
-      later on the shopper platform's shop pages. Define the badge set with the
-      subscription tiers.
-- [ ] 🔴 **Store registry** — the public directory of cloud-connected shops the app/web
-      searches. _Needs the cloud tier._
-- [ ] 🟡 **Centralized back-office portal** (ADR-0013 L2/L3) — manage catalog/stock/fleet
-      across stores from one console; ties to the paid multi-store licence. Claim flow +
-      owner pages are the seed (shipped).
-- [ ] 🟢 **Multi-cloud + on-prem sovereign** deployment (cheap/low-txn, cloud-less
-      countries e.g. Iran) — the "how" of running the cloud tier where big clouds can't.
+**Decision landed ([ADR-0018](adr/0018-universal-till-cloud.md), Farshid 2026-07-18):**
+the "marketplace" app is really the **cloud tier** → renamed **Universal Till Cloud**
+at `cloud.universaltill.com` (marketplace stays as one section; the old host keeps
+working for the fleet). Sync is **till-initiated only** (state up, directives down);
+the **back-office device = the till binary in back-office mode** (no separate app).
+**First cloud env = Farshid's homelab** — his shop syncs to his local cloud NOW.
+
+**2a — Sync foundation (in progress — Farshid's shop ↔ homelab cloud):**
+- [~] 🔴 **Till → cloud heartbeat + health** — primary till pushes device fleet state
+      (per-device version/platform/last-seen/role incl. back-office devices, db size,
+      error counts) on a periodic loop; cloud stores + shows it in My shop.
+- [~] 🔴 **Directives channel** — cloud-created commands pulled by the till on the same
+      loop, applied locally, results reported back. First types: `install_plugin`,
+      `remove_plugin`, `set_setting`. Store-token auth; till-side validation unchanged
+      (installs stay Ed25519-verified).
+- [ ] 🔴 **Catalog + inventory snapshot up-sync** — items/variants/stock levels pushed
+      to the cloud so the owner sees (then edits) the shop's catalog remotely; also the
+      feed the Phase-3 shopper search will read.
+- [ ] 🟡 **Problems & logs surface** — till pushes a problem digest (errors, failed
+      syncs, printer faults); cloud shows per-shop/per-device problem feed in My shop.
+
+**2b — Remote management UI (needs 2a):**
+- [ ] 🔴 **Fleet page in My shop** — all tills + back-office devices, health chips,
+      last-seen, versions, pending directives.
+- [ ] 🔴 **"Install to shop" from the cloud** — approve+install a plugin to a shop from
+      the portal (creates an `install_plugin` directive); paid installs ride the
+      subscriptions arc below.
+- [ ] 🟡 **Remote settings & design/theme** — edit shop settings + apply themes from the
+      cloud (via `set_setting` directives; theme = a theme-plugin install + setting).
+- [ ] 🟡 **Cloud catalog/inventory editing** — edit remotely, till pulls changes as
+      directives (two-way; up-sync ships first).
+- [ ] 🟡 **Back-office mode in the till** (`display.mode=backoffice` or device profile) —
+      manager pages lead, sale surfaces hidden; LAN-syncs + appears in fleet as its own
+      device class. _This IS the "back-office application"._
+
+**2c — Naming & platform (parallel):**
+- [~] 🔴 **cloud.universaltill.com** — DNS + ingress + cert (IaC), same app answers both
+      hosts; rebrand UI strings ("Universal Till Cloud"); old marketplace host stays
+      for the fleet. Repo rename = cosmetic, queued 🟢.
+- [ ] 🔴 **Subscription select + pay** (Farshid 2026-07-17): plan page (free/paid tiers
+      per ADR-0013), selection + payment (likely Stripe Billing), driving entitlements
+      that gate paid features/plugins **and paid plugin installs from the portal**.
+      Design the plan matrix first.
+- [ ] 🟡 **Shop badges** (Farshid 2026-07-17): registered/claimed/subscribed tiers on
+      the back-office and later shopper surfaces. Define with the subscription tiers.
+- [ ] 🔴 **Store registry** — public directory of cloud-connected shops the app/web
+      searches. _Falls out of 2a's snapshots + shop profile._
+- [ ] 🟡 **Multi-store head office** (ADR-0013 L2/L3) — one console across stores; ties
+      to the paid multi-store licence. My-shop pages + 2b are the seed.
+- [ ] 🟢 **Multi-cloud + on-prem sovereign** deployment — the homelab deployment IS the
+      on-prem proof; document + generalize it (cheap/low-txn, cloud-less countries).
 
 ---
 
