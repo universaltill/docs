@@ -123,9 +123,11 @@ Two tracks run **independently** of that path and can happen anytime:
       explicit factory-reset deletes them); SQLite keeps full history, replicas journal
       to the primary, so the primary holds the whole shop's time series. Forecasting can
       query `sales`+`sale_lines` directly (see `ItemDailySellRates` as the pattern).
-- [ ] 🔴 **Order-ahead forecasting** — previous years' sales → suggested purchase
-      quantities before seasonal demand. Start with seasonal statistics; any ML is
-      self-hosted / Ollama (no paid AI APIs). _Needs history retention above._
+- [~] 🔴 **Order-ahead forecasting** — FIRST INCREMENT SHIPPED: "Coming up (based on
+      last year)" reports card — same upcoming 28-day window one year ago per item vs
+      current stock → suggested top-up; hidden until a shop has year-old data (lights
+      up as history ages). REMAINING: multi-year averaging, lunar-holiday shift
+      awareness (Ramadan moves ~11 days/yr), category rollups.
 - [~] 🔴 **Predictions + alerts** — SHIPPED: "Days left" column (28-day rate,
       variant sales folded in), ⚠ ≤7-day warnings, header chips (inventory + reports),
       **reorder suggestions** ("order ~N" to a 14-day cover on running-out rows).
