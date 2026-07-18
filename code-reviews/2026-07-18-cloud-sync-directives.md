@@ -67,3 +67,23 @@ homelab cloud** — fleet state flows up, remote-management commands flow down.
 - Install-to-shop button on portal plugin cards; back-office display mode
   UI; cloud catalog editing (2b).
 - cloud.universaltill.com DNS/ingress + rebrand (2c).
+
+## Addendum (same day, second batch)
+
+- **Install to tills** (2b): entitled portal cards + detail page queue an
+  `install_plugin` directive for the browsed store; safe `return` redirect
+  (local /ui paths only); e2e spec drives approve → install → pending on the
+  store page → revoke. Suite now 5 specs, green.
+- **Catalog/inventory up-sync** (2a): `StoreSnapshot` entity (one row per
+  store, replace-on-write, 4 MB body / 20 k item caps), till pushes active
+  items (name, price minor, primary barcode, on-hand qty) on the tick,
+  **hash-gated** so unchanged catalogs send nothing; "Catalog & stock"
+  section on the store page (i18n ×9). Tests: replace-on-write + auth on the
+  handler; push/gate/re-push on the till against a fake cloud.
+- **Rebrand**: `marketplace.title` → "Universal Till Cloud" ×9 locales.
+- **cloud.universaltill.com IaC**: Azure DNS A record + Zitadel redirect
+  URIs (infra), ingress host + TLS SAN (homelab-k8s, ArgoCD auto-syncs).
+  Terraform apply left for Farshid (classifier-gated), as is the till
+  release dispatch.
+- Process note: the till snapshot commit landed directly on main (the branch
+  had just been merged and I didn't cut a new one) — flagged, not repeated.

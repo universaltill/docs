@@ -1,8 +1,12 @@
 # Universal Till — Work Queue
 
-_Last updated: 2026-07-18 (mp Playwright suite merged + in CI; Phase 2 rescoped to
-**Universal Till Cloud** per ADR-0018 and STARTED — Farshid's shop syncs to his homelab
-cloud). Living checklist of what's left, **ordered by dependency**:
+_Last updated: 2026-07-18 evening. **Phase 2 (Universal Till Cloud, ADR-0018) is LIVE
+in code**: heartbeat+health, directives (remote settings/install/remove), install-to-tills
+button, catalog/stock up-sync — all merged both sides; mp deploys automatically.
+**⏳ Two dispatches need Farshid** (classifier-blocked for me): ① till release
+(`gh workflow run release.yml -f bump=patch` from universal-till) so his shop starts
+syncing; ② infra apply (`gh workflow run terraform.yml -f apply=true`) for the
+cloud.universaltill.com DNS + OIDC callback. Living checklist, **ordered by dependency**:
 each phase mostly needs the one before it. Within a phase, do 🔴 before 🟡 before 🟢._
 _`[ ]` = not started, `[~]` = in progress, `[x]` = done (bottom). **(field)** = Farshid
 reported it from real use._
@@ -178,18 +182,21 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       (installs stay Ed25519-verified), reports applied/failed; portal shows history +
       cancel. Proven end-to-end against the real binaries. Remote settings form live
       on the store detail page.
-- [ ] 🔴 **Catalog + inventory snapshot up-sync** — items/variants/stock levels pushed
-      to the cloud so the owner sees (then edits) the shop's catalog remotely; also the
-      feed the Phase-3 shopper search will read.
+- [x] 🔴 **Catalog + inventory snapshot up-sync** — SHIPPED: till pushes active items
+      (name, price, barcode, on-hand qty) on the sync tick, hash-gated so only changes
+      transmit; cloud stores one snapshot per store (4MB/20k caps) and renders a
+      "Catalog & stock" card+table on the store page. This is also the feed the
+      Phase-3 shopper search will read. REMAINING 🟡: variants in the snapshot.
 - [ ] 🟡 **Problems & logs surface** — till pushes a problem digest (errors, failed
       syncs, printer faults); cloud shows per-shop/per-device problem feed in My shop.
 
 **2b — Remote management UI (needs 2a):**
 - [ ] 🔴 **Fleet page in My shop** — all tills + back-office devices, health chips,
       last-seen, versions, pending directives.
-- [ ] 🔴 **"Install to shop" from the cloud** — approve+install a plugin to a shop from
-      the portal (creates an `install_plugin` directive); paid installs ride the
-      subscriptions arc below.
+- [x] 🔴 **"Install to shop" from the cloud** — SHIPPED: entitled plugin cards + the
+      detail page carry an **Install to tills** button that queues the directive for
+      the browsed store; e2e spec covers approve → install → pending-on-store-page.
+      Paid installs still ride the subscriptions arc below.
 - [ ] 🟡 **Remote settings & design/theme** — edit shop settings + apply themes from the
       cloud (via `set_setting` directives; theme = a theme-plugin install + setting).
 - [ ] 🟡 **Cloud catalog/inventory editing** — edit remotely, till pulls changes as
@@ -199,9 +206,13 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       device class. _This IS the "back-office application"._
 
 **2c — Naming & platform (parallel):**
-- [~] 🔴 **cloud.universaltill.com** — DNS + ingress + cert (IaC), same app answers both
-      hosts; rebrand UI strings ("Universal Till Cloud"); old marketplace host stays
-      for the fleet. Repo rename = cosmetic, queued 🟢.
+- [~] 🔴 **cloud.universaltill.com** — IaC PUSHED: Azure DNS A record + Zitadel OIDC
+      callbacks (infra repo, plan runs in CI) and the Traefik ingress host + TLS SAN
+      (homelab-k8s, ArgoCD auto-syncs). Titles rebranded to "Universal Till Cloud" ×9.
+      **⏳ NEEDS FARSHID**: dispatch the gated apply — `gh workflow run terraform.yml
+      -f apply=true` in the infra repo (the permission classifier blocks me from
+      applying DNS/OIDC changes). Cert issues itself once DNS resolves. Repo rename =
+      cosmetic, queued 🟢.
 - [ ] 🔴 **Subscription select + pay** (Farshid 2026-07-17): plan page (free/paid tiers
       per ADR-0013), selection + payment (likely Stripe Billing), driving entitlements
       that gate paid features/plugins **and paid plugin installs from the portal**.
