@@ -4,9 +4,17 @@ _Last updated: 2026-07-18 night. **Phase 2 (Universal Till Cloud, ADR-0018) is L
 in code**: heartbeat+health, directives (remote settings/install/remove), install-to-tills
 button, catalog/stock up-sync — all merged both sides; mp deploys automatically.
 **https://cloud.universaltill.com is LIVE** (Farshid approved the apply 2026-07-18;
-DNS + cert + rebrand verified). **⏳ One dispatch still needs Farshid**: ① till release
+DNS + cert + rebrand verified). **⏳ Three Farshid steps** (classifier-blocked for me,
+full detail in code-reviews/2026-07-19-multi-host-weblogin.md): ① till release
 (`gh workflow run release.yml -f bump=patch` from universal-till) so his shop starts
-syncing. Living checklist, **ordered by dependency**:
+syncing and install-to-tills applies; ② Zitadel cloud-callback apply — one command,
+staged + plan-verified (0 destroys): `cd infra/unitill-infra/zitadel && export
+KUBECONFIG=~/.kube/homelab-config && export ARM_ACCESS_KEY="$(az storage account keys
+list -g uni-till-platform -n unitillinfra --query '[0].value' -o tsv)" &&
+TARGET=zitadel_application_oidc.marketplace_web ./apply-in-cluster.sh apply`;
+③ after ②, tell Claude to re-add the reverted AUTH_WEBLOGIN_EXTRA_REDIRECT_URLS env
+in homelab-k8s — then login on cloud.* stays on cloud.*. Living checklist,
+**ordered by dependency**:
 each phase mostly needs the one before it. Within a phase, do 🔴 before 🟡 before 🟢._
 _`[ ]` = not started, `[~]` = in progress, `[x]` = done (bottom). **(field)** = Farshid
 reported it from real use._
@@ -196,7 +204,12 @@ the **back-office device = the till binary in back-office mode** (no separate ap
 - [x] 🔴 **"Install to shop" from the cloud** — SHIPPED: entitled plugin cards + the
       detail page carry an **Install to tills** button that queues the directive for
       the browsed store; e2e spec covers approve → install → pending-on-store-page.
-      Paid installs still ride the subscriptions arc below.
+      Paid installs still ride the subscriptions arc below. 2026-07-19: Farshid
+      reported "not working" — his shop's till predates cloudsync; needs the till
+      release (header step ①). Till now picks up queued directives ~15 s after boot
+      and every 2 min while running (was 90 s / 5 min). **Farshid decision: remote
+      install is a PAID-tier feature** — gate `install_plugin` directives when the
+      subscription tiers land (task #42).
 - [ ] 🟡 **Remote settings & design/theme** — edit shop settings + apply themes from the
       cloud (via `set_setting` directives; theme = a theme-plugin install + setting).
 - [ ] 🟡 **Cloud catalog/inventory editing** — edit remotely, till pulls changes as
@@ -217,9 +230,10 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       pre-backend Key Vault secrets so a platform apply can never rotate live creds
       again (review: `code-reviews/2026-07-18-terraform-multi-root-ci.md`).
       REMAINING 🟢: ① zitadel terraform root still has no CI (needs the machine-user
-      PAT as a repo secret) so the cloud-host OIDC callback sits unapplied — only
-      matters once marketplace auth is enabled; ② delete `unitill-infra/imports.tf`
-      (one-time adoption, now in state); ③ repo rename = cosmetic.
+      PAT as a repo secret); ② repo rename = cosmetic. (imports.tf deleted after
+      adoption; multi-host login for cloud.* is CODED + merged — header steps ②③
+      finish it: Zitadel callback apply, then re-add the reverted env. Review:
+      `code-reviews/2026-07-19-multi-host-weblogin.md`.)
 - [ ] 🔴 **Subscription select + pay** (Farshid 2026-07-17): plan page (free/paid tiers
       per ADR-0013), selection + payment (likely Stripe Billing), driving entitlements
       that gate paid features/plugins **and paid plugin installs from the portal**.
