@@ -18,6 +18,14 @@ Two tracks run **independently** of that path and can happen anytime:
 ## Phase 0 — Fix & polish what's already live _(no dependencies — do now)_
 
 ### 🧾 Till field bugs (Farshid screenshots 2026-07-17 evening)
+- [x] 🔴 **(field)** **OSK "still not showing"** — diagnosed: his till is on `auto`,
+      which hides the keyboard on non-touch machines BY DESIGN (mac answer: Settings →
+      Display → On-screen keyboard → **On**). Real fix shipped too: auto now detects
+      touch via any-pointer/maxTouchPoints/ontouchstart and enables on first real touch
+      (kiosk chromium with a mouse used to defeat it) — v0.2.35.
+- [x] 🟡 **(field)** **Settings page unaligned/messy** — responsive card grid + aligned
+      form rows, 51 → 26 inline styles, uniform control heights — v0.2.35. (Same
+      treatment available for other pages he flags.)
 - [x] 🔴 **(field)** **PIN pad rendered inside the header** — expired-session htmx
       fragment loads got a 302 that htmx swapped in place; now 401 + HX-Redirect →
       real navigation to the lock screen (v0.2.25, class-wide for all fragments).
