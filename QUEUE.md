@@ -71,6 +71,11 @@ Two tracks run **independently** of that path and can happen anytime:
 - [ ] 🟢 Self-serve **vendor registration** flow (request + admin approval) — today a
       developer needs a manually-granted vendor role.
 
+### 🌍 Localization
+- [~] 🟡 **Marketplace storefront i18n** — slice 1 SHIPPED: landing page fully keyed
+      (nav/hero/browse/search/trust pills, 9 locales). REMAINING: discovery + detail
+      chrome, claim/my-shop residual strings, staff pages (lower priority).
+
 ### 🎨 Content & assets
 - [x] 🟡 **(field)** **Icons for all 11 plugins** — consistent SVG set embedded in the
       marketplace, served at `/ui/assets/icons/{slug}.svg`, wired to storefront/portal/
