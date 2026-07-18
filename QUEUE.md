@@ -169,13 +169,15 @@ the **back-office device = the till binary in back-office mode** (no separate ap
 **First cloud env = Farshid's homelab** — his shop syncs to his local cloud NOW.
 
 **2a — Sync foundation (in progress — Farshid's shop ↔ homelab cloud):**
-- [~] 🔴 **Till → cloud heartbeat + health** — primary till pushes device fleet state
-      (per-device version/platform/last-seen/role incl. back-office devices, db size,
-      error counts) on a periodic loop; cloud stores + shows it in My shop.
-- [~] 🔴 **Directives channel** — cloud-created commands pulled by the till on the same
-      loop, applied locally, results reported back. First types: `install_plugin`,
-      `remove_plugin`, `set_setting`. Store-token auth; till-side validation unchanged
-      (installs stay Ed25519-verified).
+- [x] 🔴 **Till → cloud heartbeat + health** — SHIPPED (both sides, 2026-07-18): till
+      pushes device state (version/platform/role incl. backoffice, db size, uptime)
+      every 5 min; store detail page shows fleet health + last-sync. Lands on his
+      till with the next release; cloud side deploys automatically.
+- [x] 🔴 **Directives channel** — SHIPPED: cloud queues `set_setting`/`install_plugin`/
+      `remove_plugin`; till pulls on the sync loop, applies via the SAME local paths
+      (installs stay Ed25519-verified), reports applied/failed; portal shows history +
+      cancel. Proven end-to-end against the real binaries. Remote settings form live
+      on the store detail page.
 - [ ] 🔴 **Catalog + inventory snapshot up-sync** — items/variants/stock levels pushed
       to the cloud so the owner sees (then edits) the shop's catalog remotely; also the
       feed the Phase-3 shopper search will read.
