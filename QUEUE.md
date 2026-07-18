@@ -1,6 +1,6 @@
 # Universal Till — Work Queue
 
-_Last updated: 2026-07-17. Living checklist of what's left, **ordered by dependency**:
+_Last updated: 2026-07-18 (overnight batch closed; till at v0.2.36). Living checklist of what's left, **ordered by dependency**:
 each phase mostly needs the one before it. Within a phase, do 🔴 before 🟡 before 🟢._
 _`[ ]` = not started, `[~]` = in progress, `[x]` = done (bottom). **(field)** = Farshid
 reported it from real use._
