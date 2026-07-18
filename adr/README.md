@@ -26,3 +26,4 @@ Keep them short: Context → Decision → Consequences.
 | [0014](0014-erp-integration-connectors.md) | ERP integration: reusable connector plugins on the sale.completed event |
 | [0015](0015-lazy-store-registration.md) | Lazy store registration: enrol on first marketplace use, not at boot |
 | [0016](0016-payment-orchestration-least-cost-routing.md) | Payment orchestration + least-cost routing: we route to the cheapest acquirer, never hold funds |
+| [0017](0017-universal-erp-metadata-kernel.md) | Metadata-driven ERP kernel: AI-authored metadata not per-customer code, modular monolith, DB-per-tenant, plugin-based modules (Proposed) |
