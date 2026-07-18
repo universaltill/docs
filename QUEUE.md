@@ -254,7 +254,10 @@ later). Full plan: `architecture/payment-orchestration-roadmap.md`; decision:
 **C. Manual multi-provider — ships now, UK, no certification (← the near-term win):**
 - [ ] 🔴 C1 Add a **second REAL provider plugin** (per A2 — SumUp/Adyen; demo+qrpay+stripe
       already give multiple buttons for the UX, so this is about a second real acquirer).
-- [ ] 🔴 C2 Manual-selection UX: cashier picks; **merchant default + per-provider cost hint**.
+- [~] 🔴 C2 Manual-selection UX — **merchant default SHIPPED**: `payments.default_method`
+      (Settings → Payments) makes the preferred provider the one-tap first choice on
+      both tender UIs, LAN-synced shop-wide. REMAINING: per-provider **cost hint**
+      (needs B4 cost-rules data).
 - [ ] 🟡 C3 Record which provider was used on sale/journal/receipt.
 - [ ] 🔴 C4 **UK pilot** on real hardware (Farshid's shop) with two providers.
 
