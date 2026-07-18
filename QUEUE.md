@@ -72,9 +72,10 @@ Two tracks run **independently** of that path and can happen anytime:
       developer needs a manually-granted vendor role.
 
 ### 🌍 Localization
-- [~] 🟡 **Marketplace storefront i18n** — slice 1 SHIPPED: landing page fully keyed
-      (nav/hero/browse/search/trust pills, 9 locales). REMAINING: discovery + detail
-      chrome, claim/my-shop residual strings, staff pages (lower priority).
+- [x] 🟡 **Marketplace storefront i18n** — SHOPPER SURFACES COMPLETE (slices 1+2):
+      landing page, portal cards + fragment, detail hero, trust pills, vendor lines —
+      9 locales, verified live (TR + FA render confirmed). Staff pages (admin/vendor
+      consoles) deliberately English — queued 🟢 if ever needed.
 
 ### 🎨 Content & assets
 - [x] 🟡 **(field)** **Icons for all 11 plugins** — consistent SVG set embedded in the
