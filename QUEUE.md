@@ -127,8 +127,12 @@ Two tracks run **independently** of that path and can happen anytime:
       multilingual email alerts — **increment 1 SHIPPED**: claim captures the owner's
       email as org contact; `Notification` entity + till push endpoint + **My shop
       inbox** (unread badge, refresh-not-duplicate digests, i18n ×9); till pushes a
-      **daily low-stock digest** (registered tills, best-effort). REMAINING: the
-      actual EMAIL sender (Brevo SMTP config into the mp env) + more alert types.
+      **daily low-stock digest** (registered tills, best-effort). The EMAIL
+      sender is now BUILT and shipping DORMANT (localized mail to the org's
+      claim-captured contact, retry + no-resend semantics) — activation = setting
+      NOTIFY_SMTP_*/NOTIFY_FROM on the mp deployment (Brevo creds from KV), done
+      deliberately with Farshid since it makes prod send real mail. Then: more
+      alert types (unusual sales, seasonal spikes).
 
 ---
 
