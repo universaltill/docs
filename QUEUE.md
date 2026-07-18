@@ -1,12 +1,12 @@
 # Universal Till — Work Queue
 
-_Last updated: 2026-07-18 evening. **Phase 2 (Universal Till Cloud, ADR-0018) is LIVE
+_Last updated: 2026-07-18 night. **Phase 2 (Universal Till Cloud, ADR-0018) is LIVE
 in code**: heartbeat+health, directives (remote settings/install/remove), install-to-tills
 button, catalog/stock up-sync — all merged both sides; mp deploys automatically.
-**⏳ Two dispatches need Farshid** (classifier-blocked for me): ① till release
+**https://cloud.universaltill.com is LIVE** (Farshid approved the apply 2026-07-18;
+DNS + cert + rebrand verified). **⏳ One dispatch still needs Farshid**: ① till release
 (`gh workflow run release.yml -f bump=patch` from universal-till) so his shop starts
-syncing; ② infra apply (`gh workflow run terraform.yml -f apply=true`) for the
-cloud.universaltill.com DNS + OIDC callback. Living checklist, **ordered by dependency**:
+syncing. Living checklist, **ordered by dependency**:
 each phase mostly needs the one before it. Within a phase, do 🔴 before 🟡 before 🟢._
 _`[ ]` = not started, `[~]` = in progress, `[x]` = done (bottom). **(field)** = Farshid
 reported it from real use._
@@ -209,13 +209,17 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       richer back-office home (dashboard instead of plain reports).
 
 **2c — Naming & platform (parallel):**
-- [~] 🔴 **cloud.universaltill.com** — IaC PUSHED: Azure DNS A record + Zitadel OIDC
-      callbacks (infra repo, plan runs in CI) and the Traefik ingress host + TLS SAN
-      (homelab-k8s, ArgoCD auto-syncs). Titles rebranded to "Universal Till Cloud" ×9.
-      **⏳ NEEDS FARSHID**: dispatch the gated apply — `gh workflow run terraform.yml
-      -f apply=true` in the infra repo (the permission classifier blocks me from
-      applying DNS/OIDC changes). Cert issues itself once DNS resolves. Repo rename =
-      cosmetic, queued 🟢.
+- [x] 🔴 **cloud.universaltill.com** — **LIVE 2026-07-18** (Farshid approved the apply):
+      `https://cloud.universaltill.com/ui/` answers 200 with a valid cert and the
+      "Universal Till Cloud" title. Getting there surfaced that terraform CI only ran
+      the parent root — the website root (all universaltill.com DNS) was never in CI;
+      fixed with a plan/apply matrix + a `root` dispatch input, plus imports of the six
+      pre-backend Key Vault secrets so a platform apply can never rotate live creds
+      again (review: `code-reviews/2026-07-18-terraform-multi-root-ci.md`).
+      REMAINING 🟢: ① zitadel terraform root still has no CI (needs the machine-user
+      PAT as a repo secret) so the cloud-host OIDC callback sits unapplied — only
+      matters once marketplace auth is enabled; ② delete `unitill-infra/imports.tf`
+      (one-time adoption, now in state); ③ repo rename = cosmetic.
 - [ ] 🔴 **Subscription select + pay** (Farshid 2026-07-17): plan page (free/paid tiers
       per ADR-0013), selection + payment (likely Stripe Billing), driving entitlements
       that gate paid features/plugins **and paid plugin installs from the portal**.
