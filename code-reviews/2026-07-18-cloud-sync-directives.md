@@ -87,3 +87,11 @@ homelab cloud** — fleet state flows up, remote-management commands flow down.
   release dispatch.
 - Process note: the till snapshot commit landed directly on main (the branch
   had just been merged and I didn't cut a new one) — flagged, not repeated.
+- **Back-office device profile** (third batch, till main): Settings → Display
+  "Device profile" select (manager-only); `display.mode=backoffice` 303s "/"
+  to /reports — the ADR-0018 back-office application with zero new binaries.
+  Per-till by construction (`display.*` is in PerTillSettingPrefixes, never
+  LAN-synced). Replica tills now skip the catalog-snapshot push (primary's
+  snapshot is the shop's). Test: TestBackofficeModeRedirectsHome round-trips
+  register → backoffice → register. i18n ×4. CI green on both repos,
+  including the new mp UI E2E workflow's first main runs.

@@ -201,9 +201,12 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       cloud (via `set_setting` directives; theme = a theme-plugin install + setting).
 - [ ] 🟡 **Cloud catalog/inventory editing** — edit remotely, till pulls changes as
       directives (two-way; up-sync ships first).
-- [ ] 🟡 **Back-office mode in the till** (`display.mode=backoffice` or device profile) —
-      manager pages lead, sale surfaces hidden; LAN-syncs + appears in fleet as its own
-      device class. _This IS the "back-office application"._
+- [x] 🟡 **Back-office mode in the till** — SHIPPED: Settings → Display → **Device
+      profile** (manager-only): back-office makes `/` land on Reports (sale screen
+      unreachable); per-till setting; fleet view shows the `backoffice` role. Replicas
+      no longer push duplicate catalog snapshots. _This IS the "back-office
+      application"_ — any till/tablet becomes the manager station. REMAINING 🟢:
+      richer back-office home (dashboard instead of plain reports).
 
 **2c — Naming & platform (parallel):**
 - [~] 🔴 **cloud.universaltill.com** — IaC PUSHED: Azure DNS A record + Zitadel OIDC
