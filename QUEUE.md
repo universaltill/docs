@@ -195,8 +195,13 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       transmit; cloud stores one snapshot per store (4MB/20k caps) and renders a
       "Catalog & stock" card+table on the store page. This is also the feed the
       Phase-3 shopper search will read. REMAINING 🟡: variants in the snapshot.
-- [ ] 🟡 **Problems & logs surface** — till pushes a problem digest (errors, failed
-      syncs, printer faults); cloud shows per-shop/per-device problem feed in My shop.
+- [x] 🟡 **Problems & logs surface** — SHIPPED 2026-07-19: till keeps a ring of recent
+      warn/error log lines (`logging.Recent()`, zero call-site changes) + failed
+      plugin installs, reports them as a digest in the heartbeat (capped, truncated,
+      replace-on-report so resolved problems clear); store page shows a fleet-wide
+      **Problems & logs** card (device/when/level/message, newest first). Review:
+      `code-reviews/2026-07-19-problems-feed.md`. REMAINING 🟢: persistent problem
+      history + printer-fault events when hardware plugins report them.
 
 **2b — Remote management UI (needs 2a):**
 - [ ] 🔴 **Fleet page in My shop** — all tills + back-office devices, health chips,
