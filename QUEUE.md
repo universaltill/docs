@@ -210,8 +210,13 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       and every 2 min while running (was 90 s / 5 min). **Farshid decision: remote
       install is a PAID-tier feature** — gate `install_plugin` directives when the
       subscription tiers land (task #42).
-- [ ] 🟡 **Remote settings & design/theme** — edit shop settings + apply themes from the
-      cloud (via `set_setting` directives; theme = a theme-plugin install + setting).
+- [x] 🟡 **Remote settings & design/theme** — SHIPPED 2026-07-19: the till reports its
+      active theme + available themes (built-in and plugin-contributed) in the
+      heartbeat; the store page renders a **Design** picker from what the fleet
+      actually has and applies via the existing `set_setting theme` directive
+      (queue/cancel/history free). Generic key/value settings form already existed.
+      Review: `code-reviews/2026-07-19-remote-theme-picker.md`. REMAINING 🟢: install
+      a theme *plugin* from the picker in one step (today: install plugin, then pick).
 - [ ] 🟡 **Cloud catalog/inventory editing** — edit remotely, till pulls changes as
       directives (two-way; up-sync ships first).
 - [x] 🟡 **Back-office mode in the till** — SHIPPED: Settings → Display → **Device
