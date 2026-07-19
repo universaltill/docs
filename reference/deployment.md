@@ -18,17 +18,17 @@ Store CSI driver.
                  GitHub Actions (CI/CD)
    ┌─────────────────────┬──────────────────────┬─────────────────────┐
    │  terraform          │  build & push        │  GitOps commit      │
-   │  (infra/)           │  (ut-market-place)   │  (homelab-k8s)      │
+   │  (ut-infra/)        │  (ut-cloud)          │  (homelab-k8s)      │
    ▼                     ▼                      ▼
 Azure platform      ACR image              ArgoCD unitill-marketplace app
 uni-till-platform   unitillacr01.azurecr   → k3s homelab cluster
-(RG, ACR, KeyVault, .io/ut-market-place    → marketplace.home.taskrunnertech.co.uk
+(RG, ACR, KeyVault, .io/ut-cloud           → marketplace.home.taskrunnertech.co.uk
  DNS)
 ```
 
-## 1. Azure platform — `infra/unitill-infra` (Terraform)
+## 1. Azure platform — `ut-infra/unitill-infra` (Terraform)
 
-Terraform root at `infra/unitill-infra` (providers `azurerm ~> 4.0`,
+Terraform root at `ut-infra/unitill-infra` (providers `azurerm ~> 4.0`,
 `github ~> 6.0`, `random ~> 3.6`). Provisions, in subscription
 `7e341019-…` / tenant `6823ebc7-…`:
 
@@ -42,15 +42,15 @@ Terraform root at `infra/unitill-infra` (providers `azurerm ~> 4.0`,
 `secrets.tf` generates the Postgres password, upload token, and a 32-byte Ed25519
 signing seed and writes them (plus the Postgres DSN and ACR admin creds) into Key
 Vault. Pipeline: `.github/workflows/terraform.yml` (fmt/validate/plan on PR, gated
-apply). Remote state uses the azurerm backend (see `infra/README.md` for the
+apply). Remote state uses the azurerm backend (see `ut-infra/README.md` for the
 one-time bootstrap).
 
-## 2. Marketplace image — `ut-market-place`
+## 2. Marketplace image — `ut-cloud` (renamed from `ut-market-place` 2026-07-19)
 
 `.github/workflows/build-and-push.yml` runs CI verification, authenticates to
 Azure via **OIDC**, reads the ACR credentials from **Key Vault**, and builds +
 pushes the `production` Docker target for **linux/arm64** (buildx + QEMU; the
-cluster nodes are Raspberry Pi) as `unitillacr01.azurecr.io/ut-market-place:{sha,latest}`.
+cluster nodes are Raspberry Pi) as `unitillacr01.azurecr.io/ut-cloud:{sha,latest}`.
 The binary links go-sqlite3 (CGO), so the runtime image is debian-slim; it serves
 plain HTTP on **:8081** behind Traefik (`HTTP_TLS_AUTO_DEV_CERT=false`).
 
@@ -65,7 +65,7 @@ The marketplace is the **`unitill-marketplace`** ArgoCD application
 
 | File | Contents |
 |---|---|
-| `deployment.yaml` | Deployment (image `unitillacr01.azurecr.io/ut-market-place:latest`, port 8081, non-root, /healthz probes) + Service (80→8081) + Ingress `marketplace.home.taskrunnertech.co.uk` (issuer `letsencrypt-home`, `wildcard-tls`). Mounts the CSI volume; `envFrom` the synced `marketplace-pg-secret`. Reloader-annotated. |
+| `deployment.yaml` | Deployment (image `unitillacr01.azurecr.io/ut-cloud:latest`, port 8081, non-root, /healthz probes) + Service (80→8081) + Ingress `marketplace.home.taskrunnertech.co.uk` (issuer `letsencrypt-home`, `wildcard-tls`). Mounts the CSI volume; `envFrom` the synced `marketplace-pg-secret`. Reloader-annotated. |
 | `postgres.yaml` | Postgres 16-alpine StatefulSet, 20Gi `local-path`; static DB/USER, `POSTGRES_PASSWORD` from the synced secret. |
 | `secretproviderclass.yaml` | Maps KV → `marketplace-pg-secret` (POSTGRES_PASSWORD/DSN, MARKETPLACE_UPLOAD_TOKEN/SIGNING_KEY). |
 | `pvc.yaml` | blob + Postgres PVCs. |

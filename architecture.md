@@ -18,15 +18,15 @@ is its own repo).
 | Repo | Role | Language |
 |------|------|----------|
 | **`universal-till`** | The POS host — the till application. Runs checkout, catalog, inventory, receipts, sync, settings, and the **plugin host** that installs and runs plugins. | Go |
-| **`ut-market-place`** | The marketplace — publishes/validates/signs plugin releases, serves downloads, and hosts the vendor + admin web UI. Deployed to the homelab cluster. | Go (ent ORM, Postgres/SQLite) |
+| **`ut-cloud`** | Universal Till Cloud (renamed from `ut-market-place` 2026-07-19) — publishes/validates/signs plugin releases, serves downloads, and hosts the vendor + admin web UI. Deployed to the homelab cluster. | Go (ent ORM, Postgres/SQLite) |
 | **`ut-plugin-faq`** | The first sample plugin (a multilingual FAQ page). The template for how a plugin repo packages and publishes. | Go |
-| `infra` | Terraform for the Azure platform (ACR, Key Vault, DNS). | Terraform |
+| `ut-infra` | Terraform for the Azure platform (ACR, Key Vault, DNS). | Terraform |
 | `homelab-k8s` | ArgoCD GitOps manifests for the k3s homelab cluster the marketplace runs on. | YAML |
 
 ## System overview
 
 ```
-   Plugin repo (ut-plugin-faq)          Marketplace (ut-market-place)          POS host (universal-till)
+   Plugin repo (ut-plugin-faq)          Cloud (ut-cloud)                      POS host (universal-till)
    ┌──────────────────────┐   upload    ┌───────────────────────────┐  token   ┌──────────────────────┐
    │ package.sh → artifact ├───────────► │ validate → scan → review  ├────────► │ download → verify    │
    │ publish.sh            │             │ → approve + Ed25519 sign  │  bundle  │ (Ed25519) → install  │

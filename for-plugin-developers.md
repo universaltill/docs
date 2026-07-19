@@ -116,4 +116,4 @@ page under Help/Support.
   and checked against `supported_architectures`.
 - Validation errors surface consistently across upload/API, the scanner, and the
   POS installer. The authoritative catalog is
-  `ut-market-place/docs/manifest-validation-errors.md`.
+  `ut-cloud/docs/manifest-validation-errors.md`.

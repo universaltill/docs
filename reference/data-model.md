@@ -5,7 +5,7 @@ hand-written SQL** — always treat the schema files as authoritative; this docu
 is a readable snapshot.
 
 - **Marketplace:** [ent](https://entgo.io) schemas in
-  `ut-market-place/internal/repositories/ent/schema/*.go` → Postgres (prod) /
+  `ut-cloud/internal/repositories/ent/schema/*.go` → Postgres (prod) /
   SQLite (dev), created via ent auto-migrate.
 - **POS:** SQLite, defined in `universal-till/internal/db/migrations/001_init.sql`
   (append-only after first release).

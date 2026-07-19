@@ -44,14 +44,14 @@ The subsystem that installs, verifies, and runs plugins:
 
 ---
 
-## `ut-market-place` (marketplace)
+## `ut-cloud` (marketplace, renamed from `ut-market-place` 2026-07-19)
 
 Go module with multiple entrypoints under `cmd/` and a broad `internal/`:
 
 ```
 cmd/
-  marketplace/              # the HTTP service
-  marketplace-sync/         # sync worker
+  cloud/                    # the HTTP service
+  cloud-sync/               # sync worker
   mp-cli/                   # admin/ops CLI (install intents, etc.)
 internal/
   repositories/ent/         # ent ORM — schema/ is the DB source of truth
@@ -94,9 +94,9 @@ dist/              # build output (packaged artifacts) — gitignored
 
 ---
 
-## `infra` & `homelab-k8s`
+## `ut-infra` & `homelab-k8s`
 
-- `infra/` — Terraform for the Azure platform (ACR, Key Vault, DNS) with a
+- `ut-infra/` — Terraform for the Azure platform (ACR, Key Vault, DNS) with a
   GitHub Actions plan/apply pipeline.
 - `homelab-k8s/` — ArgoCD GitOps manifests; `kubernetes/apps/…` (the marketplace
   app) and `kubernetes/infrastructure/…` (cert-manager, CSI driver, etc.).

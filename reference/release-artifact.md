@@ -195,7 +195,7 @@ These flows must stay distinct in docs, tooling, and storage.
 ## Sources
 
 - `ut-plugin-faq/specs/001-multilingual-faq-page/contracts/manifest.md`
-- `ut-market-place/internal/downloads/ingest.go`
-- `ut-market-place/internal/downloads/manual_export.go`
+- `ut-cloud/internal/downloads/ingest.go`
+- `ut-cloud/internal/downloads/manual_export.go`
 - `docs/plugins/manifest.md`
 - `docs/marketplace/cli.md`

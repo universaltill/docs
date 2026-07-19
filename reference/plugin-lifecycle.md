@@ -1,7 +1,8 @@
 # Plugin Lifecycle
 
 The end-to-end lifecycle of a Universal Till plugin across the three repos:
-`ut-plugin-faq` (a plugin), `ut-market-place` (the marketplace), and
+`ut-plugin-faq` (a plugin), `ut-cloud` (the marketplace, renamed from
+`ut-market-place` 2026-07-19), and
 `universal-till` (the POS host). This reflects the **implemented** contract
 (Epic 6), not a proposal.
 
@@ -117,4 +118,4 @@ own coarse status (`uploaded` → `approved`/`rejected`) and `scan_status`.
 - Validation errors surface consistently as the `{error:{message,details}}`
   shape (upload/API), the scanner's `scan_results.problems`, and the POS
   installer's verification errors. The authoritative catalog is
-  `ut-market-place/docs/manifest-validation-errors.md`.
+  `ut-cloud/docs/manifest-validation-errors.md`.

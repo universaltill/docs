@@ -14,7 +14,7 @@ checks these.
 - **POS (`universal-till`):** every SQL statement lives in the repo-owned data
   layer — `internal/data/*_repo.go`. Handlers, services, and UI code call
   repository methods; they never build or run SQL themselves.
-- **Marketplace (`ut-market-place`):** persistence goes through the **ent** client
+- **Marketplace (`ut-cloud`, renamed from `ut-market-place` 2026-07-19):** persistence goes through the **ent** client
   and `internal/repositories/`. The **ent schema is the single source of truth**;
   the DB is produced by auto-migrate, not hand-written SQL.
 - **Plugins never touch host internals.** A plugin accesses data only through the

@@ -1,6 +1,6 @@
 # Using the Marketplace (Vendor & Admin)
 
-The marketplace (`ut-market-place`) is where plugin releases are uploaded,
+The marketplace (`ut-cloud`, renamed from `ut-market-place` 2026-07-19) is where plugin releases are uploaded,
 reviewed, signed, and made available to stores. The web UI is served under `/ui/`.
 
 Live instance: **`https://marketplace.home.taskrunnertech.co.uk`**.

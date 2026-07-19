@@ -25,9 +25,9 @@ downloaded and installed onto tills where the signature is verified before it ru
 | Repo | What it is |
 |---|---|
 | **`universal-till`** | The POS host — checkout, catalog, inventory, receipts, sync, settings, and the plugin host. Go, SQLite, HTMX. |
-| **`ut-market-place`** | The marketplace — validates/signs plugin releases, serves downloads, hosts the vendor + admin UI. Go, ent, Postgres/SQLite. Deployed to the homelab cluster. |
+| **`ut-cloud`** | Universal Till Cloud (renamed from `ut-market-place` 2026-07-19) — the plugin marketplace, store claim/enrolment, owner back-office, admin/vendor consoles. Go, ent, Postgres/SQLite. Deployed to the homelab cluster. |
 | **`ut-plugin-faq`** | The first sample plugin (a multilingual FAQ page) and the template every plugin repo copies for packaging/publishing. Go. |
-| `infra` | Terraform for the Azure platform (ACR, Key Vault, DNS). |
+| `ut-infra` | Terraform for the Azure platform (ACR, Key Vault, DNS). |
 | `homelab-k8s` | ArgoCD GitOps manifests for the k3s cluster the marketplace runs on. |
 
 ## Start here

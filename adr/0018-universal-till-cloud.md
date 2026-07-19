@@ -65,3 +65,14 @@ cloud tier must be deployable multi-cloud and on-prem (sovereign countries).
   validation as local actions (e.g. plugin installs stay Ed25519-verified
   per ADR-0006 — a directive can only trigger an install the till would
   allow by hand).
+
+## Amendment (2026-07-19)
+
+Decision 1's "the `ut-market-place` repo keeps its name for now... renaming
+it is cosmetic and queued separately" is superseded: Farshid asked for the
+rename, and it's done. The repo (and its Go module, proto package, CI, ACR
+image, `cmd/` binaries) is now `ut-cloud`. `marketplace.universaltill.com`
+still remains valid indefinitely exactly as decision 1 says — that part is
+unchanged, only the *repo's* name moved. See `docs/QUEUE.md`'s "Org-wide
+ut-* repo rename" entry and `ut-cloud/docs/code-reviews/2026-07-19-*.md`
+for the full record.

@@ -14,9 +14,9 @@ How to build, test, and run the Universal Till components. Read
 | Repo | What it is |
 |---|---|
 | `universal-till` | POS host (Go). Single binary (`main.go`); SQLite; HTMX UI. |
-| `ut-market-place` | Marketplace (Go, ent, Postgres/SQLite, blob storage). |
+| `ut-cloud` | Universal Till Cloud, renamed from `ut-market-place` 2026-07-19 (Go, ent, Postgres/SQLite, blob storage). |
 | `ut-plugin-faq` | Sample plugin + the packaging/publish scripts other plugins copy. |
-| `infra` | Terraform (Azure ACR / Key Vault / DNS). |
+| `ut-infra` | Terraform (Azure ACR / Key Vault / DNS). |
 | `homelab-k8s` | ArgoCD manifests for the k3s cluster. |
 
 For where things live inside each repo see
@@ -25,7 +25,7 @@ layer see [`reference/data-model.md`](reference/data-model.md).
 
 ## Build, test, run
 
-### Marketplace (`ut-market-place`)
+### Marketplace (`ut-cloud`)
 
 ```bash
 go build ./...
@@ -97,10 +97,10 @@ Run a code review before every commit and record it under the touched repo's
 
 ## CI/CD
 
-- **Marketplace image:** `ut-market-place/.github/workflows/build-and-push.yml` —
+- **Marketplace image:** `ut-cloud/.github/workflows/build-and-push.yml` —
   builds the arm64 image via buildx and pushes to ACR `unitillacr01`, reading ACR
   creds from Key Vault via OIDC.
-- **Infra:** `infra/.github/workflows/terraform.yml` — fmt/validate/plan on PRs,
+- **Infra:** `ut-infra/.github/workflows/terraform.yml` — fmt/validate/plan on PRs,
   gated apply.
 - **Plugin release:** `ut-plugin-faq/.github/workflows/release.yml` — on `v*` tags,
   packages + publishes.

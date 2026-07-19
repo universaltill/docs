@@ -8,7 +8,7 @@ contract between a plugin, the marketplace, and the POS host. This documents the
 Authoritative sources:
 - POS host verifier: `universal-till/internal/plugins/manifest_verifier.go` +
   `manifest.go` (the struct the Ed25519 signature is computed over).
-- Marketplace validation: `ut-market-place/pkg/manifest`.
+- Marketplace validation: `ut-cloud/pkg/manifest`.
 - Example: `ut-plugin-faq/src/manifest/manifest.json`.
 
 See also: [Release Artifact](./release-artifact.md) · [Lifecycle](./lifecycle.md)
@@ -102,9 +102,9 @@ Plugins expose UI/behaviour through an `entries` array. Each entry:
 
 ## Validation + compatibility
 
-- Marketplace validation rules and messages: `ut-market-place/pkg/manifest`
+- Marketplace validation rules and messages: `ut-cloud/pkg/manifest`
   (`Validate`/`ValidateForRelease`); full catalog in
-  `ut-market-place/docs/manifest-validation-errors.md`.
+  `ut-cloud/docs/manifest-validation-errors.md`.
 - POS-side required fields + `canonical_type` taxonomy + executable bit:
   `manifest_verifier.go`.
 - Errors surface consistently across upload API (`{error:{message,details}}`),
