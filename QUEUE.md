@@ -296,10 +296,35 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       pre-backend Key Vault secrets so a platform apply can never rotate live creds
       again (review: `code-reviews/2026-07-18-terraform-multi-root-ci.md`).
       REMAINING 🟢: ① zitadel terraform root still has no CI (needs the machine-user
-      PAT as a repo secret); ② repo rename = cosmetic. (imports.tf deleted after
+      PAT as a repo secret). (imports.tf deleted after
       adoption; multi-host login for cloud.* is CODED + merged — header steps ②③
       finish it: Zitadel callback apply, then re-add the reverted env. Review:
       `code-reviews/2026-07-19-multi-host-weblogin.md`.)
+- [x] 🟡 **Org-wide ut-* repo rename** (Farshid 2026-07-19): `ut-market-place`→
+      `ut-cloud`, `docs`→`ut-docs`, `infra`→`ut-infra`, `website`→`ut-website` on
+      GitHub + local dirs + remotes; Go module path + ~190 imports renamed;
+      15 living docs updated (dated `code-reviews/*.md` left as historical
+      record). Turned out **repo rename is NOT purely cosmetic**: it broke
+      Azure AD OIDC federated identity — `ut-cloud` and `ut-infra`'s GitHub
+      Actions couldn't auth to Azure at all (`AADSTS700213`) until the
+      `unitill-gh-oidc` app registration's federated-credential subjects were
+      updated to match the new repo names. Also: this org has GitHub's
+      "immutable ID" OIDC subject format enabled, so the correct subject is
+      `repo:universaltill@<org_id>/<repo>@<repo_id>:...`, not the plain-name
+      form — easy to get subtly wrong. Fixed via `az ad app
+      federated-credential update` (imperative — the CI service principal
+      has Azure RM access but no Microsoft Graph read/write, so adding this
+      to the CI-planned `unitill-infra` root as Terraform would break `plan`
+      for everyone touching that root). REMAINING 🟢: bring these 4
+      federated credentials under Terraform properly — needs either a
+      higher-privileged execution path (like the in-cluster Zitadel apply
+      pattern) or granting the CI SP Graph permissions (Farshid decision).
+      Verified: full `verify.sh` green in `ut-cloud`, protobuf codegen
+      regenerated via `protoc` (not hand-patched — the embedded
+      FileDescriptorProto is a length-prefixed byte blob), contract guard
+      satisfied, CI/E2E green, `build-and-push` confirmed landing
+      `ut-cloud:latest` in ACR post-fix. homelab-k8s image cutover + deeper
+      "marketplace" terminology/proto-package rename in progress.
 - [ ] 🔴 **Subscription select + pay** (Farshid 2026-07-17): plan page (free/paid tiers
       per ADR-0013), selection + payment (likely Stripe Billing), driving entitlements
       that gate paid features/plugins **and paid plugin installs from the portal**.
