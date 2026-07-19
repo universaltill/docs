@@ -215,6 +215,22 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       `ut-market-place/docs/code-reviews/2026-07-19-persistent-problem-history.md`
       + `universal-till/docs/code-reviews/2026-07-19-problem-digest-timestamp-precision.md`.
       REMAINING 🟢: printer-fault events when hardware plugins report them.
+- [ ] 🟡 **Backoffice role/mode design (Farshid design ask, 2026-07-19)** — must
+      work fully standalone, no cloud registration required (unregistered shops
+      can still manage everything locally). Today: primary/replica (ADR-0011,
+      one device holds the real DB, replicas mirror over LAN) + an independent
+      `display.mode=backoffice` toggle any single device can flip in Settings —
+      no setup-wizard prompt, no combined "till + backoffice" mode yet. Farshid
+      asked: one designated backoffice machine others sync to, vs. any POS
+      opening backoffice via an admin/role gate with everything synced live.
+      Claude's rec (given to Farshid, awaiting his call): keep the single
+      source of truth (primary), make backoffice a ROLE GATE not a device
+      lock — any till can show the dashboard to an admin/backoffice-permission
+      user, reading the already-mirrored replica data; true multi-master
+      writes would fight offline-first (ADR-0003) for little real benefit.
+      Needs: setup-wizard question (only till / till+backoffice / only
+      backoffice-kiosk) + the same toggle in Settings. NOT started — needs
+      Farshid's decision first.
 
 **2b — Remote management UI (needs 2a):**
 - [ ] 🔴 **Fleet page in My shop** — all tills + back-office devices, health chips,
