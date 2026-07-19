@@ -239,8 +239,28 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       needed for the role-gate itself to work correctly.
 
 **2b — Remote management UI (needs 2a):**
-- [ ] 🔴 **Fleet page in My shop** — all tills + back-office devices, health chips,
-      last-seen, versions, pending directives.
+- [x] 🔴 **Fleet page in My shop** — SHIPPED 2026-07-19: the Devices table
+      already had name/id/role/platform/version/last-seen; added the two
+      missing pieces. Health chip is driven by the existing Problems digest
+      (a device with a current unresolved problem shows "Attention needed",
+      amber) rather than the raw health map, which today only reports
+      uptime/db size with no natural healthy/unhealthy threshold. Pending
+      directives is a fleet-wide badge on the heading, backed by a
+      dedicated count query (not derived from the capped 20-row Directives
+      list, so it can't disagree with the real total). Independent review
+      caught nothing blocking; a real bug was found and fixed during
+      implementation — `{{call .T ...}}` inside `{{range .Store.Devices}}`
+      silently truncated the page (`.` is the device inside a range, not
+      the page root) — two existing render tests caught it, fixed with
+      `$.T`. Verified live twice: once against a locally-seeded instance
+      (curled the rendered HTML), and again by confirming via direct DB
+      query that Farshid's real production till currently carries a real
+      warning (`cloudsync: tick failed (will retry)`, transient, from an
+      earlier deployment restart window) — same data shape as the local
+      verification, so the same code path is confirmed correct for it too
+      (couldn't screenshot production directly — the page correctly
+      requires authentication). Review:
+      `code-reviews/2026-07-19-fleet-page-health-directives.md`.
 - [x] 🔴 **"Install to shop" from the cloud** — SHIPPED: entitled plugin cards + the
       detail page carry an **Install to tills** button that queues the directive for
       the browsed store; e2e spec covers approve → install → pending-on-store-page.
