@@ -225,9 +225,15 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       Paid installs still ride the subscriptions arc below. 2026-07-19: Farshid
       reported "not working" — his shop's till predates cloudsync; needs the till
       release (header step ①). Till now picks up queued directives ~15 s after boot
-      and every 2 min while running (was 90 s / 5 min). **Farshid decision: remote
-      install is a PAID-tier feature** — gate `install_plugin` directives when the
-      subscription tiers land (task #42).
+      and every 2 min while running (was 90 s / 5 min). **2026-07-19 night: step ①
+      DONE** — Farshid reported still not working, root cause confirmed: the last
+      published release (v0.2.36, 2026-07-18) predates cloudsync entirely (38
+      commits / the whole feature unreleased). Cut v0.2.37 (Farshid approved);
+      all build jobs green (Linux/Windows/macOS). Farshid's till needs to actually
+      update to it (Settings → check for updates, or the 24h auto-check) before
+      install-to-tills can work — confirm with him once it's updated. **Farshid
+      decision: remote install is a PAID-tier feature** — gate `install_plugin`
+      directives when the subscription tiers land (task #42).
 - [x] 🟡 **Remote settings & design/theme** — SHIPPED 2026-07-19: the till reports its
       active theme + available themes (built-in and plugin-contributed) in the
       heartbeat; the store page renders a **Design** picker from what the fleet
