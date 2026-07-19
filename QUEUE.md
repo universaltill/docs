@@ -91,7 +91,13 @@ Two tracks run **independently** of that path and can happen anytime:
       chain; needs: tier assignment rules, badge design (storefront + portal + POS
       store cards), and the POS confirm dialog on untrusted installs.
 - [ ] 🟢 Self-serve **vendor registration** flow (request + admin approval) — today a
-      developer needs a manually-granted vendor role.
+      developer needs a manually-granted vendor role. 2026-07-19: granted
+      `vendor_maintainer` to Farshid's second account (farshid3003@gmail.com,
+      created directly in id.universaltill.com) via IaC — `zitadel_user_grant.
+      plugin_developer` in infra/unitill-infra/zitadel/marketplace.tf, looked
+      up by email (`data.zitadel_human_users`) since no id was captured at
+      creation. This manual-grant path is exactly what this item would
+      replace.
 
 ### 🌍 Localization
 - [x] 🟡 **Marketplace storefront i18n** — SHOPPER SURFACES COMPLETE (slices 1+2):
@@ -215,22 +221,22 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       `ut-market-place/docs/code-reviews/2026-07-19-persistent-problem-history.md`
       + `universal-till/docs/code-reviews/2026-07-19-problem-digest-timestamp-precision.md`.
       REMAINING 🟢: printer-fault events when hardware plugins report them.
-- [ ] 🟡 **Backoffice role/mode design (Farshid design ask, 2026-07-19)** — must
-      work fully standalone, no cloud registration required (unregistered shops
-      can still manage everything locally). Today: primary/replica (ADR-0011,
-      one device holds the real DB, replicas mirror over LAN) + an independent
-      `display.mode=backoffice` toggle any single device can flip in Settings —
-      no setup-wizard prompt, no combined "till + backoffice" mode yet. Farshid
-      asked: one designated backoffice machine others sync to, vs. any POS
-      opening backoffice via an admin/role gate with everything synced live.
-      Claude's rec (given to Farshid, awaiting his call): keep the single
-      source of truth (primary), make backoffice a ROLE GATE not a device
-      lock — any till can show the dashboard to an admin/backoffice-permission
-      user, reading the already-mirrored replica data; true multi-master
-      writes would fight offline-first (ADR-0003) for little real benefit.
-      Needs: setup-wizard question (only till / till+backoffice / only
-      backoffice-kiosk) + the same toggle in Settings. NOT started — needs
-      Farshid's decision first.
+- [x] 🟡 **Backoffice role/mode design (Farshid design ask, 2026-07-19)** —
+      **Farshid decided 2026-07-19: agreed with Claude's rec** — single source
+      of truth stays the primary/replica database (ADR-0011, unchanged), and
+      backoffice becomes a manager/admin ROLE GATE, not a device lock.
+      SHIPPED: `/backoffice` previously had NO auth gate at all (any operator,
+      even a cashier, could view the manager dashboard by navigating there).
+      Added the same `isManagerOrAuthOff` gate settings/reports already use.
+      Independent review caught a self-lockout regression this introduced — a
+      cashier session on an already backoffice-mode till would've hit a
+      dead-end 403 at "/" — fixed by making the home-page redirect itself
+      role-aware (falls through to the normal sale screen for non-managers)
+      and gating the display-mode setter to managers too. Review:
+      `universal-till/docs/code-reviews/2026-07-19-backoffice-role-gate.md`.
+      REMAINING 🟢: setup-wizard question (only till / till+backoffice / only
+      backoffice-kiosk) — a UX nicety over the existing Settings toggle, not
+      needed for the role-gate itself to work correctly.
 
 **2b — Remote management UI (needs 2a):**
 - [ ] 🔴 **Fleet page in My shop** — all tills + back-office devices, health chips,
