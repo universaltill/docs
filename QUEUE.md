@@ -194,7 +194,11 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       (name, price, barcode, on-hand qty) on the sync tick, hash-gated so only changes
       transmit; cloud stores one snapshot per store (4MB/20k caps) and renders a
       "Catalog & stock" card+table on the store page. This is also the feed the
-      Phase-3 shopper search will read. REMAINING 🟡: variants in the snapshot.
+      Phase-3 shopper search will read. 2026-07-19: variants SHIPPED — one row per
+      active variant (own id/price/barcode, composed name, no qty to avoid
+      double-counting), and the inline price editor works on variant rows
+      (`SetItemPrice` falls through to `item_variants`); review
+      `code-reviews/2026-07-19-variants-in-snapshot.md`.
 - [x] 🟡 **Problems & logs surface** — SHIPPED 2026-07-19: till keeps a ring of recent
       warn/error log lines (`logging.Recent()`, zero call-site changes) + failed
       plugin installs, reports them as a digest in the heartbeat (capped, truncated,
