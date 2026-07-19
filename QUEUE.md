@@ -226,12 +226,13 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       (queue/cancel/history free). Generic key/value settings form already existed.
       Review: `code-reviews/2026-07-19-remote-theme-picker.md`. REMAINING 🟢: install
       a theme *plugin* from the picker in one step (today: install plugin, then pick).
-- [~] 🟡 **Cloud catalog/inventory editing** — STEP 1 SHIPPED 2026-07-19: inline
-      **price editing** on the Catalog & stock table via new `set_price` directive
-      (validated both sides: portal 400s on garbage, till fails negatives; history
-      shows `item → amount`; snapshot re-push reflects the change back). Review:
-      `code-reviews/2026-07-19-remote-price-edit.md`. REMAINING: edit name/barcode,
-      stock adjustments, add/deactivate items, variants.
+- [~] 🟡 **Cloud catalog/inventory editing** — STEPS 1+2 SHIPPED 2026-07-19: inline
+      **price editing** (`set_price`, works on items AND variants) and inline
+      **stock adjustment** (`adjust_stock` +/- delta on item rows; same movement
+      record + connector event as a local adjustment, actor `cloud`, full audit
+      trail). Reviews: `code-reviews/2026-07-19-remote-price-edit.md`,
+      `…-remote-stock-adjust.md`. REMAINING: name/barcode edit, add/deactivate
+      items, variant creation.
 - [x] 🟡 **Back-office mode in the till** — SHIPPED: Settings → Display → **Device
       profile** (manager-only): back-office makes `/` land on Reports (sale screen
       unreachable); per-till setting; fleet view shows the `backoffice` role. Replicas
