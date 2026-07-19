@@ -298,6 +298,13 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       per ADR-0013), selection + payment (likely Stripe Billing), driving entitlements
       that gate paid features/plugins **and paid plugin installs from the portal**.
       Design the plan matrix first.
+      2026-07-19 addendum (Farshid): free dev registration in the cloud; a PAID
+      dev tier earns plugins a **badge**. Claude's caution, agreed direction —
+      the badge must be an identity/trust marker (paid = verified publisher,
+      like Docker's "Verified Publisher"), layered ON TOP of, never INSTEAD
+      of, the mandatory scan/sign/verify pipeline (ADR-0006 — never weaken).
+      A free-tier dev's plugin is unbadged but still fully scanned/signed —
+      "unverified" in this plan must mean unbadged, not unscanned.
 - [ ] 🟡 **Shop badges** (Farshid 2026-07-17): registered/claimed/subscribed tiers on
       the back-office and later shopper surfaces. Define with the subscription tiers.
 - [ ] 🔴 **Store registry** — public directory of cloud-connected shops the app/web
