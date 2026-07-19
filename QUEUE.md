@@ -232,8 +232,10 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       profile** (manager-only): back-office makes `/` land on Reports (sale screen
       unreachable); per-till setting; fleet view shows the `backoffice` role. Replicas
       no longer push duplicate catalog snapshots. _This IS the "back-office
-      application"_ — any till/tablet becomes the manager station. REMAINING 🟢:
-      richer back-office home (dashboard instead of plain reports).
+      application"_ — any till/tablet becomes the manager station.
+      2026-07-19: richer home SHIPPED — `/backoffice` manager dashboard
+      (today/yesterday/week KPIs, low stock, recent problems, deep links);
+      review `code-reviews/2026-07-19-backoffice-dashboard.md`.
 
 **2c — Naming & platform (parallel):**
 - [x] 🔴 **cloud.universaltill.com** — **LIVE 2026-07-18** (Farshid approved the apply):
