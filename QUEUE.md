@@ -104,6 +104,14 @@ Two tracks run **independently** of that path and can happen anytime:
       landing page, portal cards + fragment, detail hero, trust pills, vendor lines —
       9 locales, verified live (TR + FA render confirmed). Staff pages (admin/vendor
       consoles) deliberately English — queued 🟢 if ever needed.
+- [x] 🟡 **Language selector link restored on cloud.universaltill.com** — the
+      2026-07-15 storefront redesign (commit ad2a6f4) dropped the only nav link to
+      `/ui/language`, orphaning it (page still worked, just unreachable). Fixed
+      2026-07-20: persistent 🌍 link in the header nav, visible at all viewport
+      widths. See `code-reviews/2026-07-20-storefront-language-link.md`.
+- [ ] 🟢 Other landing pages (`store_detail.html`, `my-stores`, `directory.html`)
+      still have no link to `/ui/language` — only the homepage does. Low priority
+      follow-up from the fix above.
 
 ### 🎨 Content & assets
 - [x] 🟡 **(field)** **Icons for all 11 plugins** — consistent SVG set embedded in the
@@ -410,8 +418,15 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       "unverified" in this plan must mean unbadged, not unscanned.
 - [ ] 🟡 **Shop badges** (Farshid 2026-07-17): registered/claimed/subscribed tiers on
       the back-office and later shopper surfaces. Define with the subscription tiers.
-- [ ] 🔴 **Store registry** — public directory of cloud-connected shops the app/web
-      searches. _Falls out of 2a's snapshots + shop profile._
+- [x] 🔴 **Store registry** — SHIPPED 2026-07-19: public `/ui/directory` listing
+      (name + region) of shops on Universal Till Cloud. Opt-in, not opt-out — a
+      claimed store isn't listed until the owner toggles "list this store" on
+      the store detail page (`storedetail.directory_listed`). Merged PR #6
+      (`feat/store-directory`), independent review clean, verified live in
+      production 2026-07-20 (page renders, correct empty state, healthz both
+      hostnames 200, till heartbeat advancing past the new pod's start time).
+      Next layer (app/web search, richer shop profile) still open — this ships
+      the directory list itself, not discovery/search UX yet.
 - [ ] 🟡 **Multi-store head office** (ADR-0013 L2/L3) — one console across stores; ties
       to the paid multi-store licence. My-shop pages + 2b are the seed.
 - [ ] 🟢 **Multi-cloud + on-prem sovereign** deployment — the homelab deployment IS the
