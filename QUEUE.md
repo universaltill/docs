@@ -123,6 +123,18 @@ Two tracks run **independently** of that path and can happen anytime:
       search transliteration vs OS switching — **awaiting Farshid's pick** (recommend
       scanner normalization in core + transliteration as the plugin).
 - [ ] 🟡 **Windows regular-printing** — plain-text/CUPS-equivalent path on Windows.
+- [ ] 🟡 **(field)** **Settings page layout is broken** (Farshid 2026-07-20, two
+      screenshots): several cards (Data Management/backup file table, "All
+      settings" key/value table) overflow and get horizontal scrolling instead
+      of wrapping/sizing to fit — these boxes should span both grid columns
+      (double width), not be squeezed into one. Separately, the Payments
+      card's fee inputs (percent + fixed per provider) wrap ugly mid-row for
+      some providers (e.g. "Card (Stripe)") while others fit on one line —
+      inconsistent, unprofessional. Needs a real CSS/grid pass on
+      `universal-till/web/ui/pages/settings.html` (+ its handler
+      `internal/pages/settings_page.go`) for clean, consistent card widths
+      and a payment-fee-row layout that doesn't wrap. NOT started — logged
+      per Farshid's explicit "backlog it, don't fix now."
 - [ ] 🟡 **(field)** **Buttons can carry icons** (Farshid 2026-07-18): tender/menu
       buttons show an icon; a plugin can ship its own icon in the manifest and it shows
       on the plugin card AND on the button it contributes.
