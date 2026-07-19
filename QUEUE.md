@@ -323,8 +323,48 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       regenerated via `protoc` (not hand-patched — the embedded
       FileDescriptorProto is a length-prefixed byte blob), contract guard
       satisfied, CI/E2E green, `build-and-push` confirmed landing
-      `ut-cloud:latest` in ACR post-fix. homelab-k8s image cutover + deeper
-      "marketplace" terminology/proto-package rename in progress.
+      `ut-cloud:latest` in ACR post-fix. **FULLY COMPLETE 2026-07-19 night**:
+      homelab-k8s image cutover verified end-to-end (till heartbeat
+      confirmed advancing against the new pod). Deeper "rename everything"
+      pass per Farshid: `cmd/marketplace`→`cmd/cloud`, `cmd/marketplace-sync`
+      →`cmd/cloud-sync`, gRPC proto package `marketplace.v1`→`cloud.v1`
+      (regenerated via protoc, contract-guard'd as v0.0.3 — confirmed safe:
+      real clients use REST via grpc-gateway, unaffected by the proto
+      package name; the raw gRPC port isn't exposed outside the cluster),
+      `deploy/helm` + `deploy/kustomize` (confirmed dead/unused — real
+      deploys go through this homelab-k8s repo), dev DB/cert filenames,
+      OTel meter name, NATS connection label, `OBS_SERVICE_NAME` default,
+      `TestMarketplaceProviderPacts`→`TestCloudProviderPacts`. Two CI-only
+      breaks caught and fixed (shell scripts `e2e/run-mp.sh` +
+      `scripts/ci/install-e2e.sh` still built `./cmd/marketplace` — missed
+      by source-level search since they're invoked BY workflows, not
+      workflow YAML themselves; full install-e2e pipeline verified passing
+      locally before re-push). **Deliberately NOT renamed** (documented
+      inline in code): the Pact Broker `Provider: "ut-marketplace"` string
+      (external identity — renaming would orphan published consumer
+      pacts); the JWT `iss`/`aud` claims tied to the still-live
+      `marketplace.universaltill.com` domain (baked into every issued
+      merchant token — same deferred domain-consolidation question, not a
+      naming concern); `cfg.Marketplace.PublicKey` + "Plugin Marketplace" /
+      "Universal Till Marketplace API" user-facing titles (the plugin-
+      marketplace FEATURE name, distinct from "cloud" the platform);
+      `specs/001-plugin-marketplace/` directory (historical spec numbering).
+      **Two pre-existing anomalies discovered along the way** (not caused
+      by this rename, flagging for Farshid): (1) `cmd/cloud/var/data/marketplace.db`
+      (was `cmd/marketplace/var/data/...`) is a SQLite file accidentally
+      checked into git despite `.gitignore`'s `var/*` rule — looks like it
+      was force-added once; left untouched, worth deleting from history if
+      it's not meant to be tracked. (2) the OIDC federated-credential gap
+      above.
+      REMAINING: 🟢 items above (federated creds under Terraform, printer-
+      fault events, etc.) — unrelated to this rename. **Explicitly
+      deferred/gated, not started**: k8s namespace rename + Postgres/blob
+      PVC data migration (needs a deliberate maintenance window, not a
+      same-day rush); retiring `marketplace.universaltill.com` DNS (every
+      till in the field defaults to that exact URL,
+      `packaging/pos.env.example` — would go dark with no visible error;
+      needs a coordinated till-release + fleet-adoption window first, per
+      the same caution as the earlier install-to-tills domain work above).
 - [ ] 🔴 **Subscription select + pay** (Farshid 2026-07-17): plan page (free/paid tiers
       per ADR-0013), selection + payment (likely Stripe Billing), driving entitlements
       that gate paid features/plugins **and paid plugin installs from the portal**.
