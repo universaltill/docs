@@ -204,8 +204,17 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       plugin installs, reports them as a digest in the heartbeat (capped, truncated,
       replace-on-report so resolved problems clear); store page shows a fleet-wide
       **Problems & logs** card (device/when/level/message, newest first). Review:
-      `code-reviews/2026-07-19-problems-feed.md`. REMAINING 🟢: persistent problem
-      history + printer-fault events when hardware plugins report them.
+      `code-reviews/2026-07-19-problems-feed.md`. 2026-07-19: persistent problem
+      history SHIPPED — new `ProblemEvent` entity persists every occurrence at
+      heartbeat time (survives the live feed's replace-on-report clearing),
+      deduped on (device, reported_at, message) with a DB-level unique index
+      backing the app-level check against racing heartbeat retries, capped at
+      500 rows/store; collapsible "Problem history" section on the store page.
+      Also fixed a till-side timestamp precision bug the dedup surfaced
+      (`universal-till` `RFC3339`→`RFC3339Nano`). Review:
+      `ut-market-place/docs/code-reviews/2026-07-19-persistent-problem-history.md`
+      + `universal-till/docs/code-reviews/2026-07-19-problem-digest-timestamp-precision.md`.
+      REMAINING 🟢: printer-fault events when hardware plugins report them.
 
 **2b — Remote management UI (needs 2a):**
 - [ ] 🔴 **Fleet page in My shop** — all tills + back-office devices, health chips,
