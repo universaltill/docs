@@ -229,10 +229,10 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       DONE** — Farshid reported still not working, root cause confirmed: the last
       published release (v0.2.36, 2026-07-18) predates cloudsync entirely (38
       commits / the whole feature unreleased). Cut v0.2.37 (Farshid approved);
-      all build jobs green (Linux/Windows/macOS). Farshid's till needs to actually
-      update to it (Settings → check for updates, or the 24h auto-check) before
-      install-to-tills can work — confirm with him once it's updated. **Farshid
-      decision: remote install is a PAID-tier feature** — gate `install_plugin`
+      all build jobs green (Linux/Windows/macOS). Farshid updated his till to
+      v0.2.37 and **confirmed install-to-tills now works end-to-end** — item
+      fully closed. **Farshid decision: remote install is a PAID-tier feature**
+      — gate `install_plugin`
       directives when the subscription tiers land (task #42).
 - [x] 🟡 **Remote settings & design/theme** — SHIPPED 2026-07-19: the till reports its
       active theme + available themes (built-in and plugin-contributed) in the
