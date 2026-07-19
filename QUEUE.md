@@ -234,9 +234,11 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       `…-remote-stock-adjust.md`. STEPS 3+4 also shipped same day: **inline rename**
       (`rename_item`, items + variants, `…-remote-rename.md`) and **Retire**
       (`deactivate_item`, confirm-guarded soft retire, cloud can retire / only the
-      shop resurrects, `…-remote-deactivate.md`). The Catalog table now manages
-      name / price / stock / retirement inline. REMAINING: barcode edit, ADD new
-      items, variant creation.
+      shop resurrects, `…-remote-deactivate.md`). STEP 5: **Add item** form
+      (`create_item {name, price_minor, barcode?}`, idempotent by name so retries
+      can't duplicate, taken barcodes fail cleanly, `…-remote-create-item.md`).
+      The Catalog table now manages add / rename / price / stock / retire inline.
+      REMAINING 🟢: barcode edit, variant creation.
 - [x] 🟡 **Back-office mode in the till** — SHIPPED: Settings → Display → **Device
       profile** (manager-only): back-office makes `/` land on Reports (sale screen
       unreachable); per-till setting; fleet view shows the `backoffice` role. Replicas
