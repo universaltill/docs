@@ -449,6 +449,16 @@ Designed in `architecture/consumer-app.md`, `item-discovery-and-universal-catalo
 - [ ] 🟡 **Click & collect / order ahead** + **delivery** (shop's own delivery first,
       courier handoff later) — orders drop onto the till as normal sales.
 - [ ] 🟡 **Restaurant: order at table / takeaway** — table-QR → menu → kitchen ticket.
+      2026-07-20 (Farshid): the **digital menu** itself — scan the table's QR
+      code, see the menu, in the **consumer app** and also on the **public
+      website** (same web app as the customer app, not a separate build).
+      Menu items carry rich data: ingredients, calories, etc. (allergen info
+      is the obvious related need once ingredients exist — worth asking
+      Farshid when scoping). Ties to G14 (public web + SEO) and the
+      catalog/snapshot work already shipped (2a) for the underlying item
+      data. NOT started — needs scoping (is this its own menu-item schema
+      extension, or does it reuse the existing plugin/catalog item model
+      with new optional fields?).
 - [ ] 🟡 **Table reservations** — book a table; shows on the till's booking view.
 - [ ] 🟡 **Appointment booking for service shops** (barber, dentist, salon, garage…) —
       services + staff + availability. Shared **bookable-resource** scheduling engine for
