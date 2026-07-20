@@ -418,7 +418,30 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       (still `marketplace.universaltill.com` — changing it invalidates
       every live token fleet-wide, a separate and much higher-risk step
       than the OIDC login host); DNS/ingress retirement itself (both hosts
-      still served indefinitely); the k8s namespace rename/data migration.
+      still served indefinitely).
+      **UPDATE 2026-07-20 (Farshid: "finish it, even the namespace, in aks"
+      — clarified: no AKS exists, this is the homelab k3s cluster), k8s
+      namespace rename DONE**: new `unitill-cloud` namespace/Application in
+      `homelab-k8s`, every resource renamed (Deployment/Service/PVCs/
+      SecretProviderClass/synced-secret — Key Vault secret NAMES unchanged,
+      that's a separate Azure action). Staged additively first (no Ingress,
+      no live traffic) to verify the fresh Postgres/blob came up healthy;
+      data migrated via `pg_dump`/`pg_restore` + a tar-stream blob copy with
+      the old namespace still serving traffic; full parity check before
+      cutover (13/13 table row counts matched, blob file checksums matched
+      exactly — zero diff). Ingress cutover was an atomic single commit
+      (added to `unitill-cloud`, removed from `unitill-marketplace` in the
+      same commit) to avoid two Ingress objects racing for the same
+      hostnames. Verified live: all 4 hostnames 200, correct per-host OIDC
+      `redirect_uri`, sync API endpoint reachable (400 on an empty test
+      payload, not a connection failure). Till heartbeat check was
+      inconclusive — the till hadn't synced since 12:08:53Z, *before* the
+      cutover even started (confirmed via the frozen old-namespace DB), so
+      the till process itself appears to not be running right now,
+      unrelated to the migration. `unitill-marketplace`'s Deployment/
+      Service kept running (no Ingress, unreachable from the internet) as
+      a rollback safety net — **not deleted**; propose at least 24–48h of
+      confirmed-stable operation first.
 - [ ] 🔴 **Subscription select + pay** (Farshid 2026-07-17): plan page (free/paid tiers
       per ADR-0013), selection + payment (likely Stripe Billing), driving entitlements
       that gate paid features/plugins **and paid plugin installs from the portal**.
