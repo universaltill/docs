@@ -109,9 +109,10 @@ Two tracks run **independently** of that path and can happen anytime:
       `/ui/language`, orphaning it (page still worked, just unreachable). Fixed
       2026-07-20: persistent 🌍 link in the header nav, visible at all viewport
       widths. See `code-reviews/2026-07-20-storefront-language-link.md`.
-- [ ] 🟢 Other landing pages (`store_detail.html`, `my-stores`, `directory.html`)
-      still have no link to `/ui/language` — only the homepage does. Low priority
-      follow-up from the fix above.
+- [x] 🟢 Other landing pages (`store_detail.html`, `my-stores`, `directory.html`)
+      SHIPPED 2026-07-20: each gained a small 🌍 topbar link to `/ui/language`,
+      matching the homepage fix. `TestOtherLandingPagesLinkLanguageSelector`
+      guards all three.
 
 ### 🎨 Content & assets
 - [x] 🟡 **(field)** **Icons for all 11 plugins** — consistent SVG set embedded in the
