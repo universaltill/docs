@@ -76,3 +76,20 @@ still remains valid indefinitely exactly as decision 1 says — that part is
 unchanged, only the *repo's* name moved. See `docs/QUEUE.md`'s "Org-wide
 ut-* repo rename" entry and `ut-cloud/docs/code-reviews/2026-07-19-*.md`
 for the full record.
+
+## Amendment (2026-07-20)
+
+Decision 1's "New till releases default to the cloud host" is now real,
+not aspirational: Farshid signed off on domain-consolidation Stage E.
+`cloud.universaltill.com` is the canonical OIDC login/logout host in
+`homelab-k8s` (`marketplace.universaltill.com` is now the EXTRA/alias
+host, kept alive indefinitely for the till fleet — both were already
+registered on the Zitadel app, so this was a config-only swap). New
+`universal-till` installs (v0.2.38+) default their sync endpoint to
+`cloud.universaltill.com/api`; existing tills are unaffected until they
+reinstall or the config is manually changed. The merchant-device JWT
+`iss`/`aud` claims (`internal/api/authsvc/service.go`) still say
+`marketplace.universaltill.com` — deliberately unchanged, since flipping
+that would invalidate every live token fleet-wide; that's a separate,
+higher-risk step not part of this amendment. See `docs/QUEUE.md`'s
+"Org-wide ut-* repo rename" entry for the full record.

@@ -405,6 +405,20 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       `packaging/pos.env.example` — would go dark with no visible error;
       needs a coordinated till-release + fleet-adoption window first, per
       the same caution as the earlier install-to-tills domain work above).
+      **UPDATE 2026-07-20 (Farshid: "Full Stage E now"), steps 1+2 done**:
+      `cloud.universaltill.com` promoted to the canonical OIDC redirect/
+      post-logout host in `homelab-k8s` (`marketplace.universaltill.com`
+      demoted to the EXTRA/alias host — both already registered on the
+      Zitadel app, config-only swap, verified live: correct `redirect_uri`
+      per host, till heartbeat advancing post-rollout). `universal-till`
+      v0.2.38 released: new installs default `UT_MARKETPLACE_ENDPOINT_URL`
+      to `cloud.universaltill.com/api` (existing tills untouched — this is
+      the packaged template, not a runtime default). **Still NOT done**
+      (unchanged from above): the JWT `iss`/`aud` on merchant device tokens
+      (still `marketplace.universaltill.com` — changing it invalidates
+      every live token fleet-wide, a separate and much higher-risk step
+      than the OIDC login host); DNS/ingress retirement itself (both hosts
+      still served indefinitely); the k8s namespace rename/data migration.
 - [ ] 🔴 **Subscription select + pay** (Farshid 2026-07-17): plan page (free/paid tiers
       per ADR-0013), selection + payment (likely Stripe Billing), driving entitlements
       that gate paid features/plugins **and paid plugin installs from the portal**.

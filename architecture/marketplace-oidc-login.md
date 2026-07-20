@@ -41,11 +41,12 @@ alone.
 | Env var | Required | Value |
 |---|---|---|
 | `AUTH_WEBLOGIN_CLIENT_ID` | yes | Zitadel web-app client id |
-| `AUTH_WEBLOGIN_REDIRECT_URL` | yes | `https://marketplace.universaltill.com/ui/auth/callback` |
+| `AUTH_WEBLOGIN_REDIRECT_URL` | yes | `https://cloud.universaltill.com/ui/auth/callback` (canonical since 2026-07-20) |
+| `AUTH_WEBLOGIN_EXTRA_REDIRECT_URLS` | no | space-separated extra hosts kept working, e.g. `https://marketplace.universaltill.com/ui/auth/callback` (the till fleet's legacy host) — a login started on one of these completes on the SAME host instead of bouncing to `AUTH_WEBLOGIN_REDIRECT_URL`'s host |
 | `AUTH_WEBLOGIN_COOKIE_KEY` | yes | base64 of 32 random bytes (`openssl rand -base64 32`) |
 | `AUTH_WEBLOGIN_ISSUER_URL` | no (falls back to `AUTH_ISSUER_URL`) | `https://id.universaltill.com` |
 | `AUTH_WEBLOGIN_CLIENT_SECRET` | no (PKCE public client) | client secret if a confidential app |
-| `AUTH_WEBLOGIN_POST_LOGOUT_URL` | no | `https://marketplace.universaltill.com/ui/` |
+| `AUTH_WEBLOGIN_POST_LOGOUT_URL` | no | `https://cloud.universaltill.com/ui/` |
 | `AUTH_WEBLOGIN_EXTRA_SCOPES` | no | extra scopes (space/comma sep) |
 | `AUTH_WEBLOGIN_SESSION_TTL` | no (8h) | browser session lifetime |
 
@@ -63,9 +64,12 @@ Log in at `id.universaltill.com` as `admin@universaltill.id.universaltill.com`.
    `merchant_admin`, `merchant_operator`, `vendor_maintainer`,
    `vendor_reviewer`, `internal_compliance`.
 3. **Application** → **Web** → **PKCE** (public client, no secret) — or Code +
-   client secret for a confidential app. Redirect URI:
-   `https://marketplace.universaltill.com/ui/auth/callback`. Post-logout URI:
-   `https://marketplace.universaltill.com/ui/`. Copy the **Client ID**.
+   client secret for a confidential app. Register a redirect URI **per
+   hostname the console answers on** — today that's
+   `https://cloud.universaltill.com/ui/auth/callback` (canonical) and
+   `https://marketplace.universaltill.com/ui/auth/callback` (till fleet
+   legacy alias); same pair for the post-logout URIs
+   (`.../ui/` on each host). Copy the **Client ID**.
 4. **Grant yourself a role**: in the project, authorize your admin user with
    `internal_compliance` (and `vendor_reviewer` to see the review queue).
 5. Set the env vars above on the marketplace deployment (Client ID + a fresh
