@@ -147,6 +147,30 @@ Two tracks run **independently** of that path and can happen anytime:
       summaries (deliberate — translating N listings synchronously on every
       list-page load would be a bad first-load experience; pre-warming the
       list view is a natural fast-follow, not done here).
+- [x] 🟡 **Plugin platform taxonomy** (Farshid 2026-07-20: building
+      `erp.universaltill` separately, plus an Android POS port planned —
+      "in anycase we need platform field... maybe we will have other
+      platforms in the future as well") — SHIPPED, ADR-0019, `ut-cloud`
+      PR #14. New `PluginListing.platforms []string` (till/android/erp/...),
+      defaulted to `["till"]` at the only listing-creation call site (till
+      manifest ingest — every listing published today is by definition a
+      till plugin). `ListFilters.Platform` + `effectivePlatforms()`/
+      `platformSupported()` for catalog filtering; merchant portal DTO +
+      detail-page badges. Deliberately scoped to catalog metadata only —
+      NOT a plugin runtime compatibility contract for Android/ERP, which
+      is a separate design decision for whenever each platform's own
+      plugin host runtime gets built (checked `erp/universal-core`: no
+      plugin/manifest concept exists there yet, nothing to reconcile).
+      Independent review (different model) caught the "empty Platforms
+      means till" default being applied inconsistently (2 of 5 read sites
+      had it, 3 didn't) — centralized into one shared helper. Full writeup:
+      `ut-cloud/docs/code-reviews/2026-07-20-plugin-platform-taxonomy.md`.
+      **New backlog item surfaced along the way** (see Spec audit gaps
+      below): `ListPlugins`'s `SnapshotVersion` isn't spec-compliant per
+      CHK008 (falls back to "now" on an empty filtered page instead of a
+      true global max) — pre-existing, not caused by this change, but
+      platform filtering makes the empty-result case common instead of
+      rare for any `platform=android`/`platform=erp` query.
 
 ### 🎨 Content & assets
 - [x] 🟡 **(field)** **Icons for all 11 plugins** — consistent SVG set embedded in the
@@ -734,6 +758,21 @@ the gaps below are real. Not on the critical path — pick up opportunistically.
       records success metrics, never marks the release installed in telemetry, never
       invalidates the token (so tokens aren't enforced single-use), and
       checksum-mismatch alerting is a TODO. Source: FR-012.
+- [ ] 🟡 **`ListPlugins`'s `SnapshotVersion` isn't spec-compliant** (found
+      2026-07-20 while adding platform filtering) — `internal/catalog/
+      service.go`'s `snapshot := s.now().Unix()` fallback, only overridden by
+      `UpdatedAt` values from `pageListings` (the CURRENT PAGE after
+      filtering+pagination), not the full catalog. Per CHK008
+      (`specs/001-plugin-marketplace/spec.md`), `snapshot_version` is
+      supposed to be a global max `updated_at` across ALL
+      `plugin_listings`/`plugin_releases` — this was never spec-compliant,
+      predates the platform-taxonomy work. Consequence: any filter
+      combination that legitimately returns zero results (e.g.
+      `platform=android` today, since nothing android-targeted has been
+      published yet) gets a `SnapshotVersion` that increments on literally
+      every call, which breaks change-detection for any client polling by
+      that filter. Fix direction: compute the global max separately (one
+      query, not derived from the filtered/paginated page) or cache it.
 
 ### 🔌 universal-till — spec 009-cloud-marketplace + 010-complete-pending-specs
 _(both specs describe the same underlying gaps — 010 was meant to close what 009 left
