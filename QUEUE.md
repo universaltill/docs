@@ -451,6 +451,36 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       namespace unitill-marketplace` was needed as the actual cleanup step.
       Confirmed gone, `unitill-cloud` fully unaffected. Stage D is now
       completely closed out.
+      **UPDATE 2026-07-20, remaining 🟢 items closed out**: **federated
+      creds under Terraform** — the 4 `unitill-gh-oidc` federated-identity-
+      credential subjects codified as `azuread_application_federated_
+      identity_credential` in `ut-infra` (`unitill-infra/github-oidc.tf`),
+      imported cleanly (only diff was the previously-blank `description`).
+      Still needs a Graph-permissioned identity to apply (CI SP has none —
+      same gap as the existing `kv_csi` object-id workaround); applied
+      manually this time. **The JWT `iss`/`aud` on merchant device
+      tokens** — turned out the earlier caution ("invalidates every live
+      token fleet-wide") didn't hold: traced the code and found
+      `validateToken` never checks `iss`/`aud`, and `GenerateMerchantToken`
+      has zero callers anywhere in the workspace — the till fleet's real
+      bearer token comes from the unrelated `merchantauth` opaque-token
+      system via `POST /api/v1/stores/register`. Renamed to
+      `cloud.universaltill.com` / `cloud-api`
+      (`ut-cloud/docs/code-reviews/2026-07-20-jwt-issuer-audience-rename.md`
+      has the full trace). **Still open, unrelated to this rename**:
+      DNS/ingress retirement of `marketplace.universaltill.com` itself
+      (kept alive indefinitely — every till in the field may still default
+      to it until upgraded past v0.2.38); bringing the federated-credential
+      apply under CI properly.
+      **Bonus find while chasing the Zitadel terraform root's own transport
+      gap**: the plain `Ingress` for `id.universaltill.com`'s
+      `service.serversscheme: h2c` annotation never actually gave the
+      backend leg real HTTP/2 — a genuine gRPC request through it landed on
+      Zitadel's REST layer (plain JSON 404). Fixed with a Traefik-native
+      `IngressRoute` alongside it (`homelab-k8s`, `kubernetes/apps/zitadel/
+      deployment.yaml`); verified live with a real `terraform plan` against
+      the public endpoint (clean, no in-cluster Job needed anymore — see
+      `ut-infra/unitill-infra/zitadel/README.md`'s Transport caveat).
 - [ ] 🔴 **Subscription select + pay** (Farshid 2026-07-17): plan page (free/paid tiers
       per ADR-0013), selection + payment (likely Stripe Billing), driving entitlements
       that gate paid features/plugins **and paid plugin installs from the portal**.
