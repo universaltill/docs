@@ -113,6 +113,40 @@ Two tracks run **independently** of that path and can happen anytime:
       SHIPPED 2026-07-20: each gained a small 🌍 topbar link to `/ui/language`,
       matching the homepage fix. `TestOtherLandingPagesLinkLanguageSelector`
       guards all three.
+- [x] 🟡 **Plugin listing auto-translation** (Farshid 2026-07-20: "we dont have
+      translation for the modules and their details... developer can put
+      everything in it's own language but we translate it and even the guide
+      and help of it... user see the translation in the current user setting
+      language... button to show the original") — SHIPPED, `ut-cloud` PR #13.
+      Implements FR-023 (`specs/001-plugin-marketplace/spec.md`), previously
+      unimplemented despite scaffolded-but-unused `MachineTranslator`/
+      `LocaleService` stubs. New `description`/`documentation`/`source_locale`
+      fields on `PluginListing` (didn't exist before — vendors had no way to
+      author a guide at all) + a `PluginListingTranslation` cache table.
+      Self-hosted-only machine translation (`internal/platform/translate`,
+      Ollama `/api/chat`) — no paid AI API, matches [[ai-self-hosted-only]];
+      no-ops (serves original text) when unconfigured. Translates + caches
+      lazily on the first view per (listing, locale); every later viewer in
+      that locale gets the cached row instantly, never blocking on a live
+      translation. `/merchant/plugins/{id}` now shows content in the
+      viewer's detected language (same cookie/query/Accept-Language
+      mechanism as the rest of the site) with a "show original" toggle
+      (`?original=1`). Independent review (different model) caught and fixed
+      one HIGH bug pre-merge: comparing the viewer's full BCP-47 tag
+      (`en-US`) against `source_locale`'s bare `"en"` default would have
+      mistranslated English content for English speakers on every request —
+      fixed via the existing `primaryLang()` normalization. Full writeup:
+      `ut-cloud/docs/code-reviews/2026-07-20-plugin-listing-machine-translation.md`.
+      Deployed: `homelab-k8s` PR #9 wires `UT_AI_ENDPOINT`/`UT_AI_MODEL` at
+      the `unitill-cloud` Deployment to the already-running in-cluster Ollama
+      (`llama3.2:3b`); verified live — new pod picked up the env vars, ent
+      auto-migrate created `plugin_listing_translations` + the new
+      `plugin_listings` columns cleanly (no migration errors in pod logs).
+      REMAINING 🟢: only the single-listing detail page translates; the
+      merchant portal's list/grid view still shows original-language
+      summaries (deliberate — translating N listings synchronously on every
+      list-page load would be a bad first-load experience; pre-warming the
+      list view is a natural fast-follow, not done here).
 
 ### 🎨 Content & assets
 - [x] 🟡 **(field)** **Icons for all 11 plugins** — consistent SVG set embedded in the
