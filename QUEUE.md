@@ -438,10 +438,18 @@ the **back-office device = the till binary in back-office mode** (no separate ap
       inconclusive — the till hadn't synced since 12:08:53Z, *before* the
       cutover even started (confirmed via the frozen old-namespace DB), so
       the till process itself appears to not be running right now,
-      unrelated to the migration. `unitill-marketplace`'s Deployment/
-      Service kept running (no Ingress, unreachable from the internet) as
-      a rollback safety net — **not deleted**; propose at least 24–48h of
-      confirmed-stable operation first.
+      unrelated to the migration.
+      **UPDATE 2026-07-20 (Farshid: "delete the old namespace"), fully
+      done**: `unitill-marketplace` namespace + git manifests
+      (`kubernetes/apps/unitill-marketplace/`,
+      `kubernetes/bootstrap/apps/unitill-marketplace.yaml`) deleted after
+      one more health check on `unitill-cloud` (all 4 hostnames 200, data
+      present). ArgoCD pruned the Application object once the manifest was
+      removed from git, but that alone did **not** cascade-delete the
+      namespace's resources (no resource finalizer) — `kubectl delete
+      namespace unitill-marketplace` was needed as the actual cleanup step.
+      Confirmed gone, `unitill-cloud` fully unaffected. Stage D is now
+      completely closed out.
 - [ ] 🔴 **Subscription select + pay** (Farshid 2026-07-17): plan page (free/paid tiers
       per ADR-0013), selection + payment (likely Stripe Billing), driving entitlements
       that gate paid features/plugins **and paid plugin installs from the portal**.
