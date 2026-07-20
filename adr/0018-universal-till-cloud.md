@@ -88,8 +88,11 @@ registered on the Zitadel app, so this was a config-only swap). New
 `universal-till` installs (v0.2.38+) default their sync endpoint to
 `cloud.universaltill.com/api`; existing tills are unaffected until they
 reinstall or the config is manually changed. The merchant-device JWT
-`iss`/`aud` claims (`internal/api/authsvc/service.go`) still say
-`marketplace.universaltill.com` — deliberately unchanged, since flipping
-that would invalidate every live token fleet-wide; that's a separate,
-higher-risk step not part of this amendment. See `docs/QUEUE.md`'s
-"Org-wide ut-* repo rename" entry for the full record.
+`iss`/`aud` claims (`internal/api/authsvc/service.go`) said
+`marketplace.universaltill.com` as of this amendment — since renamed to
+`cloud.universaltill.com`/`cloud-api` later the same day, once tracing the
+actual code showed the "invalidates every live token" caution didn't hold
+(`GenerateMerchantToken` has no callers; the till fleet's real bearer token
+comes from the unrelated `merchantauth` opaque-token system). See
+`ut-cloud/docs/code-reviews/2026-07-20-jwt-issuer-audience-rename.md`.
+See `docs/QUEUE.md`'s "Org-wide ut-* repo rename" entry for the full record.
