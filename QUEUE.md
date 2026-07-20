@@ -661,6 +661,104 @@ M3 automatic online routing · M4 card-present auto LCR · M5 market expansion._
 
 ---
 
+## Spec audit gaps (2026-07-20)
+
+Spec-vs-implementation audit across all 12 spec-kit directories (ut-cloud, universal-till,
+ut-plugin-faq): read each spec.md/tasks.md, then verified the corresponding code (grepped
+for stub/TODO markers, checked real call sites, didn't trust checkboxes or comments).
+Naming drift ("marketplace"→"cloud") is NOT reported below — only genuine functional gaps.
+Most specs (000–006, 008, ut-cloud i18n excluded as already tracked) checked out clean;
+the gaps below are real. Not on the critical path — pick up opportunistically.
+
+### 🏪 ut-cloud — spec 001-plugin-marketplace
+- [ ] 🔴 **Vendor releases/rollback portal shows fake data** — `/vendor/releases/list`,
+      `/vendor/releases/{id}/details`, `/vendor/releases/{id}/rollback`
+      (`internal/api/server.go:515-568`) never query the DB; each handler is a
+      `// TODO: Query releases...` stub returning hardcoded placeholder data
+      ("Example Plugin", empty slices) regardless of real state — vendors can't actually
+      see or execute a version rollback despite T027/T029 marked done. Source:
+      `ut-cloud/specs/001-plugin-marketplace/spec.md` FR-007.
+- [ ] 🟡 **Device telemetry ingestion never persists / no dashboards** —
+      `ReportPluginStatus` validates but never writes to DB (`// TODO: Persist
+      telemetry`); `GetDeviceTelemetry`/`GetMerchantTelemetry`/`GetPluginTelemetry`/
+      `DetectAnomalies` all return hardcoded placeholders; the REST handler
+      (`internal/api/telemetrysvc/handler.go`) doesn't even decode the request body.
+      Neither that handler package nor the gRPC `TelemetryService` is wired into
+      `cmd/cloud/main.go` — zero call sites outside their own package despite
+      T032/T034 marked done. Source: FR-014.
+- [ ] 🟡 **Resumable/checksummed downloads are mocked** —
+      `internal/downloads/resume_manager.go` (T031) is dead code with zero external
+      call sites; `ValidateChunkChecksum` always returns `true` regardless of input.
+      The live-routed endpoint (`internal/httpapi/handlers/downloads.go:185`) is
+      explicitly commented `// best-effort; resume is mocked` and always returns the
+      literal string `"download-chunk"` ignoring byte range/checksum; `/api/v1/
+      downloads/status` always returns a hardcoded "active" response. Source: FR-011,
+      SC-002 (99.5% resumable-download completion — unmeasurable, the path doesn't
+      exist).
+- [ ] 🟡 **Download ack doesn't close the loop** — `AckDownload`
+      (`internal/api/downloadsvc/service.go:304`) validates token/checksum but never
+      records success metrics, never marks the release installed in telemetry, never
+      invalidates the token (so tokens aren't enforced single-use), and
+      checksum-mismatch alerting is a TODO. Source: FR-012.
+
+### 🔌 universal-till — spec 009-cloud-marketplace + 010-complete-pending-specs
+_(both specs describe the same underlying gaps — 010 was meant to close what 009 left
+open, and didn't)_
+- [ ] 🟡 **Dev-mode marketplace override has no validation/health-check/fallback** —
+      setting `DevOverrideURL` routes traffic there unconditionally;
+      `internal/plugins/marketplace/client.go` never checks `cfg.DevMode`, never
+      validates scheme/host/port, never health-checks reachability, and has no
+      fallback-to-cloud-on-timeout or self-signed-cert handling — the opposite of the
+      spec'd safety net for a dev-only escape hatch. Source: 009 FR-015 (US6) / 010
+      FR-004, FR-005 (T039-T041 unchecked, confirmed absent from code).
+- [ ] 🟡 **No marketplace audit trail/filter UI, no permission or telemetry-opt-in
+      badges** — `authorizer.go`'s `AuditLog()` only logs to stdout, never writes to
+      the `audit_log` table; no `AuditRepo` exists; no page renders/filters an audit
+      trail; `plugin_settings.html` has no telemetry opt-in toggle; `plugins_store.html`
+      shows trust badges (official/verified/unverified) but not permission/
+      manager-approval badges. Manager-PIN install gating itself does work
+      (`authorizer.go` `requireManagerPIN`). Source: 009 FR-009 (US5) / 010 FR-006,
+      FR-007, SC-002.
+- [ ] 🟡 **Plugin marketplace telemetry never actually sends** — `TelemetryClient`
+      (`internal/plugins/telemetry_client.go`) is fully built (Start/TrackInstall/
+      TrackUpdate/TrackStatusUpdate/TrackBrowse) but has zero call sites — never
+      instantiated. The scheduler's telemetry job is a literal stub:
+      `internal/server/server.go:76-89` logs `"[Scheduler] telemetry job triggered
+      (stub)"` with `// TODO: Implement telemetry reporting in T024`. Source: 009
+      FR-013.
+- [ ] 🟢 **Hardware (process-based) plugins have no boot-time auto-start** —
+      `Supervisor.AutoStartPlugins()` (`internal/plugins/supervisor.go:292`, T023) is
+      fully implemented but never called outside tests; only WASM plugins auto-start
+      today (`Wasm.Sync()`). Doesn't affect any currently-shipped plugin (all WASM) but
+      would block a future process-based hardware plugin from starting on boot.
+      Source: 007-plugin-host.
+
+### ❓ ut-plugin-faq — spec 001-multilingual-faq-page
+- [ ] 🟡 **FAQ keyword search never built** — `contentBundle` in
+      `universal-till/internal/pages/plugin_page.go` doesn't parse the `keywords`
+      field at all, and `plugin_content.html` has only category accordions, no search
+      input, despite tasks.md's T023 ("search/filter... >95% relevance") marked done.
+      Source: FR-005, SC-003.
+- [ ] 🟡 **FAQ checksum field is always empty** — every locale's
+      `content/<locale>.json` defines `checksum_sha256` per the plugin's own data
+      model, but it's `""` in all 9 locale files and never computed or verified.
+      Source: data-model.md, FR-006.
+- [ ] 🟡 **FAQ e2e tests are boilerplate, not real coverage** —
+      `tests/e2e/example.spec.ts` hits route `/faq` and posts to a nonexistent API;
+      the actual registered route is `/plugin/faq` (per manifest.json). No locale/
+      RTL/fallback/search test exists, despite T011-T013/T029-T032 marked done (T022
+      "locale render tests LTR+RTL+fallback" is honestly left unchecked, consistent
+      with this gap). Translations themselves are genuine (verified real Persian text
+      in `fa-IR.json`, RTL flag set) — this is purely a test-coverage gap. Source:
+      tasks.md T022, T029-T032.
+- [ ] 🟢 **FAQ locale-fallback notice + version/last-updated metadata missing** —
+      `loadContentBundle()` silently falls back to `en-US` with no signal reaching the
+      template (no "shown in English" notice per US2 Acceptance Scenario 2);
+      `version`/`last_updated` fields aren't parsed into `bundleView()` either, so
+      staff can't see content recency. Source: spec.md edge cases, FR-007.
+
+---
+
 ## ✅ Recently shipped (2026-07-16 → 17)
 
 - [x] **Marketplace portal fix batch** (tasks 1–8 of the ordered queue, 2026-07-17
