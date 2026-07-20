@@ -13,7 +13,7 @@ old BMAD sprint-status / story tracking.
 > download, verify, install, and use it on the POS.
 
 The whole chain works end-to-end against the **live** marketplace
-(`https://marketplace.home.taskrunnertech.co.uk`):
+(`https://cloud.home.taskrunnertech.co.uk`):
 
 publish → validate → structural scan → review → approve + **Ed25519 sign** →
 download-token → POS download (971 KB bundle, checksum match) → **signature

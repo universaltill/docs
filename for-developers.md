@@ -57,7 +57,7 @@ go run .        # serves the POS UI; SQLite self-migrates on start
 
 Marketplace integration is configured via env (see the POS `internal/config`):
 `UT_MARKETPLACE_ENDPOINT_URL` (**must include the `/api` base**, e.g.
-`https://marketplace.home.taskrunnertech.co.uk/api`), `UT_MARKETPLACE_PUBLIC_KEY`
+`https://cloud.home.taskrunnertech.co.uk/api`), `UT_MARKETPLACE_PUBLIC_KEY`
 (the marketplace signing public key), `UT_MARKETPLACE_UPLOAD_TOKEN`
 (for reporting install state), and merchant/store/device identifiers.
 

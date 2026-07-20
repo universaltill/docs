@@ -6,7 +6,7 @@ provisioned and deployed. Intended delivery is **GitHub Actions-driven**
 still has some GitOps debt (see the last section).
 
 Current live state: the marketplace runs at
-**https://marketplace.home.taskrunnertech.co.uk** on the homelab k3s cluster, with
+**https://cloud.home.taskrunnertech.co.uk** on the homelab k3s cluster, with
 Postgres in-cluster and its secrets sourced from Azure Key Vault via the Secrets
 Store CSI driver.
 
@@ -22,7 +22,7 @@ Store CSI driver.
    ▼                     ▼                      ▼
 Azure platform      ACR image              ArgoCD unitill-marketplace app
 uni-till-platform   unitillacr01.azurecr   → k3s homelab cluster
-(RG, ACR, KeyVault, .io/ut-cloud           → marketplace.home.taskrunnertech.co.uk
+(RG, ACR, KeyVault, .io/ut-cloud           → cloud.home.taskrunnertech.co.uk
  DNS)
 ```
 
@@ -65,7 +65,7 @@ The marketplace is the **`unitill-marketplace`** ArgoCD application
 
 | File | Contents |
 |---|---|
-| `deployment.yaml` | Deployment (image `unitillacr01.azurecr.io/ut-cloud:latest`, port 8081, non-root, /healthz probes) + Service (80→8081) + Ingress `marketplace.home.taskrunnertech.co.uk` (issuer `letsencrypt-home`, `wildcard-tls`). Mounts the CSI volume; `envFrom` the synced `marketplace-pg-secret`. Reloader-annotated. |
+| `deployment.yaml` | Deployment (image `unitillacr01.azurecr.io/ut-cloud:latest`, port 8081, non-root, /healthz probes) + Service (80→8081) + Ingress `cloud.home.taskrunnertech.co.uk` (issuer `letsencrypt-home`, `wildcard-tls`). Mounts the CSI volume; `envFrom` the synced `marketplace-pg-secret`. Reloader-annotated. |
 | `postgres.yaml` | Postgres 16-alpine StatefulSet, 20Gi `local-path`; static DB/USER, `POSTGRES_PASSWORD` from the synced secret. |
 | `secretproviderclass.yaml` | Maps KV → `marketplace-pg-secret` (POSTGRES_PASSWORD/DSN, MARKETPLACE_UPLOAD_TOKEN/SIGNING_KEY). |
 | `pvc.yaml` | blob + Postgres PVCs. |

@@ -72,7 +72,7 @@ Full step-by-step: [reference/plugin-lifecycle.md](reference/plugin-lifecycle.md
 ## Live deployment topology
 
 The marketplace runs on the homelab cluster at
-**`https://marketplace.home.taskrunnertech.co.uk`**:
+**`https://cloud.home.taskrunnertech.co.uk`**:
 
 - Image built + pushed to Azure Container Registry `unitillacr01`, pulled by the
   ArgoCD `unitill-marketplace` app.

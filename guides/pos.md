@@ -38,7 +38,7 @@ Plugins come from the marketplace. Configure the connection via environment (see
 the config keys in [`../for-developers.md`](../for-developers.md#pos-host-universal-till)):
 
 - `UT_MARKETPLACE_ENDPOINT_URL` — the marketplace API base, **including `/api`**,
-  e.g. `https://marketplace.home.taskrunnertech.co.uk/api`.
+  e.g. `https://cloud.home.taskrunnertech.co.uk/api`.
 - `UT_MARKETPLACE_PUBLIC_KEY` — the marketplace signing public key, used to verify
   every plugin before it is installed.
 - merchant / store / device identifiers, and an upload token used to report

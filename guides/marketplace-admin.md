@@ -3,7 +3,7 @@
 The marketplace (`ut-cloud`, renamed from `ut-market-place` 2026-07-19) is where plugin releases are uploaded,
 reviewed, signed, and made available to stores. The web UI is served under `/ui/`.
 
-Live instance: **`https://marketplace.home.taskrunnertech.co.uk`**.
+Live instance: **`https://cloud.home.taskrunnertech.co.uk`**.
 
 ## Roles
 

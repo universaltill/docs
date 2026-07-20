@@ -67,7 +67,7 @@ TARGET_OS=linux TARGET_ARCH=amd64 scripts/package.sh
 #    → dist/<plugin-id>_<version>_<os>_<arch>.tar.gz (+ .sha256)
 
 # 3. Publish to the marketplace
-MARKETPLACE_BASE_URL=https://marketplace.home.taskrunnertech.co.uk \
+MARKETPLACE_BASE_URL=https://cloud.home.taskrunnertech.co.uk \
 MARKETPLACE_UPLOAD_TOKEN=<token> \
   scripts/publish.sh
 ```
