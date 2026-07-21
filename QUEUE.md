@@ -647,6 +647,17 @@ Designed in `architecture/consumer-app.md`, `item-discovery-and-universal-catalo
       from the BYOD companion below: this is the till itself as an Android app (Go server
       via gomobile/WebView shell, or the till server + Android webview shell like the
       desktop shells). Also the delivery vehicle for the Phase-E SmartPOS payment app.
+      2026-07-21 addendum (Farshid, via a shop-owner friend's real-world feedback):
+      cafes overwhelmingly prefer **Android and iPad tablets over a computer**, and
+      many payment providers' Tap-to-Pay integrations key off the **device's own
+      NFC radio** (ties directly to E4 Tap-to-Pay/PCI MPoC below — the tablet's NFC
+      IS the reader, no separate hardware). Decision: **build the iOS/iPadOS till app
+      alongside the Android one**, not Android-only — same "full till as a native
+      app" shape (Go server + native/WebView shell, same pattern as the existing
+      Windows/Mac/Linux desktop shells and gomobile approach), just on iOS/iPadOS
+      instead of a second desktop OS. NOT started — needs scoping alongside the
+      existing Android item (shared server core, per-platform shell + App Store
+      distribution/signing questions unique to iOS).
 - [ ] 🟢 **Mobile light POS** (Android/iOS BYOD register, LAN-paired to primary till) —
       merchant-side companion; mostly independent (LAN pairing exists).
 - [ ] 🟢 **Storefront & hardware** — store.universaltill.com selling devices/parts;
