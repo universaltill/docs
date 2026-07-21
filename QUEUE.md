@@ -869,11 +869,20 @@ open, and didn't)_
       with this gap). Translations themselves are genuine (verified real Persian text
       in `fa-IR.json`, RTL flag set) — this is purely a test-coverage gap. Source:
       tasks.md T022, T029-T032.
-- [ ] 🟢 **FAQ locale-fallback notice + version/last-updated metadata missing** —
-      `loadContentBundle()` silently falls back to `en-US` with no signal reaching the
-      template (no "shown in English" notice per US2 Acceptance Scenario 2);
-      `version`/`last_updated` fields aren't parsed into `bundleView()` either, so
-      staff can't see content recency. Source: spec.md edge cases, FR-007.
+- [x] 🟢 **FAQ locale-fallback notice + version/last-updated metadata missing** —
+      FIXED 2026-07-22 (`universal-till` PR #40, `48a662a`). `loadContentBundle`
+      now reports whether a true language fallback occurred (vs. an exact/
+      regional-prefix/same-base-language match — `en-GB` requested with only
+      `en-US` shipped is NOT a fallback, still the requester's language) and
+      `plugin_content.html` shows a notice only in the true-fallback case;
+      `Version`/max-`LastUpdated` are now parsed and shown in a metadata line.
+      New i18n keys in all 4 core locales (en/ar/fa/tr). Independent review
+      caught a real false-positive (the one-directional prefix match would've
+      wrongly flagged `en-GB`→`en-US` as a fallback) and awkward AR/FA/TR
+      phrasing on the new metadata string, both fixed. Review:
+      `universal-till/docs/code-reviews/2026-07-22-faq-locale-fallback-notice-and-metadata.md`.
+      `ut-plugin-faq` content bundles' stale internal `version` (`0.2.1`) also
+      bumped to `0.2.3` to match the manifest, since it's now user-visible.
 
 ---
 
