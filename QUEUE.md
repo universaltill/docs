@@ -32,6 +32,25 @@ Two tracks run **independently** of that path and can happen anytime:
 ## Phase 0 — Fix & polish what's already live _(no dependencies — do now)_
 
 ### 🧾 Till field bugs (Farshid screenshots 2026-07-17 evening)
+- [x] 🔴 **Fresh installs panicked on first use (cwd-independent startup)** —
+      FIXED 2026-07-21 (`universal-till` `2918d05`, merged PR #38, released
+      **v0.2.39**). A cold-start walkthrough (fresh install, no dev tooling,
+      launched from outside its own directory — how a real shop owner's
+      machine actually looks) found every template/locale/static-asset read
+      was CWD-relative with no embedding: `config.NewI18n` hard `log.Fatalf`'d
+      on boot; every page render `template.Must(...ParseFiles...)` panicked,
+      including the first-boot setup wizard itself; static CSS/JS/logo 404'd
+      (login PIN pad needs Alpine.js, one of them). A first review round fixed
+      entry points but a second independent review caught checkout was STILL
+      broken (basket/journal/receipt render, home button grid) — a stranger
+      would get past setup/login only to have the app panic on the first
+      barcode scan. Fixed via `go:embed` for `web/ui`, `web/public`,
+      `web/locales`, with a disk-then-embedded-default fallback so shop
+      customizations (uploaded item images, receipt logo, theme overrides)
+      still work unchanged. Live-verified end-to-end from a completely
+      unrelated working directory: setup → home → button grid → basket scan,
+      including the exact request that used to panic. Review:
+      `universal-till/docs/code-reviews/2026-07-21-cwd-independent-startup.md`.
 - [x] 🔴 **(field)** **OSK "still not showing"** — diagnosed: his till is on `auto`,
       which hides the keyboard on non-touch machines BY DESIGN (mac answer: Settings →
       Display → On-screen keyboard → **On**). Real fix shipped too: auto now detects
@@ -729,13 +748,19 @@ Most specs (000–006, 008, ut-cloud i18n excluded as already tracked) checked o
 the gaps below are real. Not on the critical path — pick up opportunistically.
 
 ### 🏪 ut-cloud — spec 001-plugin-marketplace
-- [ ] 🔴 **Vendor releases/rollback portal shows fake data** — `/vendor/releases/list`,
-      `/vendor/releases/{id}/details`, `/vendor/releases/{id}/rollback`
-      (`internal/api/server.go:515-568`) never query the DB; each handler is a
-      `// TODO: Query releases...` stub returning hardcoded placeholder data
-      ("Example Plugin", empty slices) regardless of real state — vendors can't actually
-      see or execute a version rollback despite T027/T029 marked done. Source:
-      `ut-cloud/specs/001-plugin-marketplace/spec.md` FR-007.
+- [x] 🔴 **Vendor releases/rollback portal shows fake data** — FIXED 2026-07-20
+      (`ut-cloud` `1c2db8c`, merged PR #15). list/details/rollback now hit real
+      DB queries; rollback actually revokes the current approved release on
+      that channel so an older approved version becomes newest-approved again
+      (every reader already treats "newest approved" as current — no separate
+      push needed). Found + fixed along the way: a template name collision
+      (`plugins/list.html` vs `releases/list.html`) meant the release list was
+      never reachable regardless of handler data; removed 3 dead action buttons
+      posting to unregistered routes + a fictional malware-scan section (this
+      repo's scanner is structural/manifest validation only, not AV). Independent
+      review caught 2 HIGH pre-merge: `ExecuteRollback` wasn't channel-scoped
+      (could revoke an unrelated beta release on a stable rollback), and the
+      rollback-execute endpoint only required vendor role, not staff.
 - [ ] 🟡 **Device telemetry ingestion never persists / no dashboards** —
       `ReportPluginStatus` validates but never writes to DB (`// TODO: Persist
       telemetry`); `GetDeviceTelemetry`/`GetMerchantTelemetry`/`GetPluginTelemetry`/
