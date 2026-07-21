@@ -845,10 +845,22 @@ open, and didn't)_
       field at all, and `plugin_content.html` has only category accordions, no search
       input, despite tasks.md's T023 ("search/filter... >95% relevance") marked done.
       Source: FR-005, SC-003.
-- [ ] 🟡 **FAQ checksum field is always empty** — every locale's
-      `content/<locale>.json` defines `checksum_sha256` per the plugin's own data
-      model, but it's `""` in all 9 locale files and never computed or verified.
-      Source: data-model.md, FR-006.
+- [x] 🟡 **FAQ checksum field is always empty** — FIXED 2026-07-21. `ut-plugin-faq`
+      (`9c9cc92`, v0.2.3): new `scripts/checksum.py` populates a real checksum for
+      all 9 locale bundles via byte-level placeholder substitution (the field is
+      self-referential, so it zeroes its own value to a same-length placeholder
+      before hashing rather than canonicalizing JSON); wired into `validate.sh`
+      so future edits can't drift. `universal-till` (PR #39, `3a87b05`):
+      `loadContentBundle` now verifies it, refusing a mismatched bundle (falls
+      through to the existing content fallback) rather than rendering possibly
+      corrupted content; absent field = nothing to verify (back-compat). Cross-
+      checked the Go and Python implementations against all 9 real bundles.
+      Reviews: `ut-plugin-faq/docs/code-reviews/2026-07-21-content-checksum.md`,
+      `universal-till/docs/code-reviews/2026-07-21-faq-content-checksum-verification.md`.
+      REMAINING 🟢: on a checksum failure the till gives up rather than trying
+      another candidate locale file the same plugin ships; **not yet tagged/
+      released** on the FAQ plugin (v0.2.3 built and validated locally, tagging
+      triggers a live marketplace publish — held back pending confirmation).
 - [ ] 🟡 **FAQ e2e tests are boilerplate, not real coverage** —
       `tests/e2e/example.spec.ts` hits route `/faq` and posts to a nonexistent API;
       the actual registered route is `/plugin/faq` (per manifest.json). No locale/
