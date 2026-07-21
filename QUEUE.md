@@ -840,11 +840,15 @@ open, and didn't)_
       Source: 007-plugin-host.
 
 ### ❓ ut-plugin-faq — spec 001-multilingual-faq-page
-- [ ] 🟡 **FAQ keyword search never built** — `contentBundle` in
-      `universal-till/internal/pages/plugin_page.go` doesn't parse the `keywords`
-      field at all, and `plugin_content.html` has only category accordions, no search
-      input, despite tasks.md's T023 ("search/filter... >95% relevance") marked done.
-      Source: FR-005, SC-003.
+- [x] 🟡 **FAQ keyword search never built** — FIXED 2026-07-22 (`universal-till`
+      PR #41, `51204c0`). `bundleView` builds a lowercased question+answer+keywords
+      haystack per entry (`Search` field); `plugin_content.html` gained a search
+      input that filters entries client-side (same pattern as the existing
+      `#catalog-search`), hiding an emptied category entirely. Independent review:
+      only real fix needed was missing CSS for the search box (added); Turkish
+      dotted-I casing and live-browser JS verification flagged as known,
+      low-severity/disproportionate-to-fix gaps, not addressed. Review:
+      `universal-till/docs/code-reviews/2026-07-22-faq-keyword-search.md`.
 - [x] 🟡 **FAQ checksum field is always empty** — FIXED 2026-07-21. `ut-plugin-faq`
       (`9c9cc92`, v0.2.3): new `scripts/checksum.py` populates a real checksum for
       all 9 locale bundles via byte-level placeholder substitution (the field is
