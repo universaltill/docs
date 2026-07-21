@@ -794,21 +794,18 @@ the gaps below are real. Not on the critical path — pick up opportunistically.
       records success metrics, never marks the release installed in telemetry, never
       invalidates the token (so tokens aren't enforced single-use), and
       checksum-mismatch alerting is a TODO. Source: FR-012.
-- [ ] 🟡 **`ListPlugins`'s `SnapshotVersion` isn't spec-compliant** (found
-      2026-07-20 while adding platform filtering) — `internal/catalog/
-      service.go`'s `snapshot := s.now().Unix()` fallback, only overridden by
-      `UpdatedAt` values from `pageListings` (the CURRENT PAGE after
-      filtering+pagination), not the full catalog. Per CHK008
-      (`specs/001-plugin-marketplace/spec.md`), `snapshot_version` is
-      supposed to be a global max `updated_at` across ALL
-      `plugin_listings`/`plugin_releases` — this was never spec-compliant,
-      predates the platform-taxonomy work. Consequence: any filter
-      combination that legitimately returns zero results (e.g.
-      `platform=android` today, since nothing android-targeted has been
-      published yet) gets a `SnapshotVersion` that increments on literally
-      every call, which breaks change-detection for any client polling by
-      that filter. Fix direction: compute the global max separately (one
-      query, not derived from the filtered/paginated page) or cache it.
+- [x] 🟡 **`ListPlugins`'s `SnapshotVersion` isn't spec-compliant** — FIXED
+      2026-07-21 (`ut-cloud` PR #16). New shared `globalCatalogVersion()`
+      computes the true max `updated_at` across ALL `plugin_listings`/
+      `plugin_releases` (via `Order(ByUpdatedAt desc).First()`, indexed),
+      used by both `ListPlugins` and `SnapshotWriter.Build` — a zero-result
+      filtered page no longer gets a version that increments on every call.
+      Two independent reviews caught and fixed along the way: a missing
+      `updated_at` index on both tables (the new query would've full-scanned
+      on every catalog read), and a clock-source mismatch where the offline
+      snapshot writer's empty-catalog fallback always used real `time.Now()`
+      while the live path used its injectable clock. Review:
+      `ut-cloud/docs/code-reviews/2026-07-21-catalog-snapshot-version-chk008.md`.
 
 ### 🔌 universal-till — spec 009-cloud-marketplace + 010-complete-pending-specs
 _(both specs describe the same underlying gaps — 010 was meant to close what 009 left
