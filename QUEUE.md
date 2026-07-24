@@ -838,6 +838,20 @@ open, and didn't)_
       today (`Wasm.Sync()`). Doesn't affect any currently-shipped plugin (all WASM) but
       would block a future process-based hardware plugin from starting on boot.
       Source: 007-plugin-host.
+- [ ] 🟢 **`README.md` is badly stale, reads as pre-launch marketing template** —
+      Farshid flagged this 2026-07-24 (mid-session, not a standalone ask); a new
+      standing rule was added to `universal-till/CLAUDE.md` ("README.md is kept up
+      to date every time it goes stale") but the existing file itself wasn't rewritten
+      — genuinely large, separate task. Concrete stale claims found: "Currently
+      supported languages: English (en) - More coming soon!" (false — en/ar/fa/tr all
+      real, shipped, i18n-guard-enforced); "Current Focus (Q1 2025)" roadmap section
+      (everything else in the project is dated well into 2026); pricing table full of
+      `$??/mo` placeholders; Discord/Twitter/YouTube/Blog links and "amazing community
+      of contributors" copy that don't reflect a pre-launch, not-yet-public project
+      (see `farshid-has-no-shop` memory — the goal is onboarding real shop owners, this
+      isn't a live community yet). Needs a deliberate content pass, not a mechanical
+      edit — someone (Farshid or a future session) should decide what's actually true
+      to claim publicly before it's rewritten.
 
 ### ❓ ut-plugin-faq — spec 001-multilingual-faq-page
 - [x] 🟡 **FAQ keyword search never built** — FIXED 2026-07-22 (`universal-till`
@@ -865,14 +879,28 @@ open, and didn't)_
       another candidate locale file the same plugin ships; **not yet tagged/
       released** on the FAQ plugin (v0.2.3 built and validated locally, tagging
       triggers a live marketplace publish — held back pending confirmation).
-- [ ] 🟡 **FAQ e2e tests are boilerplate, not real coverage** —
-      `tests/e2e/example.spec.ts` hits route `/faq` and posts to a nonexistent API;
-      the actual registered route is `/plugin/faq` (per manifest.json). No locale/
-      RTL/fallback/search test exists, despite T011-T013/T029-T032 marked done (T022
-      "locale render tests LTR+RTL+fallback" is honestly left unchecked, consistent
-      with this gap). Translations themselves are genuine (verified real Persian text
-      in `fa-IR.json`, RTL flag set) — this is purely a test-coverage gap. Source:
-      tasks.md T022, T029-T032.
+- [x] 🟡 **FAQ e2e tests are boilerplate, not real coverage** — FIXED 2026-07-24.
+      `ut-plugin-faq`: removed the boilerplate `tests/e2e/` harness (`bc167ca`) — wrong
+      route (`/faq` vs real `/plugin/faq`), a fake REST API to POST/DELETE against
+      (this plugin is asset-only, `runtime: none`, ADR-0001 — nothing to POST to),
+      never wired into CI. `universal-till` (`5aa15d6`, branch
+      `feat/faq-real-e2e-coverage`, not yet merged): real coverage added where the
+      renderer actually lives — `e2e/seed_faq` installs the real FAQ plugin (content
+      + locale overlays, copied verbatim from `ut-plugin-faq`) into the throwaway e2e
+      till; `e2e/tests/faq.spec.ts` drives locale rendering, RTL, the client-side
+      search JS actually filtering the DOM, and the fallback notice against that real
+      install (not a mock). New `TestPluginPage_RTLBundleSetsDirAttribute` in
+      `plugin_page_test.go` closes a gap where every prior fixture used `rtl:false`
+      and RTL rendering itself had zero coverage at any layer. Independent 8-angle
+      review caught and fixed a real bug along the way: the seeder initially only
+      copied `content/`, not `locales/`, so the page title fell back to the raw
+      `plugin.faq.menu` key and the original test assertion (`/faq/i` regex) passed
+      only by coincidence, not because translation was verified — fixed by seeding
+      the real locale overlay too and tightening the assertion to the actual
+      translated string. Reviews:
+      `ut-plugin-faq/docs/code-reviews/2026-07-24-remove-boilerplate-e2e-harness.md`,
+      `universal-till/docs/code-reviews/2026-07-24-faq-real-e2e-coverage.md`.
+      **`universal-till` branch not yet merged to `main`** — held for Farshid.
 - [x] 🟢 **FAQ locale-fallback notice + version/last-updated metadata missing** —
       FIXED 2026-07-22 (`universal-till` PR #40, `48a662a`). `loadContentBundle`
       now reports whether a true language fallback occurred (vs. an exact/
