@@ -883,8 +883,9 @@ open, and didn't)_
       `ut-plugin-faq`: removed the boilerplate `tests/e2e/` harness (`bc167ca`) — wrong
       route (`/faq` vs real `/plugin/faq`), a fake REST API to POST/DELETE against
       (this plugin is asset-only, `runtime: none`, ADR-0001 — nothing to POST to),
-      never wired into CI. `universal-till` (`5aa15d6`, branch
-      `feat/faq-real-e2e-coverage`, not yet merged): real coverage added where the
+      never wired into CI. `universal-till` (`5aa15d6`, PR #42, merged to
+      `main` 2026-07-24 — CI green: build/contract/e2e/playwright all pass):
+      real coverage added where the
       renderer actually lives — `e2e/seed_faq` installs the real FAQ plugin (content
       + locale overlays, copied verbatim from `ut-plugin-faq`) into the throwaway e2e
       till; `e2e/tests/faq.spec.ts` drives locale rendering, RTL, the client-side
@@ -900,7 +901,20 @@ open, and didn't)_
       translated string. Reviews:
       `ut-plugin-faq/docs/code-reviews/2026-07-24-remove-boilerplate-e2e-harness.md`,
       `universal-till/docs/code-reviews/2026-07-24-faq-real-e2e-coverage.md`.
-      **`universal-till` branch not yet merged to `main`** — held for Farshid.
+- [x] 🟢 **`universal-till` README stale (roadmap said Q1/Q2-Q3 2025; i18n,
+      plugin-dev, and marketplace sections described a pre-WASM architecture)**
+      — FIXED 2026-07-24, flagged by Farshid directly. Roadmap rewritten
+      against what's actually shipped; i18n section corrected (en/ar/fa/tr
+      core, de/es via language plugins — was claiming English-only);
+      Plugin Development section's `plugin.Serve()`/`plugin-sdk` sample
+      replaced with the real in-process WASM/wazero model (ADR-0001).
+      Independent review caught the README now contradicted the plugin dev
+      guide it links to (`docs/plugin_guidelines.md`, still describing the
+      old separate-process SDK/CLI throughout) — added a banner there
+      pointing at real shipping plugins as the working reference, and
+      corrected its Plugin Architecture/manifest.json section to the real
+      schema (grounded in `ut-plugin-payment-stripe`'s actual manifest).
+      Full guide rewrite left out of scope. PR #43 (`universal-till`).
 - [x] 🟢 **FAQ locale-fallback notice + version/last-updated metadata missing** —
       FIXED 2026-07-22 (`universal-till` PR #40, `48a662a`). `loadContentBundle`
       now reports whether a true language fallback occurred (vs. an exact/
